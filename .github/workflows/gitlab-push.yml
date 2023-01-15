@@ -1,0 +1,18 @@
+name: Push to Gitlab
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  push_to_gitlab:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'RentalReviews'
+    steps:
+    - name: Triggers push to Gitlab function
+      run: |
+        curl --fail-with-body -H "x-api-key: $API_KEY" $API_URL
+      env:
+        API_URL: ${{ secrets.GITLAB_PUSH_API }}
+        API_KEY: ${{ secrets.GITLAB_PUSH_API_KEY }}
