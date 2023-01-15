@@ -1,27 +1,25 @@
 {
   "name": "rental-app",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Rental App",
-  "workspaces": [
-    "client",
-    "api"
-  ],
   "private": true,
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=16.0.0 <17.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.48.1",
     "@typescript-eslint/parser": "5.48.1",
     "eslint": "8.31.0",
     "eslint-config-prettier": "8.6.0",
-    "eslint-plugin-react": "7.32.0",
     "prettier": "2.8.2"
   },
   "scripts": {
     "client": "cd client && npm run dev",
-    "install:client": "cd client && npm ci --ignore-scripts",
-    "build": "cd client && npm run build",
-    "lint:client": "cd client && npx prettier 'src/**/*.{js,ts,jsx,tsx,json}' --check --ignore-path .gitignore && npx eslint 'src/**/*.{js,ts,jsx,tsx,json}' --ignore-path .gitignore",
-    "format:client": "cd client && npx prettier 'src/**/*.{js,ts,jsx,tsx,json}' --write --ignore-path .gitignore && npx eslint 'src/**/*.{js,ts,jsx,tsx,json}' --fix --ignore-path .gitignore",
-    "postinstall": "npm run install:client"
+    "install:client": "npm ci && (cd client && npm ci)",
+    "build:client": "cd client && npm run build",
+    "lint:client": "npx prettier client/src/**/*.{js,ts,jsx,tsx,json} --check --ignore-path client/.gitignore & npx eslint client/src/**/*.{js,ts,jsx,tsx,json} --ignore-path client/.gitignore",
+    "format:client": "npx prettier client/src/**/*.{js,ts,jsx,tsx,json} --write --ignore-path client/.gitignore & npx eslint client/src/**/*.{js,ts,jsx,tsx,json} --fix --ignore-path client/.gitignore"
   },
   "repository": {
     "type": "git",
