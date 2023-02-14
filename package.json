@@ -16,10 +16,16 @@
   },
   "scripts": {
     "client": "cd client && npm run dev",
+    "server": "cd api && npm run dev",
     "install:client": "npm ci && (cd client && npm ci)",
+    "install:server": "npm ci && (cd api && npm ci)",
     "build:client": "cd client && npm run build",
-    "lint:client": "npx prettier client/src/**/*.{js,ts,jsx,tsx,json} --check --ignore-path client/.gitignore & npx eslint client/src/**/*.{js,ts,jsx,tsx,json} --ignore-path client/.gitignore",
-    "format:client": "npx prettier client/src/**/*.{js,ts,jsx,tsx,json} --write --ignore-path client/.gitignore & npx eslint client/src/**/*.{js,ts,jsx,tsx,json} --fix --ignore-path client/.gitignore"
+    "build:server": "cd api && npm run build",
+    "prettier:client": "prettier client/src/**/*.{js,ts,jsx,tsx,json} --check --ignore-path client/.gitignore",
+    "lint:client": "eslint client/src/**/*.{js,ts,jsx,tsx,json} --ignore-path client/.gitignore",
+    "format:client": "prettier client/src/**/*.{js,ts,jsx,tsx,json} --write --ignore-path client/.gitignore & eslint client/src/**/*.{js,ts,jsx,tsx,json} --fix --ignore-path client/.gitignore",
+    "prettier:server": "prettier api/src/**/*.{js,ts,json} --check --ignore-path server/.gitignore",
+    "format:server": "prettier api/src/**/*.{js,ts,json} --write --ignore-path server/.gitignore"
   },
   "repository": {
     "type": "git",

@@ -28,7 +28,10 @@ jobs:
     - name: Install dependencies
       run: npm run install:client
     
-    - name: Run ESLint & Prettier
+    - name: Run Prettier
+      run: npm run prettier:client
+
+    - name: Run ESLint
       run: npm run lint:client
 
   build:
@@ -97,7 +100,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: Preview is deployed to 
+        body-includes: Client preview for this PR is available at
 
     - name: Share/Update deployment link
       uses: peter-evans/create-or-update-comment@v2
@@ -105,5 +108,5 @@ jobs:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          Preview is available [at this link](${{ env.SURGE_DOMAIN }}) :sunglasses: 
+          Client preview for this PR is available at [this link](${{ env.SURGE_DOMAIN }}) :sunglasses: 
         edit-mode: replace

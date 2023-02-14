@@ -10,3 +10,13 @@ npm run install:client
 npm run client
 ```
 Vite will serve the client app at port `5173`
+
+To run the server side locally
+```shell
+cd api
+echo PORT=4466 > .env
+cd .. 
+npm run install:server
+npm run server
+```
+Nodemon will serve the server at port `4466`
