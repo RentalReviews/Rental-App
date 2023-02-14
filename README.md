@@ -1,4 +1,6 @@
 # Rental Reviews Application
+[![Client](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml/badge.svg)](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml)
+
 This repo is hosted on Github and can be found at [github.com/RentalReviews/Rental-App](https://github.com/RentalReviews/Rental-App)
 
 ## Running locally 
