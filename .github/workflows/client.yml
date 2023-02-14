@@ -28,7 +28,10 @@ jobs:
     - name: Install dependencies
       run: npm run install:client
     
-    - name: Run ESLint & Prettier
+    - name: Run Prettier
+      run: npm run prettier:client
+
+    - name: Run ESLint
       run: npm run lint:client
 
   build:
