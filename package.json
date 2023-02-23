@@ -12,13 +12,14 @@
     "@typescript-eslint/parser": "5.48.1",
     "eslint": "8.31.0",
     "eslint-config-prettier": "8.6.0",
+    "husky": "^8.0.3",
     "prettier": "2.8.2"
   },
   "scripts": {
     "client": "cd client && npm run dev",
     "server": "cd api && npm run dev",
-    "install:client": "npm ci && (cd client && npm ci)",
-    "install:server": "npm ci && (cd api && npm ci)",
+    "install:client": "npm ci && husky install && (cd client && npm ci)",
+    "install:server": "npm ci && husky install && (cd api && npm ci)",
     "build:client": "cd client && npm run build",
     "build:server": "cd api && npm run build",
     "prettier:client": "prettier client/src/**/*.{js,ts,jsx,tsx,json} --check --ignore-path client/.gitignore",
