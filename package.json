@@ -13,6 +13,7 @@
     "eslint": "8.31.0",
     "eslint-config-prettier": "8.6.0",
     "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
     "prettier": "2.8.2"
   },
   "scripts": {
@@ -27,6 +28,15 @@
     "format:client": "prettier client/src/**/*.{js,ts,jsx,tsx,json} --write --ignore-path client/.gitignore & eslint client/src/**/*.{js,ts,jsx,tsx,json} --fix --ignore-path client/.gitignore",
     "prettier:server": "prettier api/src/**/*.{js,ts,json} --check --ignore-path server/.gitignore",
     "format:server": "prettier api/src/**/*.{js,ts,json} --write --ignore-path server/.gitignore"
+  },
+  "lint-staged": {
+    "client/src/**/*.{js,ts,jsx,tsx,json}": [
+      "prettier --write --ignore-path client/.gitignore",
+      "eslint --fix --ignore-path client/.gitignore"
+    ],
+    "api/src/**/*.{js,ts,json}": [
+      "prettier --write --ignore-path server/.gitignore"
+    ]
   },
   "repository": {
     "type": "git",

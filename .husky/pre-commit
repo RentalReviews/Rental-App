@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Echo a message in cyan
-echo -e "\033[1;36mFormatting cilent code...\033[0m"
-npm run format:client
-echo ""
-echo -e "\033[1;36mFormatting server code...\033[0m"
-npm run format:server
+if [ -t 2 ]; then
+  exec >/dev/tty 2>&1
+fi
+npx lint-staged
