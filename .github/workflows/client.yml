@@ -61,7 +61,7 @@ jobs:
         retention-days: 7
         path: client/dist
 
-  deploy-surge:
+  deploy-preview:
     name: Deploy preview to Surge
     runs-on: ubuntu-latest
     if: github.repository_owner == 'RentalReviews' && github.event_name == 'pull_request'
@@ -110,3 +110,33 @@ jobs:
         body: |
           Client preview for this PR is available at [this link](${{ env.SURGE_DOMAIN }}) :sunglasses: 
         edit-mode: replace
+
+  deploy:
+      name: Deploy client
+      runs-on: ubuntu-latest
+      if: github.repository_owner == 'RentalReviews' && github.event_name == 'push'
+      needs: [build]
+      env:
+        SURGE_DOMAIN: https://rentalranking.surge.sh
+      
+      steps:
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: build-artifact
+      
+      - name: Install Surge
+        run: npm install --global surge
+        
+      - name: Deploy to Surge
+        run: |
+          cp index.html 200.html
+          surge ./ ${{ env.SURGE_DOMAIN }}
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
