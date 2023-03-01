@@ -45,10 +45,5 @@
   "bugs": {
     "url": "https://github.com/RentalReviews/Rental-App/issues"
   },
-  "homepage": "https://github.com/RentalReviews/Rental-App",
-  "dependencies": {
-    "@chakra-ui/icons": "^2.0.17",
-    "chakra-ui-autocomplete": "^1.4.5",
-    "chakra-ui-simple-autocomplete": "^2.3.0"
-  }
+  "homepage": "https://github.com/RentalReviews/Rental-App"
 }
