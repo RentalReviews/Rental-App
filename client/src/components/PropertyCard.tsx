@@ -2,8 +2,6 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-
-
 function PropertyCard() {
   const navigate = useNavigate();
 
@@ -19,13 +17,13 @@ function PropertyCard() {
   };
 
   return (
-    <Box 
-      maxW="sm" 
-      borderWidth="1px" 
-      borderRadius="lg" 
+    <Box
+      maxW="sm"
+      borderWidth="1px"
+      borderRadius="lg"
       overflow="hidden"
       onClick={() => navigate("/property")}
-      >
+    >
       <img src={property.imageUrl} alt={property.imageAlt} />
 
       <Box p="6">

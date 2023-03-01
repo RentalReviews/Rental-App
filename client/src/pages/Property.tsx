@@ -8,12 +8,11 @@ import SearchBar from "components/searchBar";
 const Property = () => {
   return (
     <>
-      <SearchBar/>
-      <InfoCard/>
+      <SearchBar />
+      <InfoCard />
       <br />
-      <Review/>
+      <Review />
     </>
   );
 };
 export default Property;
-

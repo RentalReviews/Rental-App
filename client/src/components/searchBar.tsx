@@ -4,7 +4,7 @@ import { Autocomplete, Option } from "chakra-ui-simple-autocomplete";
 
 const options = [
   { value: "gavascript", label: "gavascript" },
-  { value: "Guilford", label: "Guilford" },
+  { value: "2445 Guilford dr", label: "2445 Guilford dr" },
 ];
 const SearchBar = () => {
   const [result, setResult] = useState<Option[]>([]);
