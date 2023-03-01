@@ -1,20 +1,31 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+
+
 
 function PropertyCard() {
+  const navigate = useNavigate();
+
   const property = {
     imageUrl: "https://bit.ly/2Z4KKcF",
     imageAlt: "Rear view of modern home with pool",
     beds: 3,
     baths: 2,
     title: "2445 Guilford dr, Abbotsford BC ",
-    formattedPrice: "$2,900/mo",
+    formattedPrice: "$2,900",
     reviewCount: 20,
     rating: 4,
   };
 
   return (
-    <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box 
+      maxW="sm" 
+      borderWidth="1px" 
+      borderRadius="lg" 
+      overflow="hidden"
+      onClick={() => navigate("/property")}
+      >
       <img src={property.imageUrl} alt={property.imageAlt} />
 
       <Box p="6">
@@ -41,7 +52,7 @@ function PropertyCard() {
         <Box>
           {property.formattedPrice}
           <Box as="span" color="gray.600" fontSize="sm">
-            / wk
+            / mo
           </Box>
         </Box>
 
