@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InfoCard from "components/InfoCard";
-import Review from "components/Review";
+import Review from "components/review";
 import { useLocation } from "react-router-dom";
 import { props } from "./../components/Posting";
 import { Comment } from "./../components/interfaces/Comment";
