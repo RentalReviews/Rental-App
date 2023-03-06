@@ -1,9 +1,13 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import type { Post } from "./interfaces/Post";
+import type { Post } from "types/Post";
 
-const Posting = (props: { post: Post }): JSX.Element => {
+export interface props {
+  post: Post;
+}
+
+const Posting = (props: props) => {
   const navigate = useNavigate();
 
   return (

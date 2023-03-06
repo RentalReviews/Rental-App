@@ -1,11 +1,10 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Avatar, Badge, Box, Button, Image, Textarea } from "@chakra-ui/react";
-import { Autocomplete, Option } from "chakra-ui-simple-autocomplete";
-import { BiLike, BiChat, BiShare } from "react-icons/bi";
+import { Dispatch, SetStateAction, useRef } from "react";
+import { Badge, Box, Button, Image, Textarea } from "@chakra-ui/react";
+import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon } from "@chakra-ui/icons";
-import { Post } from "./interfaces/Post";
-import { Comment } from "./interfaces/Comment";
-import "./../styles/userHome.css";
+import { Post } from "../types/Post";
+import { Comment } from "../types/Comment";
+import "styles/userHome.css";
 
 interface props {
   post: Post;
@@ -13,18 +12,18 @@ interface props {
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: (e: any) => void;
 }
-const InfoCard: React.FC<props> = (props) => {
+const InfoCard = (props: props) => {
+  const inputRef = useRef<any>(null);
   const toggleCommentForm = () => {
-    console.log(document.getElementById("textArea")!.style);
-    if (document.getElementById("textArea")!.style.display == "block") {
-      document.getElementById("textArea")!.style.display = "none";
+    if (inputRef.current!.style.display == "block") {
+      inputRef.current!.style.display = "none";
       return;
     }
-    if (document.getElementById("textArea")!.style.display == "") {
-      document.getElementById("textArea")!.style.display = "block";
+    if (inputRef.current!.style.display == "") {
+      inputRef.current!.style.display = "block";
       return;
     }
-    document.getElementById("textArea")!.style.display = "block";
+    inputRef.current!.style.display = "block";
   };
 
   return (
@@ -76,7 +75,7 @@ const InfoCard: React.FC<props> = (props) => {
         </Button>
       </Box>
       <form onSubmit={props.updateComments}>
-        <Box display="none" id="textArea">
+        <Box display="none" id="textArea" ref={inputRef}>
           <Textarea
             placeholder="Add a comment"
             name="myName"

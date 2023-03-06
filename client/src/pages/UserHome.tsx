@@ -2,7 +2,7 @@ import { Heading } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState } from "react";
-import { Post } from "components/interfaces/Post";
+import { Post } from "types/Post";
 import "styles/userHome.css";
 
 const Home = () => {

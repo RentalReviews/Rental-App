@@ -10,14 +10,14 @@ import {
   Heading,
   IconButton,
 } from "@chakra-ui/react";
-import { BiLike, BiChat, BiShare } from "react-icons/bi";
-import type { Comment } from "./interfaces/Comment";
+import { BiLike } from "react-icons/bi";
+import type { Comment } from "../types/Comment";
 
 interface props {
   comment: Comment;
 }
 
-const Review: React.FC<props> = (props) => {
+const Review = (props: props) => {
   return (
     <>
       <Card maxW="8xl">

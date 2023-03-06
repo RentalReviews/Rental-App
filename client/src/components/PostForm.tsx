@@ -1,16 +1,14 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   Accordion,
   AccordionButton,
-  AccordionIcon,
   AccordionItem,
   AccordionPanel,
   Box,
   Button,
   Input,
-  propNames,
 } from "@chakra-ui/react";
-import type { Post } from "./interfaces/Post";
+import type { Post } from "../types/Post";
 import { MinusIcon, AddIcon } from "@chakra-ui/icons";
 
 interface props {
@@ -19,7 +17,7 @@ interface props {
   updatePosts: (e: any) => void;
 }
 
-export const PostForm: React.FC<props> = (props) => {
+export const PostForm = (props: props) => {
   return (
     <>
       <Accordion allowMultiple>
