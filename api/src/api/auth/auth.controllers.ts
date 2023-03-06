@@ -23,7 +23,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     const user = await getUserByEmail(email);
     if (user) {
       res.status(400);
-      throw new Error("User already exists");
+      throw new Error("Email already registered");
     }
 
     const newUser = await createUser(email, password, displayName);
@@ -47,14 +47,14 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = await getUserByEmail(email);
     if (!user) {
-      res.status(400);
+      res.status(401);
       throw new Error("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      res.status(400);
+      res.status(401);
       throw new Error("Invalid credentials");
     }
 
