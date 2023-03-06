@@ -3,11 +3,7 @@ import { Badge, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Post } from "./interfaces/Post";
 
-export interface props {
-  post: Post;
-}
-
-const Posting: React.FC<props> = (props) => {
+const Posting = (props: { post: Post }): JSX.Element => {
   const navigate = useNavigate();
 
   return (
