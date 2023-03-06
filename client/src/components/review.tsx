@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { BiLike, BiChat, BiShare } from "react-icons/bi";
-import { Comment } from "./interfaces/Comment";
+import type { Comment } from "./interfaces/Comment";
 
 interface props {
   comment: Comment;
