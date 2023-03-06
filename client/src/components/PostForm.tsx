@@ -10,7 +10,7 @@ import {
   Input,
   propNames,
 } from "@chakra-ui/react";
-import { Post } from "./interfaces/Post";
+import type { Post } from "./interfaces/Post";
 import { MinusIcon, AddIcon } from "@chakra-ui/icons";
 
 interface props {
