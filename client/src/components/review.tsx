@@ -11,8 +11,13 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { BiLike, BiChat, BiShare } from "react-icons/bi";
+import { Comment } from "./interfaces/Comment";
 
-const Review = () => {
+interface props {
+  comment: Comment;
+}
+
+const Review: React.FC<props> = (props) => {
   return (
     <>
       <Card maxW="8xl">
@@ -22,7 +27,7 @@ const Review = () => {
               <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
 
               <Box>
-                <Heading size="sm">Segun Adebayo</Heading>
+                <Heading size="sm">{props.comment.userID}</Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
@@ -30,16 +35,9 @@ const Review = () => {
           </Flex>
         </CardHeader>
         <CardBody>
-          <p>
-            I want with this review to describe my personal experience after renting an apartment
-            through MrLodge during the second semester of 2022. The price was decent regarding the
-            service of MrLodge and the quality of the apartment. My apartment was at Perchastraße,
-            in a recently constructed building. It was clean, safe, quiet, spacious, thermally
-            insulated, very warm during freezing temperatures of December down to -14 Celsius during
-            the night, cool during the warmer months of summer. It had a great view of a quiet green
-            garden and a wonderful balcony. All home appliances and furniture were like new and well
-            preserved.
-          </p>
+          <Flex flexWrap="wrap" max-width="300px">
+            <p>{props.comment.comment}</p>
+          </Flex>
         </CardBody>
 
         <CardFooter
@@ -53,12 +51,6 @@ const Review = () => {
         >
           <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
             Like
-          </Button>
-          <Button flex="1" variant="ghost" leftIcon={<BiChat />}>
-            Comment
-          </Button>
-          <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
-            Share
           </Button>
         </CardFooter>
       </Card>
