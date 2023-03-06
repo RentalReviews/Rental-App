@@ -3,7 +3,7 @@ import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState } from "react";
 import { Post } from "components/interfaces/Post";
-import "./../styles/userHome.css";
+import "styles/userHome.css";
 
 const Home = () => {
   const [post, setPost] = useState<Post>({ address: "", imageUrl: "", rating: 0 });
