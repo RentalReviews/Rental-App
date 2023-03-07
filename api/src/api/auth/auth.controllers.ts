@@ -3,7 +3,7 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
 import { generateTokens } from "utils/jwt";
-import { getUserByEmail, createUser } from "api/users/users.services";
+import { getUserByEmail, createUser, getUserById } from "api/users/users.services";
 import {
   addRefreshTokenToWhitelist,
   findRefreshTokenById,
@@ -76,15 +76,21 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
       throw new Error("Missing required fields");
     }
 
-    const { id, jti } = await jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const savedRefreshToken = await findRefreshTokenById(jti as string);
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string);
+
+    if (typeof payload !== "object" || !payload.jti || !payload.id) {
+      res.status(401);
+      throw new Error("Unauthorized");
+    }
+
+    const savedRefreshToken = await findRefreshTokenById(payload.jti);
 
     if (!savedRefreshToken || savedRefreshToken.revoked) {
       res.status(401);
       throw new Error("Unauthorized");
     }
 
-    const user = await getUserByEmail(id);
+    const user = await getUserById(payload.id);
     if (!user) {
       res.status(401);
       throw new Error("Unauthorized");
