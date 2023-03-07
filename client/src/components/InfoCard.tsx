@@ -10,7 +10,7 @@ interface props {
   post: Post;
   comment: Comment;
   setComment: Dispatch<SetStateAction<Comment>>;
-  updateComments: (e: any) => void;
+  updateComments: () => void;
 }
 const InfoCard = (props: props) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,7 +78,12 @@ const InfoCard = (props: props) => {
           Comment
         </Button>
       </Box>
-      <form onSubmit={props.updateComments}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          props.updateComments();
+        }}
+      >
         <Box display="none" id="textArea" ref={inputRef}>
           <Textarea
             placeholder="Add a comment"

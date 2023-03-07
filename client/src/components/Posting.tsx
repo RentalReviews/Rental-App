@@ -14,6 +14,7 @@ const Posting = (props: props) => {
     <Box
       maxW="sm"
       borderWidth="1px"
+      margin="10px"
       borderRadius="lg"
       overflow="hidden"
       onClick={() =>

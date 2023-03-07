@@ -2,6 +2,10 @@
     display: flex;
     flex-direction: row;
 }
+Posting{
+    border: 1pt solid black;
+
+}
 @media (max-width: 800px){
     #posts{
         flex-direction: column;

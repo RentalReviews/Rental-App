@@ -9,8 +9,7 @@ const Home = () => {
   const [post, setPost] = useState<Post>({ address: "", imageUrl: "", rating: 0 });
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const updatePosts = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const updatePosts = () => {
     setPosts([...posts, post]);
     setPost({ address: "", imageUrl: "", rating: 0 });
   };

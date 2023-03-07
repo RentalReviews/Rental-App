@@ -11,9 +11,7 @@ const Property = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   console.log(comment);
 
-  const updateComments = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("e");
-    e.preventDefault();
+  const updateComments = () => {
     setComments([...comments, comment]);
     setComment({ comment: "" });
   };

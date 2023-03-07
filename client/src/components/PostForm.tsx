@@ -14,7 +14,7 @@ import { MinusIcon, AddIcon } from "@chakra-ui/icons";
 interface props {
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
-  updatePosts: (e: any) => void;
+  updatePosts: () => void;
 }
 
 export const PostForm = (props: props) => {
@@ -38,7 +38,12 @@ export const PostForm = (props: props) => {
                 </AccordionButton>
               </h2>
               <AccordionPanel pb={4}>
-                <form onSubmit={props.updatePosts}>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    props.updatePosts();
+                  }}
+                >
                   <div>
                     <label htmlFor="">Rental Adress: </label>
                     <Input
