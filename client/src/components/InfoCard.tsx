@@ -13,17 +13,21 @@ interface props {
   updateComments: (e: any) => void;
 }
 const InfoCard = (props: props) => {
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const toggleCommentForm = () => {
-    if (inputRef.current!.style.display == "block") {
-      inputRef.current!.style.display = "none";
+    if (inputRef.current == null) {
       return;
     }
-    if (inputRef.current!.style.display == "") {
-      inputRef.current!.style.display = "block";
+
+    if (inputRef.current.style.display == "block") {
+      inputRef.current.style.display = "none";
       return;
     }
-    inputRef.current!.style.display = "block";
+    if (inputRef.current.style.display == "") {
+      inputRef.current.style.display = "block";
+      return;
+    }
+    inputRef.current.style.display = "block";
   };
 
   return (
