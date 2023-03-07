@@ -1,6 +1,12 @@
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
+
+interface JwtPayload extends jwt.JwtPayload {
+  id?: string;
+  email?: string;
+  displayName?: string;
+}
 
 const generateToken = (user: User) => {
   return jwt.sign(
@@ -38,4 +44,4 @@ const generateTokens = (user: User, jti: string) => {
   return { token, refreshToken };
 };
 
-export { generateToken, generateRefreshToken, generateTokens };
+export { generateToken, generateRefreshToken, generateTokens, type JwtPayload };

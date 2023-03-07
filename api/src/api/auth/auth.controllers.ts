@@ -1,6 +1,6 @@
 import { uuid } from "uuidv4";
-import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
+import { compare as bcryptCompare } from "bcrypt";
+import { verify as jwtVerify } from "jsonwebtoken";
 
 import { generateTokens } from "utils/jwt";
 import { getUserByEmail, createUser, getUserById } from "api/users/users.services";
@@ -11,6 +11,7 @@ import {
 } from "api/auth/auth.services";
 
 import type { Request, Response, NextFunction } from "express";
+import type { JwtPayload } from "utils/jwt";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -51,7 +52,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error("Invalid credentials");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcryptCompare(password, user.password);
 
     if (!isPasswordValid) {
       res.status(401);
@@ -76,7 +77,9 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
       throw new Error("Missing required fields");
     }
 
-    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string);
+    const payload = jwtVerify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as
+      | string
+      | JwtPayload;
 
     if (typeof payload !== "object" || !payload.jti || !payload.id) {
       res.status(401);
