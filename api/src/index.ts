@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import morgan from "morgan";
 
 import api from "api";
 import errorHandler from "middlewares/error";
@@ -10,12 +11,14 @@ import type { Request, Response } from "express";
 
 dotenv.config();
 const PORT: number = parseInt(process.env.PORT as string, 10);
+const IS_PROD = process.env.NODE_ENV === "production";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
+app.use(morgan(IS_PROD ? "combined" : "dev"));
 
 app.get("/", (_, res) => {
   res.json({ message: "Hello World" });
