@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
+import api from "api";
+
 dotenv.config();
 const PORT: number = parseInt(process.env.PORT as string, 10);
 
@@ -15,6 +17,8 @@ app.use(helmet());
 app.get("/", (req, res) => {
   res.json({ message: "Hello World" });
 });
+
+app.use("/api/v1", api);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
