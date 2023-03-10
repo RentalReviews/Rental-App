@@ -9,6 +9,7 @@ import {
   findRefreshTokenById,
   revokeRefreshToken,
 } from "api/auth/auth.services";
+import HttpError from "utils/http-error";
 
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "utils/jwt";
@@ -17,14 +18,12 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, displayName } = req.body;
     if (!email || !password || !displayName) {
-      res.status(400);
-      throw new Error("Missing required fields");
+      throw new HttpError("Missing required fields", 400);
     }
 
     const user = await getUserByEmail(email);
     if (user) {
-      res.status(400);
-      throw new Error("Email already registered");
+      throw new HttpError("Email already registered", 400);
     }
 
     const newUser = await createUser(email, password, displayName);
@@ -42,21 +41,18 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      res.status(400);
-      throw new Error("Missing required fields");
+      throw new HttpError("Missing required fields", 400);
     }
 
     const user = await getUserByEmail(email);
     if (!user) {
-      res.status(401);
-      throw new Error("Invalid credentials");
+      throw new HttpError("Invalid credentials", 401);
     }
 
     const isPasswordValid = await bcryptCompare(password, user.password);
 
     if (!isPasswordValid) {
-      res.status(401);
-      throw new Error("Invalid credentials");
+      throw new HttpError("Invalid credentials", 401);
     }
 
     const jti = uuid();
@@ -73,8 +69,7 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
-      res.status(400);
-      throw new Error("Missing required fields");
+      throw new HttpError("Missing required fields", 400);
     }
 
     const payload = jwtVerify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as
@@ -82,21 +77,18 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
       | JwtPayload;
 
     if (typeof payload !== "object" || !payload.jti || !payload.id) {
-      res.status(401);
-      throw new Error("Unauthorized");
+      throw new HttpError("Unauthorized", 401);
     }
 
     const savedRefreshToken = await findRefreshTokenById(payload.jti);
 
     if (!savedRefreshToken || savedRefreshToken.revoked) {
-      res.status(401);
-      throw new Error("Unauthorized");
+      throw new HttpError("Unauthorized", 401);
     }
 
     const user = await getUserById(payload.id);
     if (!user) {
-      res.status(401);
-      throw new Error("Unauthorized");
+      throw new HttpError("Unauthorized", 401);
     }
 
     await revokeRefreshToken(savedRefreshToken.id);

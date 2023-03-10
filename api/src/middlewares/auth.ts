@@ -1,5 +1,7 @@
 import { verify as jwtVerify } from "jsonwebtoken";
 
+import HttpError from "utils/http-error";
+
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "utils/jwt";
 
@@ -11,22 +13,19 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
   const token = req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
-    res.status(401);
-    throw new Error("Unauthorized");
+    throw new HttpError("Unauthorized", 401);
   }
 
   try {
     const decoded = jwtVerify(token, process.env.JWT_SECRET as string);
 
     if (typeof decoded !== "object") {
-      res.status(401);
-      throw new Error("Unauthorized");
+      throw new HttpError("Unauthorized", 401);
     }
 
     (req as RequestWithToken).payload = decoded;
   } catch (error) {
-    res.status(401);
-    throw new Error("Unauthorized");
+    throw new HttpError("Unauthorized", 401);
   }
 
   return next();
