@@ -10,6 +10,19 @@
   },
   "author": "",
   "license": "ISC",
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/index.ts",
+    "ext": "ts, js"
+  },
   "dependencies": {
     "@prisma/client": "^4.10.1",
     "bcrypt": "^5.1.0",
@@ -20,6 +33,7 @@
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.20",
+    "tsconfig-paths": "^4.1.2",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
