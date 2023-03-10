@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 import { compare as bcryptCompare } from "bcrypt";
 import { verify as jwtVerify } from "jsonwebtoken";
 
