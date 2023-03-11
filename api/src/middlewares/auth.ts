@@ -1,4 +1,4 @@
-import { verify as jwtVerify } from "jsonwebtoken";
+import { verify as jwtVerify, JsonWebTokenError } from "jsonwebtoken";
 
 import HttpError from "utils/http-error";
 
@@ -13,19 +13,22 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
   const token = req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
-    throw new HttpError("Unauthorized", 401);
+    return next(new HttpError("Missing token", 400));
   }
 
   try {
     const decoded = jwtVerify(token, process.env.JWT_ACCESS_SECRET as string);
 
     if (typeof decoded !== "object") {
-      throw new HttpError("Unauthorized", 401);
+      throw new HttpError("Invalid token", 401);
     }
 
     (req as RequestWithToken).payload = decoded;
   } catch (error) {
-    throw new HttpError("Unauthorized", 401);
+    if (error instanceof JsonWebTokenError) {
+      return next(new HttpError("Unauthorized", 401));
+    }
+    return next(error);
   }
 
   return next();
