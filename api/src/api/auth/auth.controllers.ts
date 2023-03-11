@@ -26,12 +26,23 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       throw new HttpError("Email already registered", 400);
     }
 
-    const newUser = await createUser(email, password, displayName);
+    const { newUser, newProfile } = await createUser(email, password, displayName);
     const jti = uuid();
     const { token, refreshToken } = generateTokens(newUser, jti);
     await addRefreshTokenToWhitelist(jti, refreshToken, newUser.id);
 
-    res.status(201).json({ token, refreshToken });
+    res.status(201).json({
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        displayName: newUser.displayName,
+        profile: {
+          id: newProfile.id,
+        },
+      },
+      token,
+      refreshToken,
+    });
   } catch (error) {
     next(error);
   }
