@@ -36,6 +36,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup Node JS
       uses: actions/setup-node@v3
       with:
@@ -48,3 +49,53 @@ jobs:
       
     - name: Build 
       run: npm run build:server
+
+  migrate:
+    name: Perform Migration
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'RentalReviews' && github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node JS
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: api/package-lock.json
+
+    - name: Check for changes to schema
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          prisma:
+            - 'api/prisma/**'
+    
+    - id: auth
+      if: steps.changes.outputs.prisma == 'true'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.CLOUD_SQL_CREDENTIAL }}'
+
+    - name: Install dependencies
+      if: steps.changes.outputs.prisma == 'true'
+      run: npm run install:server
+
+    - name: Install Cloud SQL Proxy
+      if: steps.changes.outputs.prisma == 'true'
+      run: |
+        curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.0.0/cloud-sql-proxy.linux.amd64
+        chmod +x cloud-sql-proxy
+        sudo mv cloud-sql-proxy /usr/local/bin/
+
+    - name: Connect to Cloud SQL
+      if: steps.changes.outputs.prisma == 'true'
+      run: cloud-sql-proxy ${{ secrets.CLOUD_SQL_INSTANCE }} & 
+
+    - name: Prisma migrate deploy
+      if: steps.changes.outputs.prisma == 'true'
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: cd api && npx prisma migrate deploy
