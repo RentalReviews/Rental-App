@@ -14,11 +14,18 @@ import HttpError from "utils/http-error";
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "utils/jwt";
 
+const emailRegex =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, displayName } = req.body;
     if (!email || !password || !displayName) {
       throw new HttpError("Missing required fields", 400);
+    }
+
+    if (!emailRegex.test(email)) {
+      throw new HttpError("Invalid email address", 400);
     }
 
     const user = await getUserByEmail(email);
