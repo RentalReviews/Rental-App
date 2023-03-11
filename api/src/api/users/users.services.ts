@@ -6,7 +6,7 @@ const SALT_ROUNDS = 12;
 const createUser = async (email: string, password: string, displayName: string) => {
   const hashedPassword = bcrypt.hashSync(password, SALT_ROUNDS);
 
-  const result = await prismaClient.user.create({
+  const newUser = await prismaClient.user.create({
     data: {
       email,
       password: hashedPassword,
@@ -14,7 +14,13 @@ const createUser = async (email: string, password: string, displayName: string) 
     },
   });
 
-  return result;
+  const newProfile = await prismaClient.profile.create({
+    data: {
+      userId: newUser.id,
+    },
+  });
+
+  return { newUser, newProfile };
 };
 
 const getUserByEmail = async (email: string) => {

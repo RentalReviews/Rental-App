@@ -14,6 +14,9 @@ import HttpError from "utils/http-error";
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "utils/jwt";
 
+const emailRegex =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, displayName } = req.body;
@@ -21,17 +24,32 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       throw new HttpError("Missing required fields", 400);
     }
 
+    if (!emailRegex.test(email)) {
+      throw new HttpError("Invalid email address", 400);
+    }
+
     const user = await getUserByEmail(email);
     if (user) {
       throw new HttpError("Email already registered", 400);
     }
 
-    const newUser = await createUser(email, password, displayName);
+    const { newUser, newProfile } = await createUser(email, password, displayName);
     const jti = uuid();
     const { token, refreshToken } = generateTokens(newUser, jti);
     await addRefreshTokenToWhitelist(jti, refreshToken, newUser.id);
 
-    res.status(201).json({ token, refreshToken });
+    res.status(201).json({
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        displayName: newUser.displayName,
+        profile: {
+          id: newProfile.id,
+        },
+      },
+      token,
+      refreshToken,
+    });
   } catch (error) {
     next(error);
   }
