@@ -10,8 +10,16 @@ import errorHandler from "middlewares/error";
 import type { Request, Response } from "express";
 
 dotenv.config();
-const PORT: number = parseInt(process.env.PORT as string, 10);
+const PORT: number = parseInt(process.env.PORT as string, 10) || 3000;
 const IS_PROD = process.env.NODE_ENV === "production";
+
+if (!process.env.JWT_ACCESS_SECRET) {
+  throw new Error("JWT_ACCESS_SECRET is missing");
+}
+
+if (!process.env.JWT_REFRESH_SECRET) {
+  throw new Error("JWT_REFRESH_SECRET is missing");
+}
 
 const app = express();
 

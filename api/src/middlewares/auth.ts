@@ -17,7 +17,7 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
   }
 
   try {
-    const decoded = jwtVerify(token, process.env.JWT_SECRET as string);
+    const decoded = jwtVerify(token, process.env.JWT_ACCESS_SECRET as string);
 
     if (typeof decoded !== "object") {
       throw new HttpError("Unauthorized", 401);
