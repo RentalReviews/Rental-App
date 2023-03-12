@@ -1,6 +1,5 @@
 import { Heading } from "@chakra-ui/react";
 import Posting from "components/Posting";
-import { PostForm } from "components/PostForm";
 import { useEffect, useState } from "react";
 import { Post } from "types/Post";
 import "styles/userHome.css";
