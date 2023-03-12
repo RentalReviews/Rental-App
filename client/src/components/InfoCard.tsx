@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useRef } from "react";
-import { Badge, Box, Button, Image, Textarea } from "@chakra-ui/react";
+import { Badge, Box, Button, Textarea } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
-import { StarIcon } from "@chakra-ui/icons";
 import { Post } from "../types/Post";
 import { Comment } from "../types/Comment";
 import "styles/userHome.css";
@@ -45,30 +44,8 @@ const InfoCard = (props: props) => {
             New
           </Badge>
         </Box>
-
-        <Box w="100%" mt="3" fontWeight="semibold" as="h1" lineHeight="tight" noOfLines={1}>
-          {props.post.address}
-        </Box>
-
-        <Box display="flex" mt="2" alignItems="center">
-          {Array(5)
-            .fill("")
-            .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
-            ))}
-        </Box>
       </Box>
-      <div id="posts">
-        <Box>{props.post.caption}</Box>
-
-        <Image
-          boxSize="sm"
-          maxH="s"
-          src={props.post.imageUrl}
-          alt={"property.imageAlt"}
-          borderRadius="md"
-        />
-      </div>
+      <div id="posts"></div>
 
       <Box display="flex">
         <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
