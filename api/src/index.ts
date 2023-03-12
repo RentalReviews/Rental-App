@@ -4,6 +4,19 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
+import { PrismaClient } from "@prisma/client";
+
+const prismaClient = new PrismaClient();
+
+// async function main() {
+//   const user = await prismaClient.post.findMany()
+//   console.log(user);
+// }
+// main()
+//   .catch(e=>{
+//     console.log(e.message)
+//   })
+
 import api from "api";
 import errorHandler from "middlewares/error";
 

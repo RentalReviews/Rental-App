@@ -45,7 +45,7 @@ export const PostForm = (props: props) => {
                   }}
                 >
                   <div>
-                    <label htmlFor="">Rental Adress: </label>
+                    <label htmlFor="">Title: </label>
                     <Input
                       type="text"
                       onChange={(e) =>

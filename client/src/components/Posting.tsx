@@ -1,4 +1,4 @@
-import { StarIcon } from "@chakra-ui/icons";
+// import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import type { Post } from "types/Post";
@@ -25,7 +25,7 @@ const Posting = (props: props) => {
         })
       }
     >
-      <img src={props.post.imageUrl} alt={"property.imageAlt"} />
+      {/* <img src={props.post.imageUrl} alt={"property.imageAlt"} /> */}
 
       <Box p="6">
         <Box display="flex" alignItems="baseline">
@@ -35,18 +35,7 @@ const Posting = (props: props) => {
         </Box>
 
         <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={1}>
-          {props.post.address}
-        </Box>
-
-        <Box display="flex" mt="2" alignItems="center">
-          {Array(5)
-            .fill("")
-            .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
-            ))}
-          <Box as="span" ml="2" color="gray.600" fontSize="sm">
-            0 comments
-          </Box>
+          {props.post.title}
         </Box>
       </Box>
     </Box>

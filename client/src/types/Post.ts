@@ -1,10 +1,9 @@
 export interface Post {
-  postId?: string;
-  userId?: string;
-  imageUrl: string;
-  address: string;
-  caption?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  rating: number;
+  authorId: string;
+  content: string;
+  createdAt: string;
+  id: string;
+  published: boolean;
+  title: string;
+  updatedAt: string;
 }
