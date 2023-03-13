@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
-import { Input, FormLabel, FormControl, VStack, Button } from "@chakra-ui/react";
+import { Input, FormLabel, FormControl, VStack, Button, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,8 +23,22 @@ const SignupForm = () => {
 
     if (isAccountCreated) {
       navigate("/");
+      toast({
+        title: "Account created",
+        description: "Your account has been created successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } else {
       navigate("/signup");
+      toast({
+        title: "Account not created",
+        description: "There was an error when creating your account.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
