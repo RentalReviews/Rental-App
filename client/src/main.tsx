@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import theme from "styles/theme";
-import { BasePage, Home, Property, Login } from "pages";
+import { BasePage, Home, Property, Login, Signup } from "pages";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
@@ -17,6 +17,7 @@ root.render(
           <Route path="/" element={<Home />} />
           <Route path="/property" element={<Property />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </BasePage>
     </BrowserRouter>
