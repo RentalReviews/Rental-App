@@ -34,4 +34,9 @@ const getAllComments = async () => {
   return comments;
 };
 
-export { createComment, getAllComments, updateComment, deleteComment };
+const getComment = async (commentId: string) => {
+  const comments = await prismaClient.comment.findMany();
+  return comments;
+};
+
+export { createComment, getAllComments, updateComment, deleteComment, getComment };

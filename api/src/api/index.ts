@@ -7,8 +7,8 @@ import commentRoutes from "./comment/comment.routes";
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-router.use("/post", postRoutes);
-router.use("/comment", commentRoutes);
+router.use("/posts", postRoutes);
+router.use("/comments", commentRoutes);
 
 router.get("/test-protected", isAuthenticated, (req: RequestWithToken, res) => {
   res.json({ message: `Hello ${req.payload?.displayName}` });

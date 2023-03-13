@@ -30,8 +30,25 @@ const deletePost = async (postId: string) => {
   });
   return del;
 };
+const getPost = async (postId: string) => {
+  const post = await prismaClient.post.findUnique({
+    where: {
+      id: postId,
+    },
+    include: {
+      postPhotos: true,
+      comments: true,
+    },
+  });
+  return post;
+};
 const getAllPosts = async () => {
-  const posts = await prismaClient.post.findMany();
+  const posts = await prismaClient.post.findMany({
+    include: {
+      postPhotos: true,
+      comments: true,
+    },
+  });
   return posts;
 };
 const createPostPhoto = async (url: string, postId: string) => {
@@ -48,4 +65,4 @@ const getAllPhotos = async () => {
   return photos;
 };
 
-export { createPost, createPostPhoto, getAllPosts, getAllPhotos, updatePost, deletePost };
+export { createPost, getPost, createPostPhoto, getAllPosts, getAllPhotos, updatePost, deletePost };

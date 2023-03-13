@@ -5,6 +5,7 @@ import {
   getAllPhotos,
   updatePost,
   deletePost,
+  getPost,
 } from "api/post/post.services";
 import HttpError from "utils/http-error";
 
@@ -37,13 +38,25 @@ const GetPosts = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+const GetPost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const posts = await getPost(id);
+    res.status(201).json({
+      posts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const UpdatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { title, content, postId } = req.body;
-    if (!title || !content || !postId) {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    if (!title || !content || !id) {
       throw new HttpError("Missing required fields", 400);
     }
-    const upPost = await updatePost(postId, title, content);
+    const upPost = await updatePost(id, title, content);
 
     res.status(201).json({
       upPost,
@@ -52,23 +65,14 @@ const UpdatePost = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-const GetPhotos = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const photos = await getAllPhotos();
-    res.status(201).json({
-      photos,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+
 const DeletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { postId } = req.body;
-    if (!postId) {
+    const { id } = req.params;
+    if (!id) {
       throw new HttpError("Missing required fields", 400);
     }
-    const deletedPost = await deletePost(postId);
+    const deletedPost = await deletePost(id);
     res.status(201).json({
       deletedPost,
     });
@@ -77,4 +81,4 @@ const DeletePost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { CreatePost, GetPosts, GetPhotos, UpdatePost, DeletePost };
+export { CreatePost, GetPost, GetPosts, UpdatePost, DeletePost };

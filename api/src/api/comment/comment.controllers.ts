@@ -3,6 +3,7 @@ import {
   getAllComments,
   updateComment,
   deleteComment,
+  getComment,
 } from "api/comment/comment.services";
 import HttpError from "utils/http-error";
 
@@ -23,9 +24,11 @@ const CreateComment = async (req: Request, res: Response, next: NextFunction) =>
     next(error);
   }
 };
-const GetComments = async (req: Request, res: Response, next: NextFunction) => {
+
+const GetComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const comments = await getAllComments();
+    const { id } = req.params;
+    const comments = await getComment(id);
     res.status(201).json({
       comments,
     });
@@ -35,11 +38,12 @@ const GetComments = async (req: Request, res: Response, next: NextFunction) => {
 };
 const UpdateComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { content, commentId } = req.body;
-    if (!content || !commentId) {
+    const { id } = req.params;
+    const { content } = req.body;
+    if (!content || !id) {
       throw new HttpError("Missing required fields", 400);
     }
-    const updatedComment = await updateComment(commentId, content);
+    const updatedComment = await updateComment(id, content);
 
     res.status(201).json({
       updatedComment,
@@ -51,11 +55,12 @@ const UpdateComment = async (req: Request, res: Response, next: NextFunction) =>
 
 const DeleteComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { commentId } = req.body;
-    if (!commentId) {
+    const { id } = req.params;
+
+    if (!id) {
       throw new HttpError("Missing required fields", 400);
     }
-    const deletedcomment = await deleteComment(commentId);
+    const deletedcomment = await deleteComment(id);
     res.status(201).json({
       deletedcomment,
     });
@@ -64,4 +69,4 @@ const DeleteComment = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-export { CreateComment, GetComments, UpdateComment, DeleteComment };
+export { CreateComment, UpdateComment, DeleteComment, GetComment };
