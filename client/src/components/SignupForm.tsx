@@ -1,20 +1,43 @@
 import React, { useState } from "react";
 
-import { Input, FormLabel, FormControl, VStack, Button, useToast } from "@chakra-ui/react";
+import {
+  Input,
+  FormLabel,
+  FormControl,
+  VStack,
+  Button,
+  useToast,
+  FormErrorMessage,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const SignupForm = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formValues, setFormValues] = useState<FormValues>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [id]: value }));
+  };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(firstName, lastName, email, password, confirmPassword);
+    console.log(formValues);
 
     // TODO: Add validation
     // TODO: Add API call
@@ -46,42 +69,27 @@ const SignupForm = () => {
     <VStack as="form" spacing={4} onSubmit={onSubmit}>
       <FormControl isRequired>
         <FormLabel>First Name</FormLabel>
-        <Input
-          type="text"
-          id="firstName"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
+        <Input type="text" id="firstName" value={formValues.firstName} onChange={handleChange} />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Last Name</FormLabel>
-        <Input
-          type="text"
-          id="lastName"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
+        <Input type="text" id="lastName" value={formValues.lastName} onChange={handleChange} />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
-        <Input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input type="email" id="email" value={formValues.email} onChange={handleChange} />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Password</FormLabel>
-        <Input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <Input type="password" id="password" value={formValues.password} onChange={handleChange} />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <Input
           type="password"
           id="confirmPassword"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          value={formValues.confirmPassword}
+          onChange={handleChange}
         />
       </FormControl>
       <Button type="submit" w="100%">
