@@ -29,7 +29,7 @@ const GetComment = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const comment = await getComment(id);
     if (!comment) {
-      throw new HttpError(`Comment with id = ${id} does not exits`, 400);
+      throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
 
     res.status(201).json({
