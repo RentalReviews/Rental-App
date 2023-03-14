@@ -29,14 +29,10 @@ const deleteComment = async (commentId: string) => {
   });
   return del;
 };
-const getAllComments = async () => {
-  const comments = await prismaClient.comment.findMany();
-  return comments;
-};
 
 const getComment = async (commentId: string) => {
   const comments = await prismaClient.comment.findMany();
   return comments;
 };
 
-export { createComment, getAllComments, updateComment, deleteComment, getComment };
+export { createComment, updateComment, deleteComment, getComment };

@@ -1,6 +1,5 @@
 import {
   createComment,
-  getAllComments,
   updateComment,
   deleteComment,
   getComment,
@@ -28,6 +27,9 @@ const CreateComment = async (req: Request, res: Response, next: NextFunction) =>
 const GetComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      throw new HttpError("Missing required fields", 400);
+    }
     const comments = await getComment(id);
     res.status(201).json({
       comments,
@@ -39,6 +41,9 @@ const GetComment = async (req: Request, res: Response, next: NextFunction) => {
 const UpdateComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      throw new HttpError("Missing required fields", 400);
+    }
     const { content } = req.body;
     if (!content || !id) {
       throw new HttpError("Missing required fields", 400);
@@ -57,9 +62,6 @@ const DeleteComment = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const { id } = req.params;
 
-    if (!id) {
-      throw new HttpError("Missing required fields", 400);
-    }
     const deletedcomment = await deleteComment(id);
     res.status(201).json({
       deletedcomment,

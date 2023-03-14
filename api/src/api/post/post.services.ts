@@ -1,56 +1,43 @@
 import { prismaClient } from "utils/db";
+interface createUrl {
+  url: string;
+}
+interface updateUrl {
+  id?: string;
+  url: string;
+}
+const createPost = async (authorId: string, title: string, content: string, url: createUrl[]) => {
+  const newPost = await prismaClient.post.create({
+    data: {
+      title,
+      content,
+      authorId,
+    },
+  });
+  url.forEach((url) => {
+    createPostPhoto(url.url, newPost.id);
+  });
 
-const createPost = async (authorId: string, title: string, content: string, url?: string) => {
-  if (url) {
-    const newPost = await prismaClient.post.create({
-      data: {
-        title,
-        content,
-        authorId,
-        postPhotos: {
-          create: { url: url },
-        },
-      },
-    });
-    return newPost;
-  } else {
-    const newPost = await prismaClient.post.create({
-      data: {
-        title,
-        content,
-        authorId,
-      },
-    });
-    return newPost;
-  }
+  return newPost;
 };
-const updatePost = async (postId: string, title: string, content: string, url?: string) => {
-  if (url) {
-    const post = await prismaClient.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        title: title,
-        content: content,
-        postPhotos: {
-          create: { url: url },
-        },
-      },
-    });
-    return post;
-  } else {
-    const post = await prismaClient.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        title: title,
-        content: content,
-      },
-    });
-    return post;
-  }
+const updatePost = async (postId: string, title: string, content: string, url: updateUrl[]) => {
+  url.forEach((url) => {
+    if (url.id) {
+      updatePostPhoto(url.url, url.id);
+    } else {
+      createPostPhoto(url.url, postId);
+    }
+  });
+  const post = await prismaClient.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      title: title,
+      content: content,
+    },
+  });
+  return post;
 };
 const deletePost = async (postId: string) => {
   const del = await prismaClient.post.delete({
@@ -90,9 +77,16 @@ const createPostPhoto = async (url: string, postId: string) => {
   });
   return newPostPhoto;
 };
-const getAllPhotos = async () => {
-  const photos = await prismaClient.postPhoto.findMany();
-  return photos;
+const updatePostPhoto = async (url: string, photoId: string) => {
+  const updatePostPhoto = await prismaClient.postPhoto.update({
+    where: {
+      id: photoId,
+    },
+    data: {
+      url: url,
+    },
+  });
+  return updatePostPhoto;
 };
 
-export { createPost, getPost, createPostPhoto, getAllPosts, getAllPhotos, updatePost, deletePost };
+export { createPost, getPost, createPostPhoto, getAllPosts, updatePost, deletePost };
