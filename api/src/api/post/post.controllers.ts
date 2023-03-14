@@ -30,12 +30,12 @@ const GetPosts = async (req: Request, res: Response, next: NextFunction) => {
 const GetPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    if (!id) {
-      throw new HttpError("Missing required fields", 400);
+    const post = await getPost(id);
+    if (!post) {
+      throw new HttpError(`Post with id = ${id} does not exits`, 400);
     }
-    const posts = await getPost(id);
     res.status(201).json({
-      posts,
+      post,
     });
   } catch (error) {
     next(error);
@@ -45,11 +45,13 @@ const UpdatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { title, content, url } = req.body;
-    if (!title || !content || !id) {
+    if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
     }
     const upPost = await updatePost(id, title, content, url ? url : url);
-
+    if (!upPost) {
+      throw new HttpError(`Post with id = ${id} does not exits`, 400);
+    }
     res.status(201).json({
       upPost,
     });
@@ -62,6 +64,9 @@ const DeletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const deletedPost = await deletePost(id);
+    if (!deletePost) {
+      throw new HttpError(`Post with id = ${id} does not exits`, 400);
+    }
     res.status(201).json({
       deletedPost,
     });

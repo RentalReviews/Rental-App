@@ -31,8 +31,12 @@ const deleteComment = async (commentId: string) => {
 };
 
 const getComment = async (commentId: string) => {
-  const comments = await prismaClient.comment.findMany();
-  return comments;
+  const comment = await prismaClient.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+  });
+  return comment;
 };
 
 export { createComment, updateComment, deleteComment, getComment };

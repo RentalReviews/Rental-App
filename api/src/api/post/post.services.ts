@@ -1,12 +1,14 @@
 import { prismaClient } from "utils/db";
-interface createUrl {
-  url: string;
-}
-interface updateUrl {
+interface UploadedPhoto {
   id?: string;
   url: string;
 }
-const createPost = async (authorId: string, title: string, content: string, url: createUrl[]) => {
+const createPost = async (
+  authorId: string,
+  title: string,
+  content: string,
+  url: UploadedPhoto[]
+) => {
   const newPost = await prismaClient.post.create({
     data: {
       title,
@@ -20,7 +22,7 @@ const createPost = async (authorId: string, title: string, content: string, url:
 
   return newPost;
 };
-const updatePost = async (postId: string, title: string, content: string, url: updateUrl[]) => {
+const updatePost = async (postId: string, title: string, content: string, url: UploadedPhoto[]) => {
   url.forEach((url) => {
     if (url.id) {
       updatePostPhoto(url.url, url.id);
