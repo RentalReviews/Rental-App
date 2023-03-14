@@ -50,7 +50,7 @@ const UpdatePost = async (req: Request, res: Response, next: NextFunction) => {
     }
     const upPost = await updatePost(id, title, content, url ? url : url);
     if (!upPost) {
-      throw new HttpError(`Post with id = ${id} does not exits`, 400);
+      throw new HttpError(`Post with id = ${id} does not exist`, 404);
     }
     res.status(201).json({
       upPost,
