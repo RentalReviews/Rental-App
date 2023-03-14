@@ -63,7 +63,7 @@ const DeleteComment = async (req: Request, res: Response, next: NextFunction) =>
     const { id } = req.params;
     const deletedcomment = await deleteComment(id);
     if (!deleteComment) {
-      throw new HttpError(`Comment with id = ${id} does not exits`, 400);
+      throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
     res.status(201).json({
       deletedcomment,
