@@ -65,7 +65,7 @@ const DeletePost = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const deletedPost = await deletePost(id);
     if (!deletePost) {
-      throw new HttpError(`Post with id = ${id} does not exits`, 400);
+      throw new HttpError(`Post with id = ${id} does not exist`, 404);
     }
     res.status(201).json({
       deletedPost,
