@@ -7,11 +7,15 @@ import {
   VStack,
   Button,
   useToast,
-  FormErrorMessage,
   InputRightElement,
   IconButton,
   Icon,
   InputGroup,
+  Text,
+  Alert,
+  AlertIcon,
+  ListItem,
+  UnorderedList,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
@@ -27,10 +31,16 @@ type FormValues = {
 const SignupForm = () => {
   const navigate = useNavigate();
   const toast = useToast();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>/?]).{6,}$/;
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const [formValues, setFormValues] = useState<FormValues>({
     firstName: "",
@@ -43,9 +53,30 @@ const SignupForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormValues((prev) => ({ ...prev, [id]: value }));
+
+    if (id === "password" || id === "confirmPassword") {
+      validatePassword(e);
+      validateConfirmPassword(e);
+    }
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!passwordRegex.test(e.target.value)) {
+      setPasswordError(true);
+    } else {
+      setPasswordError(false);
+    }
+  };
+
+  const validateConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value !== formValues.password) {
+      setConfirmPasswordError(true);
+    } else {
+      setConfirmPasswordError(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formValues);
 
@@ -76,7 +107,7 @@ const SignupForm = () => {
   };
 
   return (
-    <VStack as="form" spacing={4} onSubmit={onSubmit}>
+    <VStack as="form" spacing={4} onSubmit={handleSubmit}>
       <FormControl isRequired>
         <FormLabel>First Name</FormLabel>
         <Input
@@ -122,6 +153,19 @@ const SignupForm = () => {
             </IconButton>
           </InputRightElement>
         </InputGroup>
+        <Alert status="error" borderRadius={10} my={3} display={passwordError ? "flex" : "none"}>
+          <AlertIcon />
+          <VStack spacing={2}>
+            <Text>Your password must satisfy the following requirements:</Text>
+            <UnorderedList w="80%">
+              <ListItem>At least 6 characters long</ListItem>
+              <ListItem>At least 1 uppercase letter</ListItem>
+              <ListItem>At least 1 lowercase letter</ListItem>
+              <ListItem>At least 1 special character</ListItem>
+              <ListItem>At least 1 number</ListItem>
+            </UnorderedList>
+          </VStack>
+        </Alert>
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Confirm Password</FormLabel>
@@ -139,7 +183,25 @@ const SignupForm = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <Button type="submit" w="100%">
+      <Alert
+        status="error"
+        borderRadius={10}
+        my={3}
+        display={confirmPasswordError ? "flex" : "none"}
+      >
+        <AlertIcon />
+        <Text>Your passwords must match.</Text>
+      </Alert>
+      <Button
+        type="submit"
+        w="100%"
+        disabled={
+          passwordError ||
+          confirmPasswordError ||
+          formValues.password == "" ||
+          formValues.confirmPassword == ""
+        }
+      >
         Create Account
       </Button>
     </VStack>
