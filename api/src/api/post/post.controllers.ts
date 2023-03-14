@@ -1,26 +1,15 @@
-import {
-  createPost,
-  createPostPhoto,
-  getAllPosts,
-  getAllPhotos,
-  updatePost,
-  deletePost,
-  getPost,
-} from "api/post/post.services";
+import { createPost, getAllPosts, updatePost, deletePost, getPost } from "api/post/post.services";
 import HttpError from "utils/http-error";
 
 import type { Request, Response, NextFunction } from "express";
 
 const CreatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { title, content, authorId, imgUrl } = req.body;
+    const { title, content, authorId, url } = req.body;
     if (!title || !content || !authorId) {
       throw new HttpError("Missing required fields", 400);
     }
-    const newPost = await createPost(authorId, title, content);
-    if (imgUrl) {
-      await createPostPhoto(imgUrl, newPost.id);
-    }
+    const newPost = await createPost(authorId, title, content, url ? url : url);
     res.status(201).json({
       newPost,
     });
@@ -52,11 +41,11 @@ const GetPost = async (req: Request, res: Response, next: NextFunction) => {
 const UpdatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, url } = req.body;
     if (!title || !content || !id) {
       throw new HttpError("Missing required fields", 400);
     }
-    const upPost = await updatePost(id, title, content);
+    const upPost = await updatePost(id, title, content, url ? url : url);
 
     res.status(201).json({
       upPost,

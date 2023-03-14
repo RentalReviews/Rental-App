@@ -1,26 +1,56 @@
 import { prismaClient } from "utils/db";
 
-const createPost = async (authorId: string, title: string, content: string) => {
-  const newPost = await prismaClient.post.create({
-    data: {
-      title,
-      content,
-      authorId,
-    },
-  });
-  return newPost;
+const createPost = async (authorId: string, title: string, content: string, url?: string) => {
+  if (url) {
+    const newPost = await prismaClient.post.create({
+      data: {
+        title,
+        content,
+        authorId,
+        postPhotos: {
+          create: { url: url },
+        },
+      },
+    });
+    return newPost;
+  } else {
+    const newPost = await prismaClient.post.create({
+      data: {
+        title,
+        content,
+        authorId,
+      },
+    });
+    return newPost;
+  }
 };
-const updatePost = async (postId: string, title: string, content: string) => {
-  const post = await prismaClient.post.update({
-    where: {
-      id: postId,
-    },
-    data: {
-      title: title,
-      content: content,
-    },
-  });
-  return post;
+const updatePost = async (postId: string, title: string, content: string, url?: string) => {
+  if (url) {
+    const post = await prismaClient.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        title: title,
+        content: content,
+        postPhotos: {
+          create: { url: url },
+        },
+      },
+    });
+    return post;
+  } else {
+    const post = await prismaClient.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        title: title,
+        content: content,
+      },
+    });
+    return post;
+  }
 };
 const deletePost = async (postId: string) => {
   const del = await prismaClient.post.delete({
