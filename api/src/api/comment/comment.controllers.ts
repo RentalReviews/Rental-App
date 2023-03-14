@@ -48,7 +48,7 @@ const UpdateComment = async (req: Request, res: Response, next: NextFunction) =>
     }
     const updatedComment = await updateComment(id, content);
     if (!updateComment) {
-      throw new HttpError(`Comment with id = ${id} does not exits`, 400);
+      throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
     res.status(201).json({
       updatedComment,
