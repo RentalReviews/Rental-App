@@ -8,8 +8,13 @@ import {
   Button,
   useToast,
   FormErrorMessage,
+  InputRightElement,
+  IconButton,
+  Icon,
+  InputGroup,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 
 type FormValues = {
   firstName: string;
@@ -22,6 +27,11 @@ type FormValues = {
 const SignupForm = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const toggleShowPassword = () => setShowPassword(!showPassword);
+  const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
   const [formValues, setFormValues] = useState<FormValues>({
     firstName: "",
     lastName: "",
@@ -69,28 +79,65 @@ const SignupForm = () => {
     <VStack as="form" spacing={4} onSubmit={onSubmit}>
       <FormControl isRequired>
         <FormLabel>First Name</FormLabel>
-        <Input type="text" id="firstName" value={formValues.firstName} onChange={handleChange} />
+        <Input
+          type="text"
+          id="firstName"
+          placeholder="John"
+          value={formValues.firstName}
+          onChange={handleChange}
+        />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Last Name</FormLabel>
-        <Input type="text" id="lastName" value={formValues.lastName} onChange={handleChange} />
+        <Input
+          type="text"
+          id="lastName"
+          placeholder="Doe"
+          value={formValues.lastName}
+          onChange={handleChange}
+        />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Email</FormLabel>
-        <Input type="email" id="email" value={formValues.email} onChange={handleChange} />
+        <Input
+          type="email"
+          id="email"
+          placeholder="john@email.com"
+          value={formValues.email}
+          onChange={handleChange}
+        />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Password</FormLabel>
-        <Input type="password" id="password" value={formValues.password} onChange={handleChange} />
+        <InputGroup>
+          <Input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            value={formValues.password}
+            onChange={handleChange}
+          />
+          <InputRightElement>
+            <IconButton aria-label={"toggle view password"} onClick={toggleShowPassword}>
+              <Icon as={showPassword ? AiOutlineEyeInvisible : AiOutlineEye} />
+            </IconButton>
+          </InputRightElement>
+        </InputGroup>
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Confirm Password</FormLabel>
-        <Input
-          type="password"
-          id="confirmPassword"
-          value={formValues.confirmPassword}
-          onChange={handleChange}
-        />
+        <InputGroup>
+          <Input
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirmPassword"
+            value={formValues.confirmPassword}
+            onChange={handleChange}
+          />
+          <InputRightElement>
+            <IconButton aria-label={"toggle view password"} onClick={toggleShowConfirmPassword}>
+              <Icon as={showConfirmPassword ? AiOutlineEyeInvisible : AiOutlineEye} />
+            </IconButton>
+          </InputRightElement>
+        </InputGroup>
       </FormControl>
       <Button type="submit" w="100%">
         Create Account
