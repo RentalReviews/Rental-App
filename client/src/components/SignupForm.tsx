@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Input,
@@ -16,6 +16,7 @@ import {
   AlertIcon,
   ListItem,
   UnorderedList,
+  Link,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
@@ -53,28 +54,29 @@ const SignupForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormValues((prev) => ({ ...prev, [id]: value }));
-
-    if (id === "password" || id === "confirmPassword") {
-      validatePassword(e);
-      validateConfirmPassword(e);
-    }
   };
 
-  const validatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!passwordRegex.test(e.target.value)) {
+  const validatePassword = (pass: string) => {
+    if (!passwordRegex.test(pass)) {
       setPasswordError(true);
     } else {
       setPasswordError(false);
     }
   };
 
-  const validateConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value !== formValues.password) {
+  const validateConfirmPassword = (pass: string) => {
+    if (pass !== formValues.password) {
       setConfirmPasswordError(true);
     } else {
       setConfirmPasswordError(false);
     }
   };
+
+  // Validate password and confirm password on change
+  useEffect(() => {
+    validatePassword(formValues.password);
+    validateConfirmPassword(formValues.confirmPassword);
+  }, [formValues.password, formValues.confirmPassword]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +85,7 @@ const SignupForm = () => {
     // TODO: Add validation
     // TODO: Add API call
 
-    const isAccountCreated = true; // get this from API call
+    const isAccountCreated = false; // get this from API call
 
     if (isAccountCreated) {
       navigate("/");
@@ -95,12 +97,19 @@ const SignupForm = () => {
         isClosable: true,
       });
     } else {
-      navigate("/signup");
       toast({
-        title: "Account not created",
-        description: "There was an error when creating your account.",
+        title: "Account with that email already exists",
+        description: (
+          <Text>
+            An account with that email already exists.
+            <br />
+            <Link href="/login">
+              <Text as="u">Please sign in.</Text>
+            </Link>
+          </Text>
+        ),
         status: "error",
-        duration: 5000,
+        duration: 10000,
         isClosable: true,
       });
     }
