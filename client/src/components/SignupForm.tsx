@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { createUser, getUserByEmail } from "../../../api/src/api/users/users.services";
 
 type FormValues = {
   firstName: string;
@@ -82,21 +83,11 @@ const SignupForm = () => {
     e.preventDefault();
     console.log(formValues);
 
-    // TODO: Add validation
-    // TODO: Add API call
+    // check if an account with that email already exists
+    const emailExists = getUserByEmail(formValues.email);
+    console.log(emailExists);
 
-    const isAccountCreated = false; // get this from API call
-
-    if (isAccountCreated) {
-      navigate("/");
-      toast({
-        title: "Account created",
-        description: "Your account has been created successfully.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
+    if (emailExists != null) {
       toast({
         title: "Account with that email already exists",
         description: (
@@ -112,7 +103,20 @@ const SignupForm = () => {
         duration: 10000,
         isClosable: true,
       });
+      return;
     }
+
+    const user = createUser(formValues.email, formValues.password, formValues.firstName);
+    console.log(user);
+
+    navigate("/");
+    toast({
+      title: "Account created",
+      description: "Your account has been created successfully.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   return (
