@@ -1,8 +1,10 @@
 import { prismaClient } from "utils/db";
+
 interface UploadedPhoto {
   id?: string;
   url: string;
 }
+
 const createPost = async (
   authorId: string,
   title: string,
@@ -22,6 +24,7 @@ const createPost = async (
 
   return newPost;
 };
+
 const updatePost = async (postId: string, title: string, content: string, url: UploadedPhoto[]) => {
   url.forEach((url) => {
     if (url.id) {
@@ -41,6 +44,7 @@ const updatePost = async (postId: string, title: string, content: string, url: U
   });
   return post;
 };
+
 const deletePost = async (postId: string) => {
   const del = await prismaClient.post.delete({
     where: {
@@ -49,6 +53,7 @@ const deletePost = async (postId: string) => {
   });
   return del;
 };
+
 const getPost = async (postId: string) => {
   const post = await prismaClient.post.findUnique({
     where: {
@@ -61,6 +66,7 @@ const getPost = async (postId: string) => {
   });
   return post;
 };
+
 const getAllPosts = async () => {
   const posts = await prismaClient.post.findMany({
     include: {
@@ -70,6 +76,7 @@ const getAllPosts = async () => {
   });
   return posts;
 };
+
 const createPostPhoto = async (url: string, postId: string) => {
   const newPostPhoto = await prismaClient.postPhoto.create({
     data: {
@@ -79,6 +86,7 @@ const createPostPhoto = async (url: string, postId: string) => {
   });
   return newPostPhoto;
 };
+
 const updatePostPhoto = async (url: string, photoId: string) => {
   const updatePostPhoto = await prismaClient.postPhoto.update({
     where: {
