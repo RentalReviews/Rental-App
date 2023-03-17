@@ -83,9 +83,10 @@ const SignupForm = () => {
     e.preventDefault();
     console.log(formValues);
 
-    // check if an account with that email already exists
-    const emailExists = getUserByEmail(formValues.email);
-    console.log(emailExists);
+    // check if an account with that email already exists)
+    const emailExists = fetch(`http://localhost:4466/api/v1/users/email/${formValues.email}`)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
 
     if (emailExists != null) {
       toast({
@@ -106,8 +107,15 @@ const SignupForm = () => {
       return;
     }
 
-    const user = createUser(formValues.email, formValues.password, formValues.firstName);
-    console.log(user);
+    const user = fetch("http://localhost:4466/api/v1/users/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formValues),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
 
     navigate("/");
     toast({
