@@ -10,6 +10,7 @@ const createComment = async (content: string, postId: string, authorId: string) 
   });
   return newcomment;
 };
+
 const updateComment = async (commentId: string, content: string) => {
   const comment = await prismaClient.comment.update({
     where: {
@@ -21,6 +22,7 @@ const updateComment = async (commentId: string, content: string) => {
   });
   return comment;
 };
+
 const deleteComment = async (commentId: string) => {
   const del = await prismaClient.comment.delete({
     where: {

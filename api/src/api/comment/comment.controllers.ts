@@ -7,14 +7,22 @@ import {
 import HttpError from "utils/http-error";
 
 import type { Request, Response, NextFunction } from "express";
+import type { RequestWithToken } from "middlewares/auth";
 
-const CreateComment = async (req: Request, res: Response, next: NextFunction) => {
+const CreateComment = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   try {
-    const { content, postId, authorId } = req.body;
-    if (!content || !postId || !authorId) {
+    const { content, postId } = req.body;
+    const userId = req.payload?.id || "";
+
+    if (!userId) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    if (!content || !postId) {
       throw new HttpError("Missing required fields", 400);
     }
-    const newComment = await createComment(content, postId, authorId);
+
+    const newComment = await createComment(content, postId, userId);
 
     res.status(201).json({
       newComment,
@@ -39,17 +47,27 @@ const GetComment = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-const UpdateComment = async (req: Request, res: Response, next: NextFunction) => {
+
+const UpdateComment = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
-    if (!content || !id) {
+    const userId = req.payload?.id || "";
+
+    if (!content) {
       throw new HttpError("Missing required fields", 400);
     }
-    const updatedComment = await updateComment(id, content);
-    if (!updateComment) {
+
+    const comment = await getComment(id);
+    if (!comment) {
       throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
+
+    if (comment.authorId !== userId) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    const updatedComment = await updateComment(id, content);
     res.status(201).json({
       updatedComment,
     });
@@ -58,15 +76,23 @@ const UpdateComment = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const DeleteComment = async (req: Request, res: Response, next: NextFunction) => {
+const DeleteComment = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const deletedcomment = await deleteComment(id);
-    if (!deleteComment) {
+    const userId = req.payload?.id || "";
+
+    const comment = await getComment(id);
+    if (!comment) {
       throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
+
+    if (comment.authorId !== userId) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    await deleteComment(id);
     res.status(201).json({
-      deletedcomment,
+      message: "Comment deleted",
     });
   } catch (error) {
     next(error);
