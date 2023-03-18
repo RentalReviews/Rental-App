@@ -6,10 +6,10 @@ const Signup = () => {
   return (
     <Box w="40%" mx="auto">
       <Heading mb="20px">Signup</Heading>
-      <SignupForm />
-      <Link href="/login" display="block" mt="50px">
+      <Link href="/login" display="block" mb="20px">
         <Text as="u">Already have an account? Sign in</Text>
       </Link>
+      <SignupForm />
     </Box>
   );
 };
