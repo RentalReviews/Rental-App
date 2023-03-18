@@ -7,33 +7,59 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = "http://localhost:4466/api/v1";
+
 const LoginForm = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log("email: ", email, "password: ", password);
 
-    // TODO: Send login request to server
-    const response = true;
+    try {
+      const loginRes = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
 
-    if (response) {
-      // redirect to home page
+      if (loginRes.status === 401) {
+        throw new Error("Invalid email or password");
+      }
+
       navigate("/");
-    } else {
-      // redirect to login page
-      navigate("/login");
+      toast({
+        title: "Success",
+        description: "You have successfully logged in.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Invalid email or password.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
