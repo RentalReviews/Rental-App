@@ -11,7 +11,14 @@ const GetUserByEmail = async (req: Request, res: Response, next: NextFunction) =
       throw new HttpError(`User with email = ${email} does not exist`, 404);
     }
     res.status(200).json({
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
     });
   } catch (error) {
     next(error);
@@ -26,7 +33,14 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
       throw new HttpError(`User with id = ${id} does not exist`, 404);
     }
     res.status(200).json({
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
     });
   } catch (error) {
     next(error);
