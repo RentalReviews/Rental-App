@@ -20,7 +20,6 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { createUser, getUserByEmail } from "../../../api/src/api/users/users.services";
 
 type FormValues = {
   firstName: string;
@@ -29,6 +28,8 @@ type FormValues = {
   password: string;
   confirmPassword: string;
 };
+
+const API_URL = "http://localhost:4466/api/v1";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -79,16 +80,35 @@ const SignupForm = () => {
     validateConfirmPassword(formValues.confirmPassword);
   }, [formValues.password, formValues.confirmPassword]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formValues);
 
-    // check if an account with that email already exists)
-    const emailExists = fetch(`http://localhost:4466/api/v1/users/email/${formValues.email}`)
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    try {
+      const registerRes = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formValues.email,
+          password: formValues.password,
+          displayName: `${formValues.firstName} ${formValues.lastName}`,
+        }),
+      });
 
-    if (emailExists != null) {
+      if (registerRes.status === 400) {
+        throw new Error("Account with that email already exists");
+      }
+
+      navigate("/");
+      toast({
+        title: "Account created",
+        description: "Your account has been created successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
       toast({
         title: "Account with that email already exists",
         description: (
@@ -104,27 +124,7 @@ const SignupForm = () => {
         duration: 10000,
         isClosable: true,
       });
-      return;
     }
-
-    const user = fetch("http://localhost:4466/api/v1/users/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formValues),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-
-    navigate("/");
-    toast({
-      title: "Account created",
-      description: "Your account has been created successfully.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
   };
 
   return (
