@@ -1,10 +1,12 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Badge, Box } from "@chakra-ui/react";
+import { Badge, Box, Button } from "@chakra-ui/react";
+import { MouseEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Post } from "types/Post";
 
 export interface props {
   post: Post;
+  deletePost: void | undefined | MouseEventHandler<HTMLButtonElement>;
 }
 
 const Posting = (props: props) => {
@@ -18,21 +20,18 @@ const Posting = (props: props) => {
   }
 
   return (
-    <Box
-      maxW="sm"
-      borderWidth="1px"
-      margin="10px"
-      borderRadius="lg"
-      overflow="hidden"
-      onClick={() =>
-        navigate("/property", {
-          state: {
-            Post: props.post,
-          },
-        })
-      }
-    >
-      <img src={imageUrl} alt={"property.imageAlt"} />
+    <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
+      <img
+        src={imageUrl}
+        alt={"property.imageAlt"}
+        onClick={() =>
+          navigate("/property", {
+            state: {
+              Post: props.post,
+            },
+          })
+        }
+      />
 
       <Box p="6">
         <Box display="flex" alignItems="baseline">
@@ -55,6 +54,7 @@ const Posting = (props: props) => {
             0 comments
           </Box>
         </Box>
+        <Button onClick={props.deletePost}>Delete</Button>
       </Box>
     </Box>
   );

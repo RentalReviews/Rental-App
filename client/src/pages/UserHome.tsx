@@ -24,8 +24,9 @@ const Home = () => {
   useEffect(() => {
     getAll().then((data) => {
       setPosts(data.posts);
+      console.log("useEffect");
     });
-  }, []);
+  }, [posts.length]);
 
   const getAll = async () => {
     try {
@@ -61,6 +62,29 @@ const Home = () => {
     }
   };
 
+  const removePostFromUI = (postId: string | undefined): void => {
+    const newPostsArray = posts.filter((comment) => comment.id !== postId);
+    setPosts(newPostsArray);
+  };
+
+  const deletePost = async (postId: string | undefined) => {
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      fetch(`http://localhost:4466/api/v1/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      removePostFromUI(postId);
+    }
+  };
+
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
@@ -71,7 +95,7 @@ const Home = () => {
         {/* <Posting
           key={10}
           post={{
-            title: "  2445 Guilfasdfasord dr, Abbotsford BC",
+            title: "2445 Guilfasdfasord dr, Abbotsford BC",
             postPhotos: [
               {
                 url: "https://photos.zillowstatic.com/fp/aa9a8e5dda311b0a079dd0e9d2319116-uncropped_scaled_within_1536_1152.webp",
@@ -106,6 +130,7 @@ const Home = () => {
                 rating: post.rating,
                 content: post.content,
               }}
+              deletePost={() => deletePost(post.id)}
             />
           ))}
         </div>

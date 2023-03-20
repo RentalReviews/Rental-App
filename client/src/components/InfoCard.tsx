@@ -93,7 +93,14 @@ const InfoCard = (props: props) => {
           <Textarea
             placeholder="Add a comment"
             name="myName"
-            onChange={(e) => props.setComment({ content: e.target.value })}
+            onChange={(e) =>
+              props.setComment({
+                authorId: props.post.authorId,
+                content: e.target.value,
+                id: props.comment.id,
+                postId: props.post.id,
+              })
+            }
           />
           <Button type="submit">Add</Button>
         </Box>

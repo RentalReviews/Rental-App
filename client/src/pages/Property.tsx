@@ -14,35 +14,67 @@ const Property = () => {
    * updatedAt
    * url
    */
-  const [comment, setComment] = useState<Comment>({ content: "" });
+  const [comment, setComment] = useState<Comment>({
+    authorId: "",
+    content: "",
+    id: "",
+    postId: "",
+  });
   const [comments, setComments] = useState<Comment[]>([]);
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
-    getPostComments().then((data) => setComments(data));
-  }, [comments]);
+    getPostComments()
+      .then((data) => {
+        setComments(data);
+      })
+      .then(() => {
+        getUserId();
+      });
+  }, [comments.length]);
+
+  const getUserId = async () => {
+    console.log("getUserId");
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      const response = await fetch(`http://localhost:4466/api/v1/users/token/${comment.authorId}`);
+      const json = await response.json();
+      console.log("getUserId returns", json);
+      // return json;
+    } catch (error) {
+      console.error(error);
+    }
+    return "";
+  };
 
   const updateComments = () => {
     setComments([...comments, comment]);
     postComment();
-    setComment({ content: "" });
   };
 
-  // const deleteReview = async (commentId:string|undefined) => {
-  //   const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-  //   try {
-  //     fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
-  //       method: "DELETE",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //         Authorization: token,
-  //       },
-  //     });
-  //     console.log("comment successfully deleted");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+  const removeComment = (commentId: string | undefined): void => {
+    const newCommentArray = comments.filter((comment) => comment.id !== commentId);
+    setComments(newCommentArray);
+  };
+
+  const deleteReview = async (commentId: string | undefined) => {
+    console.log(comment);
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      removeComment(commentId);
+    }
+  };
 
   const postComment = () => {
     console.log("postComment");
@@ -61,7 +93,6 @@ const Property = () => {
           authorId: token,
         }),
       });
-      console.log("comment successfully posted");
     } catch (err) {
       console.log(err);
     }
@@ -96,10 +127,16 @@ const Property = () => {
       <br />
       <div id="comments">
         {comments.map((comment, i) => (
-          <Review key={i} comment={comment} authorId={comment.authorId} />
+          <Review
+            key={i}
+            comment={comment}
+            authorId={comment.authorId ? comment.authorId : "No ID"}
+            deleteReview={() => deleteReview(comment.id)}
+          />
         ))}
       </div>
     </>
   );
 };
+
 export default Property;

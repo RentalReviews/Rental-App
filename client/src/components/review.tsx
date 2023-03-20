@@ -10,32 +10,17 @@ import {
   Heading,
   IconButton,
 } from "@chakra-ui/react";
+import { MouseEventHandler } from "react";
 import { BiLike } from "react-icons/bi";
 import type { Comment } from "../types/Comment";
 
 interface props {
   comment: Comment;
   authorId: string;
+  deleteReview: void | undefined | MouseEventHandler<HTMLButtonElement>;
 }
 
 const Review = (props: props) => {
-  const deleteReview = async (commentId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-    try {
-      fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      console.log("comment successfully deleted");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <>
       <Card maxW="8xl">
@@ -70,8 +55,8 @@ const Review = (props: props) => {
           <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
             Like
           </Button>
-          {props.comment.authorId == props.authorId ? (
-            <Button onClick={() => deleteReview(props.comment.id)}>Delete</Button>
+          {props.authorId == props.comment.authorId ? (
+            <Button onClick={props.deleteReview}>Delete</Button>
           ) : (
             <></>
           )}
