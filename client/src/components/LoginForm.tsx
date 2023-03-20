@@ -10,11 +10,11 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:4466/api/v1";
+const API_URL = "http://localhost:3000/api/v1";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -40,22 +40,30 @@ const LoginForm = () => {
         }),
       });
 
-      if (loginRes.status === 401) {
-        throw new Error("Invalid email or password");
-      }
+      const json = await loginRes.json();
 
-      navigate("/");
-      toast({
-        title: "Success",
-        description: "You have successfully logged in.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+      if (loginRes.status === 201) {
+        navigate("/");
+        toast({
+          title: "Success",
+          description: "You have successfully logged in.",
+          status: "success",
+          duration: 10000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: json.message,
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
-        description: "Invalid email or password.",
+        description: "Something went wrong. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,

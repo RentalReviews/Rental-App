@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Input,
@@ -16,7 +16,6 @@ import {
   AlertIcon,
   ListItem,
   UnorderedList,
-  Link,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
@@ -29,7 +28,7 @@ type FormValues = {
   confirmPassword: string;
 };
 
-const API_URL = "http://localhost:4466/api/v1";
+const API_URL = "http://localhost:3000/api/v1";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -96,32 +95,34 @@ const SignupForm = () => {
         }),
       });
 
-      if (registerRes.status === 400) {
-        throw new Error("Account with that email already exists");
-      }
+      const json = await registerRes.json();
 
-      navigate("/");
-      toast({
-        title: "Account created",
-        description: "Your account has been created successfully.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+      if (registerRes.status === 201) {
+        navigate("/");
+        toast({
+          title: "Account created",
+          description: "Your account has been created successfully.",
+          status: "success",
+          duration: 10000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: json.message,
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
+      }
     } catch (error) {
+      console.log(error);
+
       toast({
-        title: "Account with that email already exists",
-        description: (
-          <Text>
-            An account with that email already exists.
-            <br />
-            <Link href="/login">
-              <Text as="u">Please sign in.</Text>
-            </Link>
-          </Text>
-        ),
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         status: "error",
-        duration: 10000,
+        duration: 5000,
         isClosable: true,
       });
     }
