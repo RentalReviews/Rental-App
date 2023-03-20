@@ -13,15 +13,3 @@ export interface Post {
   //Need to include in the database
   rating?: number;
 }
-// export interface Post {
-//   postId?: string;
-//   userId?: string;
-//   postPhotos?: Photo[];
-//   title?: string;
-//   address?:string;
-//   imageUrl?:string;
-//   caption?: string;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-//   rating: number;
-// }

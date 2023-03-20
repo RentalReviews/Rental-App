@@ -18,6 +18,7 @@ interface props {
 }
 
 const Review = (props: props) => {
+  // console.log(props.comment)
   return (
     <>
       <Card maxW="8xl">
@@ -27,7 +28,7 @@ const Review = (props: props) => {
               <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
 
               <Box>
-                <Heading size="sm">{props.comment.userID}</Heading>
+                <Heading size="sm">{props.comment.authorId}</Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
@@ -36,7 +37,7 @@ const Review = (props: props) => {
         </CardHeader>
         <CardBody>
           <Flex flexWrap="wrap" max-width="300px">
-            <p>{props.comment.comment}</p>
+            <p>{props.comment.content}</p>
           </Flex>
         </CardBody>
 

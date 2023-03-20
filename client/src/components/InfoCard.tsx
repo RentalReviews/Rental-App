@@ -47,7 +47,7 @@ const InfoCard = (props: props) => {
         </Box>
 
         <Box w="100%" mt="3" fontWeight="semibold" as="h1" lineHeight="tight" noOfLines={1}>
-          {props.post.address}
+          {props.post.title}
         </Box>
 
         <Box display="flex" mt="2" alignItems="center">
@@ -59,12 +59,16 @@ const InfoCard = (props: props) => {
         </Box>
       </Box>
       <div id="posts">
-        <Box>{props.post.caption}</Box>
+        <Box>{props.post.content}</Box>
 
         <Image
           boxSize="sm"
           maxH="s"
-          src={props.post.imageUrl}
+          src={
+            props.post.postPhotos[0].url
+              ? props.post.postPhotos[0].url
+              : "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
+          }
           alt={"property.imageAlt"}
           borderRadius="md"
         />
@@ -88,7 +92,7 @@ const InfoCard = (props: props) => {
           <Textarea
             placeholder="Add a comment"
             name="myName"
-            onChange={(e) => props.setComment({ comment: e.target.value })}
+            onChange={(e) => props.setComment({ content: e.target.value })}
           />
           <Button type="submit">Add</Button>
         </Box>

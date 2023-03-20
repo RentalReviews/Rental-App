@@ -18,7 +18,6 @@ interface props {
 }
 
 export const PostForm = (props: props) => {
-  console.log("props", props);
   return (
     <>
       <Accordion allowMultiple>

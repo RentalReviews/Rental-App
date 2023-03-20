@@ -7,6 +7,7 @@ import "styles/userHome.css";
 
 const Home = () => {
   const [post, setPost] = useState<Post>({
+    id: "",
     title: "",
     postPhotos: [],
     rating: 0,
@@ -22,9 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     getAll().then((data) => {
-      console.log("data", data);
       setPosts(data.posts);
-      console.log("post", posts);
     });
   }, []);
 
@@ -50,6 +49,7 @@ const Home = () => {
           Authorization: token,
         },
         body: JSON.stringify({
+          id: post.id,
           content: post.content,
           title: post.title,
           authorId: token,
@@ -64,7 +64,7 @@ const Home = () => {
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
-        MY POSTINGS
+        Home
       </Heading>
       <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />
       <div id="posts">
