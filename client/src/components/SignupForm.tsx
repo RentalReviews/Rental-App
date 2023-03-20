@@ -99,6 +99,17 @@ const SignupForm = () => {
 
       const json = await registerRes.json();
       if (import.meta.env.DEV) console.log(json);
+      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
+      localStorage.setItem("BEARER_TOKEN", json.token);
+
+      /**
+       * json = {user, token, refreshToken}
+       * add token to localStorage so it can be used for post authentication
+       * user: k, k@gmail.com
+       * refresh token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJhNjg3NmE0LTg4NGMtNDAxOS1hNzFkLTZmYWRjNmJmODgwNCIsImVtYWlsIjoia0BnbWFpbC5jb20iLCJuYW1lIjoiayBrIiwianRpIjoiOWI0YjAyZWMtMzY4ZC00YzNmLTg0YzEtNzU4NmVkZGZlNWFlIiwiaWF0IjoxNjc5MzA4MTc4LCJleHAiOjE2Nzk5MTI5Nzh9.c-k-IapKkopy0IOmk29Cfpyfc7h6z_an_VVCDl8xIFs
+       * token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJhN…5Nzh9.c-k-IapKkopy0IOmk29Cfpyfc7h6z_an_VVCDl8xIFs
+       * token is a JWT? based on format
+       */
 
       if (registerRes.ok) {
         navigate("/");

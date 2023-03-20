@@ -9,12 +9,20 @@ const Property = () => {
 
   const [comment, setComment] = useState<Comment>({ comment: "" });
   const [comments, setComments] = useState<Comment[]>([]);
-  console.log(comment);
 
   const updateComments = () => {
     setComments([...comments, comment]);
     setComment({ comment: "" });
   };
+
+  console.log(state);
+
+  // Add GetAll
+
+  // Use users/token/:id to get refreshToken for posting data
+  // Placed into local storage instead but let's keep the endPoints incase they
+  // are required later
+
   return (
     <>
       <InfoCard
@@ -23,10 +31,10 @@ const Property = () => {
         updateComments={updateComments}
         key={99}
         post={{
-          address: state.Post.address,
-          imageUrl: state.Post.imageUrl,
-          rating: state.Post.rating,
-          caption: state.Post.caption,
+          title: state.Post.title,
+          postPhotos: state.Post.postPhotos,
+          rating: state.Post.rating ? state.Post.rating : 3,
+          content: state.Post.content,
         }}
       />
       <br />

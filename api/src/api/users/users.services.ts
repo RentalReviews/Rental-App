@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { prismaClient } from "utils/db";
 
@@ -33,6 +34,20 @@ const getUserByEmail = async (email: string) => {
   return result;
 };
 
+const getUserRefreshTokens = async (userId: string) => {
+  // console.log('getUserByEmail', userId);
+
+  const result = await prismaClient.refreshToken.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  return result;
+
+  // console.log('refreshTokenData', refreshTokenData);
+};
+
 const getUserById = async (id: string) => {
   const result = await prismaClient.user.findUnique({
     where: {
@@ -43,4 +58,4 @@ const getUserById = async (id: string) => {
   return result;
 };
 
-export { createUser, getUserByEmail, getUserById };
+export { createUser, getUserByEmail, getUserById, getUserRefreshTokens };

@@ -45,6 +45,9 @@ const LoginForm = () => {
       const json = await loginRes.json();
       if (import.meta.env.DEV) console.log(json);
 
+      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
+      localStorage.setItem("BEARER_TOKEN", json.token);
+
       if (loginRes.ok) {
         navigate("/");
         toast({

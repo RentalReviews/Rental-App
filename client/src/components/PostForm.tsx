@@ -18,6 +18,7 @@ interface props {
 }
 
 export const PostForm = (props: props) => {
+  console.log("props", props);
   return (
     <>
       <Accordion allowMultiple>
@@ -45,13 +46,13 @@ export const PostForm = (props: props) => {
                   }}
                 >
                   <div>
-                    <label htmlFor="">Rental Adress: </label>
+                    <label htmlFor="">Rental Address: </label>
                     <Input
                       type="text"
                       onChange={(e) =>
                         props.setPost({
-                          address: e.target.value,
-                          imageUrl: props.post.imageUrl,
+                          title: e.target.value,
+                          postPhotos: props.post.postPhotos,
                           rating: props.post.rating,
                         })
                       }
@@ -66,8 +67,8 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: e.target.value,
+                          title: props.post.title,
+                          postPhotos: [{ url: e.target.value }],
                           rating: props.post.rating,
                         })
                       }
@@ -82,8 +83,8 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: props.post.imageUrl,
+                          title: props.post.title,
+                          postPhotos: props.post.postPhotos,
                           rating: Number(e.target.value),
                         })
                       }
@@ -98,10 +99,10 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: props.post.imageUrl,
+                          title: props.post.title,
+                          postPhotos: props.post.postPhotos,
                           rating: props.post.rating,
-                          caption: e.target.value,
+                          content: e.target.value,
                         })
                       }
                     />

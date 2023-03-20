@@ -9,6 +9,13 @@ export interface props {
 
 const Posting = (props: props) => {
   const navigate = useNavigate();
+  let imageUrl = "";
+  try {
+    imageUrl = props.post.postPhotos?.at(0).url;
+  } catch (err) {
+    imageUrl =
+      "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
+  }
 
   return (
     <Box
@@ -25,7 +32,7 @@ const Posting = (props: props) => {
         })
       }
     >
-      <img src={props.post.imageUrl} alt={"property.imageAlt"} />
+      <img src={imageUrl} alt={"property.imageAlt"} />
 
       <Box p="6">
         <Box display="flex" alignItems="baseline">
@@ -35,7 +42,7 @@ const Posting = (props: props) => {
         </Box>
 
         <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={1}>
-          {props.post.address}
+          {props.post.title}
         </Box>
 
         <Box display="flex" mt="2" alignItems="center">

@@ -18,7 +18,9 @@ const createPost = async (
       authorId,
     },
   });
-  url.forEach((url) => {
+
+  // url undefined leads to 5xx error with the undefined operator (?)
+  url?.forEach((url) => {
     createPostPhoto(url.url, newPost.id);
   });
 
