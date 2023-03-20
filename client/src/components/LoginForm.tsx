@@ -14,7 +14,9 @@ import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:3000/api/v1";
+const API_URL = import.meta.env.DEV
+  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+  : "";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -41,8 +43,9 @@ const LoginForm = () => {
       });
 
       const json = await loginRes.json();
+      if (import.meta.env.DEV) console.log(json);
 
-      if (loginRes.status === 201) {
+      if (loginRes.ok) {
         navigate("/");
         toast({
           title: "Success",
@@ -61,6 +64,8 @@ const LoginForm = () => {
         });
       }
     } catch (error) {
+      if (import.meta.env.DEV) console.log(error);
+
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

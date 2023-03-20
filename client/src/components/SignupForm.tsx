@@ -28,7 +28,9 @@ type FormValues = {
   confirmPassword: string;
 };
 
-const API_URL = "http://localhost:3000/api/v1";
+const API_URL = import.meta.env.DEV
+  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+  : "";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -96,8 +98,9 @@ const SignupForm = () => {
       });
 
       const json = await registerRes.json();
+      if (import.meta.env.DEV) console.log(json);
 
-      if (registerRes.status === 201) {
+      if (registerRes.ok) {
         navigate("/");
         toast({
           title: "Account created",
@@ -116,7 +119,7 @@ const SignupForm = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      if (import.meta.env.DEV) console.log(error);
 
       toast({
         title: "Error",
