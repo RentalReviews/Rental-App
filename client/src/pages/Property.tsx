@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useLocation } from "react-router-dom";
 import { Comment } from "../types/Comment";
-import { Post } from "../types/Post";
 
 const Property = () => {
   const { state } = useLocation();
@@ -20,14 +19,30 @@ const Property = () => {
 
   useEffect(() => {
     getPostComments().then((data) => setComments(data));
-  }, []);
-  console.log("comments", comments);
+  }, [comments]);
 
   const updateComments = () => {
     setComments([...comments, comment]);
     postComment();
     setComment({ content: "" });
   };
+
+  // const deleteReview = async (commentId:string|undefined) => {
+  //   const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+  //   try {
+  //     fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         Authorization: token,
+  //       },
+  //     });
+  //     console.log("comment successfully deleted");
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   const postComment = () => {
     console.log("postComment");
@@ -53,7 +68,6 @@ const Property = () => {
   };
 
   const getPostComments = async () => {
-    // console.log('state.Post', state.Post.postPhotos[0].postId);
     try {
       const response = await fetch(
         `http://localhost:4466/api/v1/posts/${state.Post.postPhotos[0].postId}`
@@ -82,7 +96,7 @@ const Property = () => {
       <br />
       <div id="comments">
         {comments.map((comment, i) => (
-          <Review key={i} comment={comment} />
+          <Review key={i} comment={comment} authorId={comment.authorId} />
         ))}
       </div>
     </>

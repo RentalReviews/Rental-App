@@ -12,6 +12,7 @@ interface props {
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: () => void;
 }
+
 const InfoCard = (props: props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const toggleCommentForm = () => {
