@@ -24,7 +24,6 @@ const Home = () => {
   useEffect(() => {
     getAll().then((data) => {
       setPosts(data.posts);
-      console.log("useEffect");
     });
   }, [posts.length]);
 
@@ -64,13 +63,14 @@ const Home = () => {
 
   const removePostFromUI = (postId: string | undefined): void => {
     const newPostsArray = posts.filter((comment) => comment.id !== postId);
+    console.log(newPostsArray.length);
     setPosts(newPostsArray);
   };
 
   const deletePost = async (postId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch(`http://localhost:4466/api/v1/posts/${postId}`, {
+      await fetch(`http://localhost:4466/api/v1/posts/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -78,10 +78,9 @@ const Home = () => {
           Authorization: token,
         },
       });
+      removePostFromUI(postId);
     } catch (err) {
       console.log(err);
-    } finally {
-      removePostFromUI(postId);
     }
   };
 
@@ -131,6 +130,7 @@ const Home = () => {
                 content: post.content,
               }}
               deletePost={() => deletePost(post.id)}
+              authorId={post.authorId}
             />
           ))}
         </div>

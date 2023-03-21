@@ -7,17 +7,21 @@ import type { Post } from "types/Post";
 export interface props {
   post: Post;
   deletePost: void | undefined | MouseEventHandler<HTMLButtonElement>;
+  authorId: string;
 }
 
 const Posting = (props: props) => {
   const navigate = useNavigate();
   let imageUrl = "";
+
   try {
     imageUrl = props.post.postPhotos?.at(0).url;
   } catch (err) {
     imageUrl =
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }
+
+  const userData = JSON.parse(localStorage.getItem("USER"));
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
@@ -54,7 +58,7 @@ const Posting = (props: props) => {
             0 comments
           </Box>
         </Box>
-        <Button onClick={props.deletePost}>Delete</Button>
+        {userData.id == props.authorId ? <Button onClick={props.deletePost}>Delete</Button> : <></>}
       </Box>
     </Box>
   );
