@@ -102,6 +102,30 @@ const SignupForm = () => {
       localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
       localStorage.setItem("BEARER_TOKEN", json.token);
 
+      const getUserInfo = async () => {
+        try {
+          const response = await fetch(`http://localhost:4466/api/v1/users/${formValues.email}`);
+          const json = await response.json();
+          return json.user;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      const userData = await getUserInfo();
+      localStorage.setItem(
+        "USER",
+        JSON.stringify({
+          email: userData.email,
+          displayName: userData.displayName,
+          id: userData.id,
+          role: userData.role,
+        })
+      );
+
+      // Add user information to localStorage to hide edit/delete btn for posts/comments that do
+      // not belong to the user
+
       /**
        * json = {user, token, refreshToken}
        * add token to localStorage so it can be used for post authentication

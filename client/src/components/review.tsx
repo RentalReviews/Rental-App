@@ -21,6 +21,8 @@ interface props {
 }
 
 const Review = (props: props) => {
+  const userData = JSON.parse(localStorage.getItem("USER"));
+
   return (
     <>
       <Card maxW="8xl">
@@ -30,7 +32,8 @@ const Review = (props: props) => {
               <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
 
               <Box>
-                <Heading size="sm">{props.comment.authorId}</Heading>
+                {/* Change this to display name from locally stored user object */}
+                <Heading size="sm">{userData.displayName}</Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
@@ -55,7 +58,7 @@ const Review = (props: props) => {
           <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
             Like
           </Button>
-          {props.authorId == props.comment.authorId ? (
+          {userData.id == props.comment.authorId ? (
             <Button onClick={props.deleteReview}>Delete</Button>
           ) : (
             <></>

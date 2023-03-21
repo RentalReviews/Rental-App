@@ -24,28 +24,10 @@ const Property = () => {
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
-    getPostComments()
-      .then((data) => {
-        setComments(data);
-      })
-      .then(() => {
-        getUserId();
-      });
+    getPostComments().then((data) => {
+      setComments(data);
+    });
   }, [comments.length]);
-
-  const getUserId = async () => {
-    console.log("getUserId");
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-    try {
-      const response = await fetch(`http://localhost:4466/api/v1/users/token/${comment.authorId}`);
-      const json = await response.json();
-      console.log("getUserId returns", json);
-      // return json;
-    } catch (error) {
-      console.error(error);
-    }
-    return "";
-  };
 
   const updateComments = () => {
     setComments([...comments, comment]);

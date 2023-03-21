@@ -48,6 +48,28 @@ const LoginForm = () => {
       localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
       localStorage.setItem("BEARER_TOKEN", json.token);
 
+      const getUserInfo = async () => {
+        try {
+          const response = await fetch(`http://localhost:4466/api/v1/users/${email}`);
+          const json = await response.json();
+          return json.user;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      const userData = await getUserInfo();
+      console.log(userData);
+      localStorage.setItem(
+        "USER",
+        JSON.stringify({
+          email: userData.email,
+          displayName: userData.displayName,
+          id: userData.id,
+          role: userData.role,
+        })
+      );
+
       if (loginRes.ok) {
         navigate("/");
         toast({
