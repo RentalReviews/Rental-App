@@ -13,9 +13,6 @@ const CreatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
       throw new HttpError("Unauthorized", 401);
     }
 
-    console.log("title", title);
-    console.log("content", content);
-
     if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
     }

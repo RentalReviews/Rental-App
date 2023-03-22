@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { prismaClient } from "utils/db";
 
