@@ -8,8 +8,9 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
-import type { Post } from "../types/Post";
 import { MinusIcon, AddIcon } from "@chakra-ui/icons";
+
+import type { Post } from "types";
 
 interface props {
   post: Post;

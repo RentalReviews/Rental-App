@@ -3,8 +3,14 @@ import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
-import { Comment } from "../types/Comment";
 import { genericErrorHandler } from "utils";
+
+import type { Comment } from "types";
+
+const API_URL = import.meta.env.DEV
+  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+  : "";
+
 /**
  * Remove modal from InfoCard and bring to Property
  * Need to have it in property so we can
@@ -13,10 +19,6 @@ import { genericErrorHandler } from "utils";
  *
  */
 const Property = () => {
-  const API_URL = import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-    : "";
-
   const { state } = useLocation();
   const toast = useToast();
 

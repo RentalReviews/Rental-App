@@ -18,10 +18,10 @@ import {
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon } from "@chakra-ui/icons";
-import { Post } from "../types/Post";
-import { Comment } from "../types/Comment";
 import "styles/userHome.css";
 import { genericErrorHandler } from "utils";
+
+import type { Comment, Post } from "types";
 
 const API_URL = import.meta.env.DEV
   ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`

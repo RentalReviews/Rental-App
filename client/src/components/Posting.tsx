@@ -2,7 +2,8 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Button } from "@chakra-ui/react";
 import { MouseEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Post } from "types/Post";
+
+import type { Post } from "types";
 
 export interface props {
   post: Post;

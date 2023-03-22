@@ -21,7 +21,8 @@ import {
 } from "@chakra-ui/react";
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import { BiLike } from "react-icons/bi";
-import type { Comment } from "../types/Comment";
+
+import type { Comment } from "types";
 
 interface props {
   comment: Comment;
