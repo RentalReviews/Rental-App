@@ -33,7 +33,9 @@ interface props {
 
 const Review = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userData = JSON.parse(localStorage.getItem("USER")!);
+  const userData = JSON.parse(localStorage.getItem("USER")!)
+    ? JSON.parse(localStorage.getItem("USER")!)
+    : "";
   const handleModal = () => {
     onClose();
     props.editComment(props.comment.id!);

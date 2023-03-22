@@ -37,6 +37,9 @@ const InfoCard = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const userData = JSON.parse(localStorage.getItem("USER")!)
+    ? JSON.parse(localStorage.getItem("USER")!)
+    : "";
 
   const [post, setPost] = useState<Post>({
     id: props.post.postPhotos![0].postId,
@@ -149,7 +152,7 @@ const InfoCard = (props: props) => {
         <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
           Comment
         </Button>
-        {props.post.authorId === JSON.parse(localStorage.getItem("USER")!).id && (
+        {props.post.authorId === (userData.id ? userData.id : "") && (
           <Button flex="1" variant="ghost" onClick={onOpen}>
             Edit
           </Button>

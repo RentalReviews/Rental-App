@@ -18,6 +18,7 @@ const root = createRoot(container);
  * Add feature to allow comments to have comments
  * Return toast messages for CRUD actions on the page
  * Everything is return 201 - created
+ * Saving user information on the file shows delete / edit btns when user is logged out
  */
 root.render(
   <ChakraProvider theme={theme}>

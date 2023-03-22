@@ -44,10 +44,15 @@ const Home = () => {
     getAll().then((data) => {
       setPosts(data.posts);
     });
-    // const updateOnline = () => {
-    //   setIsOnline(decoded.exp > (new Date().getTime() + 1) / 1000);
-    // };
-    // updateOnline();
+    const updateOnline = () => {
+      setIsOnline(
+        decoded
+          ? (decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER) >
+              (new Date().getTime() + 1) / 1000
+          : false
+      );
+    };
+    updateOnline();
   }, [posts.length]);
 
   const getAll = async () => {
@@ -118,8 +123,7 @@ const Home = () => {
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
-        Home
-        {/* Home - {isOnline ? "Online" : "Offline"} */}
+        Home - {isOnline ? "Online" : "Offline"}
       </Heading>
       {isOnline && <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />}
       <div id="posts">

@@ -20,7 +20,9 @@ const Posting = (props: props) => {
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }
 
-  const userData = JSON.parse(localStorage.getItem("USER")!);
+  const userData = JSON.parse(localStorage.getItem("USER")!)
+    ? JSON.parse(localStorage.getItem("USER")!)
+    : "";
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
@@ -57,7 +59,7 @@ const Posting = (props: props) => {
             0 comments
           </Box>
         </Box>
-        {userData.id == props.post.authorId ? (
+        {(userData.id ? userData.id : "") == props.post.authorId ? (
           <Button onClick={props.deletePost}>Delete</Button>
         ) : (
           <></>
