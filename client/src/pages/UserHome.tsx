@@ -1,5 +1,4 @@
-import { Heading, Input, Button } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { Heading, Button } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
@@ -21,12 +20,19 @@ const Home = () => {
     authorId: "",
   });
   const [posts, setPosts] = useState<Post[]>([]);
-  const [searchParam, setSearchParam] = useState("");
-  const decoded: RefreshToken = jwt_decode(localStorage.getItem("REFRESH_TOKEN")!);
-  const [isOnline, setIsOnline] = useState(decoded.exp > (new Date().getTime() + 1) / 1000);
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchParam(e.target.value);
-  };
+  const REFRESH_TOKEN: RefreshToken | string = localStorage.getItem("REFRESH_TOKEN")!
+    ? localStorage.getItem("REFRESH_TOKEN")!
+    : "";
+  let decoded: RefreshToken | undefined = undefined;
+  if (REFRESH_TOKEN) {
+    decoded = jwt_decode(localStorage.getItem("REFRESH_TOKEN")!)!;
+  }
+  const [isOnline, setIsOnline] = useState(
+    decoded
+      ? (decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER) > (new Date().getTime() + 1) / 1000
+      : false
+  );
+  // const [isOnline, setIsOnline] = useState((decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER ) > (new Date().getTime() + 1) / 1000);
 
   const updatePosts = () => {
     setPosts([...posts, post]);
@@ -36,15 +42,13 @@ const Home = () => {
 
   useEffect(() => {
     getAll().then((data) => {
-      setPosts(
-        data.posts.filter((p: Post) => p.title?.toUpperCase().includes(searchParam.toUpperCase()))
-      );
+      setPosts(data.posts);
     });
-    const updateOnline = () => {
-      setIsOnline(decoded.exp > (new Date().getTime() + 1) / 1000);
-    };
-    updateOnline();
-  }, [searchParam]);
+    // const updateOnline = () => {
+    //   setIsOnline(decoded.exp > (new Date().getTime() + 1) / 1000);
+    // };
+    // updateOnline();
+  }, [posts.length]);
 
   const getAll = async () => {
     try {
@@ -74,7 +78,7 @@ const Home = () => {
           postPhotos: post.postPhotos,
         }),
       });
-      if (response.status != 401) {
+      if (response.status == 201) {
         addPostToUI();
       }
     } catch (err) {
@@ -83,7 +87,8 @@ const Home = () => {
   };
 
   const addPostToUI = (): void => {
-    window.location.reload(); //temporary fix
+    // window.location.reload(); //temporary fix
+    setPosts([post, ...posts]);
   };
 
   const removePostFromUI = (postId: string | undefined): void => {
@@ -102,8 +107,7 @@ const Home = () => {
           Authorization: token,
         },
       });
-      console.log(response);
-      if (response.status != 401) {
+      if (response.status == 201) {
         removePostFromUI(postId);
       }
     } catch (err) {
@@ -114,18 +118,9 @@ const Home = () => {
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
-        Home - {isOnline ? "Online" : "Offline"}
+        Home
+        {/* Home - {isOnline ? "Online" : "Offline"} */}
       </Heading>
-      <SearchIcon boxSize={5} />
-      <Input
-        onChange={(e) => handleSearch(e)}
-        textAlign="center"
-        placeholder="Search Posting"
-        variant="flushed"
-        htmlSize={20}
-        width="auto"
-      />{" "}
-      <Button onClick={() => window.location.reload()}>Reset</Button>
       {isOnline && <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />}
       <div id="posts">
         <div id="posts">

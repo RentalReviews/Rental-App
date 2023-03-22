@@ -57,9 +57,9 @@ const Property = () => {
   };
 
   const editComment = async (commentId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")!.toString();
     try {
-      fetch(`${API_URL}/comments/${commentId}`, {
+      const response = await fetch(`${API_URL}/comments/${commentId}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -70,10 +70,11 @@ const Property = () => {
           content: comment,
         }),
       });
+      if (response.status == 201) {
+        updateAfterEdit(commentId);
+      }
     } catch (err) {
       console.log(err);
-    } finally {
-      updateAfterEdit(commentId);
     }
   };
 

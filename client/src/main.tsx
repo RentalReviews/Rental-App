@@ -17,6 +17,7 @@ const root = createRoot(container);
  *  - set two lists: filteredPosts and Posts only work with filteredPosts after initial retrival
  * Add feature to allow comments to have comments
  * Return toast messages for CRUD actions on the page
+ * Everything is return 201 - created
  */
 root.render(
   <ChakraProvider theme={theme}>
