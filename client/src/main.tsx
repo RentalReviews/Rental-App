@@ -9,6 +9,13 @@ const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 /**
  * Add error handling if user does CRUD via front-end and are not authorized (throw error for 401 status code)
+ * Rating is missing from server response and database
+ * Comments have their own API and are not associated with the corresponding Post
+ *  - Can't update homepage comment amount
+ *  - need to update ORM
+ * Refine search function and remove window reloads/reduce API calls
+ *  - set two lists: filteredPosts and Posts only work with filteredPosts after initial retrival
+ * Add feature to allow comments to have comments
  */
 root.render(
   <ChakraProvider theme={theme}>
