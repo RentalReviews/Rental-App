@@ -8,8 +8,9 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
-import type { Post } from "../types/Post";
 import { MinusIcon, AddIcon } from "@chakra-ui/icons";
+
+import type { Post } from "types";
 
 interface props {
   post: Post;
@@ -45,13 +46,20 @@ export const PostForm = (props: props) => {
                   }}
                 >
                   <div>
-                    <label htmlFor="">Rental Adress: </label>
+                    <label htmlFor="">Rental Address: </label>
                     <Input
                       type="text"
                       onChange={(e) =>
                         props.setPost({
-                          address: e.target.value,
-                          imageUrl: props.post.imageUrl,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: props.post.content,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
+                          postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: e.target.value,
+                          updatedAt: props.post.updatedAt,
                           rating: props.post.rating,
                         })
                       }
@@ -66,8 +74,15 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: e.target.value,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: props.post.content,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
+                          postPhotos: [{ url: e.target.value }],
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
                           rating: props.post.rating,
                         })
                       }
@@ -82,8 +97,15 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: props.post.imageUrl,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: e.target.value,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
+                          postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
                           rating: Number(e.target.value),
                         })
                       }
@@ -98,10 +120,16 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          address: props.post.address,
-                          imageUrl: props.post.imageUrl,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: e.target.value,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
+                          postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
                           rating: props.post.rating,
-                          caption: e.target.value,
                         })
                       }
                     />

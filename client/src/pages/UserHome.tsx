@@ -1,55 +1,173 @@
-import { Heading } from "@chakra-ui/react";
+import { Heading, useToast } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Post } from "types/Post";
 import "styles/userHome.css";
+import jwt_decode from "jwt-decode";
+import { RefreshToken } from "types/RefreshToken";
+import { genericErrorHandler } from "utils";
 
 const Home = () => {
-  const [post, setPost] = useState<Post>({ address: "", imageUrl: "", rating: 0 });
+  const API_URL = import.meta.env.DEV
+    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+    : "";
+
+  const toast = useToast();
+  const [post, setPost] = useState<Post>({
+    authorId: "",
+    comments: [],
+    content: "",
+    createdAt: new Date(),
+    id: "",
+    postPhotos: [],
+    published: false,
+    updatedAt: new Date(),
+    title: "",
+    rating: 0,
+  });
   const [posts, setPosts] = useState<Post[]>([]);
+  const REFRESH_TOKEN: RefreshToken | string | null = localStorage.getItem("REFRESH_TOKEN") || "";
+  let decoded: RefreshToken | undefined = undefined;
+  if (REFRESH_TOKEN) {
+    decoded = jwt_decode(localStorage.getItem("REFRESH_TOKEN") || "");
+  }
+  const [isOnline, setIsOnline] = useState(
+    decoded
+      ? (decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER) > (new Date().getTime() + 1) / 1000
+      : false
+  );
 
   const updatePosts = () => {
     setPosts([...posts, post]);
-    setPost({ address: "", imageUrl: "", rating: 0 });
+    console.log(post);
+    postReview(post);
+    setPost({
+      authorId: "",
+      comments: [],
+      content: "",
+      createdAt: new Date(),
+      id: "",
+      postPhotos: [],
+      published: false,
+      updatedAt: new Date(),
+      title: "",
+      rating: 0,
+    });
   };
 
-  console.log(posts);
+  useEffect(() => {
+    getAll().then((data) => {
+      setPosts(data.posts);
+    });
+    const updateOnline = () => {
+      setIsOnline(
+        decoded
+          ? (decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER) >
+              (new Date().getTime() + 1) / 1000
+          : false
+      );
+    };
+    updateOnline();
+  }, [posts.length]);
+
+  const getAll = async () => {
+    try {
+      const response = await fetch(`${API_URL}/postings`);
+      const json = await response.json();
+      return json;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const postReview = async (post: Post) => {
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      await fetch(`${API_URL}/postings`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          // Can't input the ID for the post, it's generated on server side
+          authorId: post.authorId,
+          comments: post.comments,
+          content: post.content,
+          createdAt: post.createdAt,
+          id: "Does this autogenerate",
+          postPhotos: post.postPhotos,
+          published: post.published,
+          updatedAt: post.updatedAt,
+          title: post.title,
+          rating: post.rating,
+        }),
+      }).then((response) => {
+        if (response.status == 201) {
+          addPostToUI();
+        }
+      });
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
+
+  const addPostToUI = (): void => {
+    // window.location.reload(); //temporary fix
+    setPosts([post, ...posts]);
+  };
+
+  const removePostFromUI = (postId: string | undefined): void => {
+    const newPostsArray = posts.filter((comment) => comment.id !== postId);
+    setPosts(newPostsArray);
+  };
+
+  const deletePost = async (postId: string | undefined) => {
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      await fetch(`${API_URL}/postings/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }).then((response) => {
+        if (response.status == 201) {
+          removePostFromUI(postId);
+        }
+      });
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
 
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
-        MY POSTINGS
+        Home - {isOnline ? "Online" : "Offline"}
       </Heading>
-      <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />
+      {isOnline && <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />}
       <div id="posts">
-        <Posting
-          key={10}
-          post={{
-            address: "  2445 Guilfasdfasord dr, Abbotsford BC",
-            imageUrl:
-              "https://photos.zillowstatic.com/fp/aa9a8e5dda311b0a079dd0e9d2319116-uncropped_scaled_within_1536_1152.webp",
-            rating: 2,
-            caption:
-              "I used to live at Le56dn 14 Main Street and had a Landlord called Mrs Beverley Toloczko. We warn you DO NOT TAKE THIS PROPERTY FROM HER SHE IS A LANDLORD FROM HELL. This woman is the worst woman I have ever come across in my life. She is a vile creature to set foot on this earth and has no regards to human feelings. She lies and twists things. We moved into the property with several things wrong. Stair floorboards were broken, radiators were broken curtain poles were broken drain was blocked sink smelt of sewers and she has ignored us refused to fix anything and thinks it’s okay to demand payment at 9am in the morning. She doesn’t live up to her part yet we continued to live to ours. She lied to us that she was selling the property to find on rightmove this property was up for rent again. Not that we want to live there as there is currently a wasp infestation not to mention none of the issues I have just said have been fixed. We warn you to not rent this property. She made me fall ill and Take sick from work due to stress she put me through threatening to make me homeless not following any rules stated in the legal tenancy agreement. We just want to put this out there to anyone looking at 14 Main Street LE56DN to rent. DONT DO IT.",
-          }}
-        />
-        <Posting
-          key={10}
-          post={{
-            address: "  34030 McCrimmon Dr, Abbotsford, BC V2S 2V5",
-            imageUrl:
-              "https://photos.zillowstatic.com/fp/30aa1553267b2dd1173ede8d0557572f-o_a.webp",
-            rating: 4,
-            caption:
-              "The house is in a great location and is extremely well looked after by Hannah. If there was ever an issue, it would be sorted immediately with no hassle. Very spacious, and modern looking home with a converted garage (man cave!)",
-          }}
-        />
         <div id="posts">
           {posts.map((post, i) => (
             <Posting
               key={i}
-              post={{ address: post.address, imageUrl: post.imageUrl, rating: post.rating }}
+              post={{
+                authorId: post.authorId,
+                comments: [],
+                content: post.content,
+                createdAt: new Date(),
+                id: post.id,
+                postPhotos: post.postPhotos,
+                published: false,
+                updatedAt: new Date(),
+                title: post.title,
+                rating: post.rating,
+              }}
+              deletePost={() => deletePost(post.id)}
             />
           ))}
         </div>

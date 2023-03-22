@@ -12,7 +12,10 @@ import { IoMenu, IoClose, IoSunny, IoMoon } from "react-icons/io5";
 
 import NavLink from "./NavLink";
 
-const Links: Array<{ name: string; href: string }> = [{ name: "Home", href: "/" }];
+const Links: Array<{ name: string; href: string }> = [
+  { name: "Login", href: "/login" },
+  { name: "Home", href: "/" },
+];
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { genericErrorHandler } from "utils";
 
 const API_URL = import.meta.env.DEV
   ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
@@ -45,6 +46,31 @@ const LoginForm = () => {
       const json = await loginRes.json();
       if (import.meta.env.DEV) console.log(json);
 
+      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
+      localStorage.setItem("BEARER_TOKEN", json.token);
+
+      const getUserInfo = async () => {
+        try {
+          const response = await fetch(`${API_URL}/users/${email}`);
+          const json = await response.json();
+          return json.user;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      const userData = await getUserInfo();
+      console.log(userData);
+      localStorage.setItem(
+        "USER",
+        JSON.stringify({
+          email: userData.email,
+          displayName: userData.displayName,
+          id: userData.id,
+          role: userData.role,
+        })
+      );
+
       if (loginRes.ok) {
         navigate("/");
         toast({
@@ -64,15 +90,7 @@ const LoginForm = () => {
         });
       }
     } catch (error) {
-      if (import.meta.env.DEV) console.log(error);
-
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      genericErrorHandler(error, toast);
     }
   };
 

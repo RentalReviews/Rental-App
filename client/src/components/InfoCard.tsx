@@ -1,10 +1,31 @@
-import { Dispatch, SetStateAction, useRef } from "react";
-import { Badge, Box, Button, Image, Textarea } from "@chakra-ui/react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  Badge,
+  Box,
+  Button,
+  Image,
+  Textarea,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Input,
+  useToast,
+} from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon } from "@chakra-ui/icons";
-import { Post } from "../types/Post";
-import { Comment } from "../types/Comment";
 import "styles/userHome.css";
+import { genericErrorHandler } from "utils";
+
+import type { Comment, Post } from "types";
+
+const API_URL = import.meta.env.DEV
+  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+  : "";
 
 interface props {
   post: Post;
@@ -12,8 +33,58 @@ interface props {
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: () => void;
 }
+
 const InfoCard = (props: props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
+  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
+  const toast = useToast();
+
+  const [post, setPost] = useState<Post>({
+    authorId: props.post.authorId,
+    comments: props.post.comments,
+    content: props.post.content,
+    createdAt: props.post.createdAt,
+    id: props.post.id,
+    postPhotos: props.post.postPhotos,
+    published: props.post.published,
+    title: props.post.title,
+    updatedAt: props.post.updatedAt,
+    rating: props.post.rating,
+  });
+
+  const handleModal = () => {
+    onClose();
+    editPost();
+  };
+
+  const editPost = () => {
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      fetch(`${API_URL}/postings/${post.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          id: post.id,
+          title: post.title,
+          postPhotos: post.postPhotos,
+          rating: post.rating,
+          content: post.content,
+          authorId: post.authorId,
+        }),
+      });
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    } finally {
+      setTimeout(() => alert("timeout"), 5000);
+      window.location.assign("/");
+    }
+  };
+
   const toggleCommentForm = () => {
     if (inputRef.current == null) {
       return;
@@ -47,7 +118,7 @@ const InfoCard = (props: props) => {
         </Box>
 
         <Box w="100%" mt="3" fontWeight="semibold" as="h1" lineHeight="tight" noOfLines={1}>
-          {props.post.address}
+          {props.post.title}
         </Box>
 
         <Box display="flex" mt="2" alignItems="center">
@@ -59,17 +130,19 @@ const InfoCard = (props: props) => {
         </Box>
       </Box>
       <div id="posts">
-        <Box>{props.post.caption}</Box>
+        <Box>{props.post.content}</Box>
 
         <Image
           boxSize="sm"
           maxH="s"
-          src={props.post.imageUrl}
+          src={
+            props.post.postPhotos[0]?.url ||
+            "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
+          }
           alt={"property.imageAlt"}
           borderRadius="md"
         />
       </div>
-
       <Box display="flex">
         <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
           Like
@@ -77,6 +150,11 @@ const InfoCard = (props: props) => {
         <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
           Comment
         </Button>
+        {props.post.authorId === (userData.id ? userData.id : "") && (
+          <Button flex="1" variant="ghost" onClick={onOpen}>
+            Edit
+          </Button>
+        )}
       </Box>
       <form
         onSubmit={(e) => {
@@ -88,11 +166,137 @@ const InfoCard = (props: props) => {
           <Textarea
             placeholder="Add a comment"
             name="myName"
-            onChange={(e) => props.setComment({ comment: e.target.value })}
+            onChange={(e) =>
+              props.setComment({
+                authorId: props.post.authorId,
+                content: e.target.value,
+                createdAt: new Date(),
+                id: props.comment.id,
+                postId: props.post.id,
+                updatedAt: new Date(),
+              })
+            }
           />
           <Button type="submit">Add</Button>
         </Box>
       </form>
+      <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Property</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <div>
+                <label htmlFor="">Rental Address: </label>
+                <Input
+                  type="text"
+                  onChange={(e) =>
+                    setPost({
+                      authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: e.target.value,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
+                    })
+                  }
+                  defaultValue={post.title}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Image URL: </label>
+                <Input
+                  type="text"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: [{ url: e.target.value }],
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
+                    })
+                  }
+                  defaultValue={post.postPhotos[0]?.url}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Rating: </label>
+                <Input
+                  type="number"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: Number(e.target.value),
+                    })
+                  }
+                  defaultValue={post.rating ? post.rating : 3}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Caption: </label>
+                <Input
+                  type="text"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: e.target.value,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
+                    })
+                  }
+                  defaultValue={post.content}
+                />
+              </div>
+            </form>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost" onClick={() => handleModal()}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

@@ -8,7 +8,7 @@ import userRoutes from "./users/users.routes";
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-router.use("/posts", postRoutes);
+router.use("/postings", postRoutes);
 router.use("/comments", commentRoutes);
 router.use("/users", userRoutes);
 

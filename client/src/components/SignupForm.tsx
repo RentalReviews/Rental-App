@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   Input,
   FormLabel,
@@ -19,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { genericErrorHandler } from "utils";
 
 type FormValues = {
   firstName: string;
@@ -99,6 +99,32 @@ const SignupForm = () => {
 
       const json = await registerRes.json();
       if (import.meta.env.DEV) console.log(json);
+      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
+      localStorage.setItem("BEARER_TOKEN", json.token);
+
+      const getUserInfo = async () => {
+        try {
+          const response = await fetch(`http://localhost:4466/api/v1/users/${formValues.email}`);
+          const json = await response.json();
+          return json.user;
+        } catch (err) {
+          genericErrorHandler(err, toast);
+        }
+      };
+
+      const userData = await getUserInfo();
+      localStorage.setItem(
+        "USER",
+        JSON.stringify({
+          email: userData.email,
+          displayName: userData.displayName,
+          id: userData.id,
+          role: userData.role,
+        })
+      );
+
+      // Add user information to localStorage to hide edit/delete btn for posts/comments that do
+      // not belong to the user
 
       if (registerRes.ok) {
         navigate("/");

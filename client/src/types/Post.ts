@@ -1,10 +1,15 @@
+import { Photo } from "./Photo";
+
 export interface Post {
-  postId?: string;
-  userId?: string;
-  imageUrl: string;
-  address: string;
-  caption?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  authorId: string;
+  comments: Comment[];
+  content: string;
+  createdAt: Date;
+  id: string;
+  postPhotos: Photo[];
+  published: boolean;
+  title: string;
+  updatedAt: Date;
+  //Need to include in the database
   rating: number;
 }
