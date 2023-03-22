@@ -40,7 +40,6 @@ const Property = () => {
   };
 
   const removeComment = (commentId: string | undefined): void => {
-    console.log(comments.length);
     const newCommentArray = comments.filter((comment) => comment.id !== commentId);
     setComments(newCommentArray);
   };
@@ -84,7 +83,6 @@ const Property = () => {
   };
 
   const deleteReview = async (commentId: string | undefined) => {
-    console.log(comment);
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
       fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
@@ -103,7 +101,6 @@ const Property = () => {
   };
 
   const postComment = () => {
-    console.log("postComment");
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
       fetch("http://localhost:4466/api/v1/comments", {

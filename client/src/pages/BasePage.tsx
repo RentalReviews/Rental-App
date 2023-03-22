@@ -6,7 +6,6 @@ const BasePage = (props: React.PropsWithChildren) => {
   return (
     <Container maxW="container.xl">
       <Navbar />
-
       {props.children}
     </Container>
   );

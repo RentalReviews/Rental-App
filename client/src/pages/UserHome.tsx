@@ -16,11 +16,8 @@ const Home = () => {
   });
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchParam, setSearchParam] = useState("");
-
-  console.log(searchParam);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchParam(e.target.value);
-    setPosts(posts.filter((post) => post.title?.toUpperCase().includes(searchParam.toUpperCase())));
   };
 
   const updatePosts = () => {
@@ -31,9 +28,11 @@ const Home = () => {
 
   useEffect(() => {
     getAll().then((data) => {
-      setPosts(data.posts);
+      setPosts(
+        data.posts.filter((p: Post) => p.title?.toUpperCase().includes(searchParam.toUpperCase()))
+      );
     });
-  }, []);
+  }, [searchParam]);
 
   const getAll = async () => {
     try {
