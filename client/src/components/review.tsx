@@ -28,15 +28,15 @@ interface props {
   authorId: string;
   deleteReview: MouseEventHandler<HTMLButtonElement> | undefined;
   setComment: Dispatch<SetStateAction<Comment>>;
-  editComment: (id: string) => MouseEventHandler<HTMLButtonElement> | undefined;
+  editComment: (id: string) => Promise<void>; //MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 const Review = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userData = JSON.parse(localStorage.getItem("USER"));
+  const userData = JSON.parse(localStorage.getItem("USER")!);
   const handleModal = () => {
     onClose();
-    props.editComment(props.comment.id);
+    props.editComment(props.comment.id!);
   };
   return (
     <>
@@ -93,7 +93,7 @@ const Review = (props: props) => {
             <Textarea
               placeholder="Edit your comment"
               name="myName"
-              onChange={(e: unknown) => props.setComment(e.target.value)}
+              onChange={(e: any) => props.setComment(e.target.value)}
               defaultValue={props.comment.content}
             />
           </ModalBody>

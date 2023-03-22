@@ -35,13 +35,15 @@ const InfoCard = (props: props) => {
   const navigate = useNavigate();
 
   const [post, setPost] = useState<Post>({
-    id: props.post.postPhotos[0].postId,
+    id: props.post.postPhotos![0].postId,
     title: props.post.title,
     postPhotos: props.post.postPhotos,
     rating: props.post.rating,
     content: props.post.content,
     authorId: props.post.authorId,
   });
+
+  console.log(props.post);
 
   const handleModal = () => {
     onClose();
@@ -116,7 +118,7 @@ const InfoCard = (props: props) => {
           {Array(5)
             .fill("")
             .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
+              <StarIcon key={i} color={i < props.post.rating! ? "teal.500" : "gray.300"} />
             ))}
         </Box>
       </Box>
@@ -127,8 +129,8 @@ const InfoCard = (props: props) => {
           boxSize="sm"
           maxH="s"
           src={
-            props.post.postPhotos[0].url
-              ? props.post.postPhotos[0].url
+            props.post.postPhotos![0].url
+              ? props.post.postPhotos![0].url
               : "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
           }
           alt={"property.imageAlt"}
@@ -143,7 +145,7 @@ const InfoCard = (props: props) => {
         <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
           Comment
         </Button>
-        {props.post.authorId === JSON.parse(localStorage.getItem("USER")).id && (
+        {props.post.authorId === JSON.parse(localStorage.getItem("USER")!).id && (
           <Button flex="1" variant="ghost" onClick={onOpen}>
             Edit
           </Button>
@@ -216,7 +218,7 @@ const InfoCard = (props: props) => {
                       authorId: post.authorId,
                     })
                   }
-                  defaultValue={post.postPhotos[0].url}
+                  defaultValue={post.postPhotos![0].url}
                   required
                 />
               </div>

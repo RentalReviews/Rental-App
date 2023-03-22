@@ -46,13 +46,13 @@ const Property = () => {
 
   const updateAfterEdit = (commentId: string | undefined): void => {
     const prevComment = comments.find((c) => c.id === commentId);
-    const { authorId, createdAt, updatedAt, id, postId } = prevComment;
+    // const { authorId, createdAt, updatedAt, id, postId } = prevComment;
     const newComment: Comment = {
-      authorId: authorId,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      id: id,
-      postId: postId,
+      authorId: prevComment!.authorId,
+      createdAt: prevComment!.createdAt,
+      updatedAt: prevComment!.updatedAt,
+      id: prevComment!.id,
+      postId: prevComment!.postId,
       content: comment,
     };
     const newCommentArray = comments

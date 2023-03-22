@@ -6,21 +6,21 @@ import type { Post } from "types/Post";
 
 export interface props {
   post: Post;
-  deletePost: void | undefined | MouseEventHandler<HTMLButtonElement>;
+  deletePost: undefined | MouseEventHandler<HTMLButtonElement>;
 }
 
 const Posting = (props: props) => {
   const navigate = useNavigate();
-  let imageUrl = "";
+  let imageUrl: string | undefined = "";
 
   try {
-    imageUrl = props.post.postPhotos?.at(0).url;
+    imageUrl = props.post.postPhotos?.at(0)!.url;
   } catch (err) {
     imageUrl =
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }
 
-  const userData = JSON.parse(localStorage.getItem("USER"));
+  const userData = JSON.parse(localStorage.getItem("USER")!);
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
@@ -51,7 +51,7 @@ const Posting = (props: props) => {
           {Array(5)
             .fill("")
             .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
+              <StarIcon key={i} color={i < props.post.rating! ? "teal.500" : "gray.300"} />
             ))}
           <Box as="span" ml="2" color="gray.600" fontSize="sm">
             0 comments
