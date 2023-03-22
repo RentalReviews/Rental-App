@@ -19,7 +19,7 @@ import {
   useDisclosure,
   Textarea,
 } from "@chakra-ui/react";
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from "react";
 import { BiLike } from "react-icons/bi";
 
 import type { Comment } from "types";
@@ -33,6 +33,10 @@ interface props {
 }
 
 const Review = (props: props) => {
+  const API_URL = import.meta.env.DEV
+    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+    : "";
+  const [commentAuthor, setCommentAuthor] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
   const handleModal = () => {
@@ -51,9 +55,23 @@ const Review = (props: props) => {
     });
   };
 
+  const getCommentAuthorDisplayName = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/${props.authorId}`);
+      const json = await response.json();
+      setCommentAuthor(json.user.displayName);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getCommentAuthorDisplayName();
+  });
+
   return (
     <>
-      <Card maxW="8xl">
+      <Card maxW="8xl" mb={3}>
         <CardHeader>
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
@@ -61,7 +79,7 @@ const Review = (props: props) => {
 
               <Box>
                 {/* Change this to display name from locally stored user object */}
-                <Heading size="sm">{userData.displayName}</Heading>
+                <Heading size="sm">{commentAuthor}</Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
@@ -84,12 +102,21 @@ const Review = (props: props) => {
             },
           }}
         >
-          <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
-            Like
-          </Button>
+          {userData.id != props.comment.authorId ? (
+            <Button flex="1" width={10} variant="ghost" leftIcon={<BiLike />}>
+              Like
+            </Button>
+          ) : (
+            <></>
+          )}
           {userData.id == props.comment.authorId ? (
             <>
-              <Button onClick={onOpen}>Edit</Button>
+              <Button left={40} mr={10} flex={1} variant="ghost" leftIcon={<BiLike />}>
+                Like
+              </Button>
+              <Button mr={2} onClick={onOpen}>
+                Edit
+              </Button>
               <Button onClick={props.deleteReview}>Delete</Button>
             </>
           ) : (

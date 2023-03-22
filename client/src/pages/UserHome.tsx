@@ -1,4 +1,4 @@
-import { Heading, useToast } from "@chakra-ui/react";
+import { Heading, Wrap, WrapItem, useToast } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
@@ -146,30 +146,36 @@ const Home = () => {
 
   return (
     <>
-      <Heading textAlign="center" noOfLines={1}>
+      <Heading textAlign="center" noOfLines={1} mb={3}>
         Home - {isOnline ? "Online" : "Offline"}
       </Heading>
       {isOnline && <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />}
       <div id="posts">
         <div id="posts">
-          {posts.map((post, i) => (
-            <Posting
-              key={i}
-              post={{
-                authorId: post.authorId,
-                comments: [],
-                content: post.content,
-                createdAt: new Date(),
-                id: post.id,
-                postPhotos: post.postPhotos,
-                published: false,
-                updatedAt: new Date(),
-                title: post.title,
-                rating: post.rating,
-              }}
-              deletePost={() => deletePost(post.id)}
-            />
-          ))}
+          <Wrap>
+            {posts.map((post, i) => {
+              return (
+                <WrapItem key={i}>
+                  <Posting
+                    key={i}
+                    post={{
+                      authorId: post.authorId,
+                      comments: post.comments,
+                      content: post.content,
+                      createdAt: post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: post.published,
+                      updatedAt: post.updatedAt,
+                      title: post.title,
+                      rating: post.rating,
+                    }}
+                    deletePost={() => deletePost(post.id)}
+                  />
+                </WrapItem>
+              );
+            })}
+          </Wrap>
         </div>
       </div>
     </>

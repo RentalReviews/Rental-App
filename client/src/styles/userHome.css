@@ -1,8 +1,8 @@
-#posts{
+/* #posts{
     display: flex;
     flex-direction: row;
-}
-Posting{
+} */
+/* Posting{
     border: 1pt solid black;
 
 }
@@ -10,4 +10,4 @@ Posting{
     #posts{
         flex-direction: column;
     }
-}
+} */

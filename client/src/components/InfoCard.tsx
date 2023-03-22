@@ -15,9 +15,10 @@ import {
   useDisclosure,
   Input,
   useToast,
+  Center,
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
-import { StarIcon } from "@chakra-ui/icons";
+import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import "styles/userHome.css";
 import { genericErrorHandler } from "utils";
 
@@ -102,84 +103,101 @@ const InfoCard = (props: props) => {
   };
 
   return (
-    <Box
-      maxW="8xl"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      display="flex"
-      flexDirection="column"
-    >
-      <Box p="6">
-        <Box display="flex" alignItems="baseline">
-          <Badge borderRadius="full" px="2" colorScheme="teal">
-            New
-          </Badge>
-        </Box>
-
-        <Box w="100%" mt="3" fontWeight="semibold" as="h1" lineHeight="tight" noOfLines={1}>
-          {props.post.title}
-        </Box>
-
-        <Box display="flex" mt="2" alignItems="center">
-          {Array(5)
-            .fill("")
-            .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
-            ))}
-        </Box>
-      </Box>
-      <div id="posts">
-        <Box>{props.post.content}</Box>
-
-        <Image
-          boxSize="sm"
-          maxH="s"
-          src={
-            props.post.postPhotos[0]?.url ||
-            "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
-          }
-          alt={"property.imageAlt"}
-          borderRadius="md"
-        />
-      </div>
-      <Box display="flex">
-        <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
-          Like
-        </Button>
-        <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
-          Comment
-        </Button>
-        {props.post.authorId === (userData.id ? userData.id : "") && (
-          <Button flex="1" variant="ghost" onClick={onOpen}>
-            Edit
-          </Button>
-        )}
-      </Box>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          props.updateComments();
-        }}
+    <div>
+      <Box
+        maxW="8xl"
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        display="flex"
+        flexDirection="column"
       >
-        <Box display="none" id="textArea" ref={inputRef}>
-          <Textarea
-            placeholder="Add a comment"
-            name="myName"
-            onChange={(e) =>
-              props.setComment({
-                authorId: props.post.authorId,
-                content: e.target.value,
-                createdAt: new Date(),
-                id: props.comment.id,
-                postId: props.post.id,
-                updatedAt: new Date(),
-              })
-            }
-          />
-          <Button type="submit">Add</Button>
+        <Box p="6">
+          <Box display={"flex"} justifyContent="space-around">
+            <Box mt="2" display="flex" alignItems="baseline">
+              <Badge borderRadius="full" px="2" colorScheme="teal">
+                New
+              </Badge>
+            </Box>
+
+            <Box
+              mt="2"
+              fontSize={35}
+              fontWeight="semibold"
+              as="h1"
+              lineHeight="tight"
+              noOfLines={1}
+            >
+              {props.post.title}
+            </Box>
+
+            <Box display="flex" mt="2" alignItems="center">
+              {Array(5)
+                .fill("")
+                .map((_, i) => (
+                  <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
+                ))}
+            </Box>
+          </Box>
         </Box>
-      </form>
+        <div id="posts">
+          <Center>
+            <Image
+              boxSize="sm"
+              maxH="s"
+              src={
+                props.post.postPhotos[0]?.url ||
+                "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
+              }
+              alt={"property.imageAlt"}
+              borderRadius="md"
+            />
+          </Center>
+          <Box ml={10} mr={10} mb={10} mt={10}>
+            {props.post.content}
+          </Box>
+        </div>
+        <Box display="flex">
+          <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
+            Like
+          </Button>
+          <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
+            Comment
+          </Button>
+          {props.post.authorId === (userData.id ? userData.id : "") && (
+            <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+              Edit
+            </Button>
+          )}
+        </Box>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            props.updateComments();
+          }}
+        >
+          <Box display="none" id="textArea" ref={inputRef}>
+            <Textarea
+              placeholder="Add a comment"
+              name="myName"
+              onChange={(e) =>
+                props.setComment({
+                  authorId: props.post.authorId,
+                  content: e.target.value,
+                  createdAt: new Date(),
+                  id: props.comment.id,
+                  postId: props.post.id,
+                  updatedAt: new Date(),
+                })
+              }
+            />
+            <Button ml={3} mt={3} mb={3} type="submit">
+              Add
+            </Button>
+          </Box>
+        </form>
+      </Box>
+      {/* Pop ups can be placed outside of shown component */}
       <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -297,7 +315,7 @@ const InfoCard = (props: props) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </div>
   );
 };
 export default InfoCard;
