@@ -27,9 +27,7 @@ const Home = () => {
     rating: 0,
   });
   const [posts, setPosts] = useState<Post[]>([]);
-  const REFRESH_TOKEN: RefreshToken | string | null = localStorage.getItem("REFRESH_TOKEN")
-    ? localStorage.getItem("REFRESH_TOKEN")
-    : "";
+  const REFRESH_TOKEN: RefreshToken | string | null = localStorage.getItem("REFRESH_TOKEN") || "";
   let decoded: RefreshToken | undefined = undefined;
   if (REFRESH_TOKEN) {
     decoded = jwt_decode(localStorage.getItem("REFRESH_TOKEN") || "");
