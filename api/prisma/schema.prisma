@@ -55,6 +55,7 @@ model Post {
   title       String
   content     String
   published   Boolean  @default(false)
+  rating      Int      @default(0)
   authorId    String
   author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments    Comment[]
