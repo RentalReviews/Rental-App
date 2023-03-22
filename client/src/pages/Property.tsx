@@ -43,14 +43,13 @@ const Property = () => {
 
   const updateAfterEdit = (commentId: string | undefined): void => {
     const prevComment: Comment | undefined = comments.find((c) => c.id === commentId);
-    // const { authorId, createdAt, updatedAt, id, postId } = prevComment;
     const newComment: Comment = {
-      authorId: prevComment!.authorId,
-      createdAt: prevComment!.createdAt,
-      updatedAt: prevComment!.updatedAt,
-      id: prevComment!.id,
-      postId: prevComment!.postId,
-      content: comment,
+      authorId: prevComment?.authorId,
+      createdAt: prevComment?.createdAt,
+      updatedAt: prevComment?.updatedAt,
+      id: prevComment?.id,
+      postId: prevComment?.postId,
+      content: comment.content,
     };
     const newCommentArray = comments
       .filter((comment) => comment.id !== commentId)
@@ -69,7 +68,7 @@ const Property = () => {
           Authorization: token,
         },
         body: JSON.stringify({
-          content: comment,
+          content: comment.content,
         }),
       });
       if (response.status == 201) {

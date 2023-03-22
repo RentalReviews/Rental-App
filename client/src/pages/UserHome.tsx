@@ -25,7 +25,7 @@ const Home = () => {
     : "";
   let decoded: RefreshToken | undefined = undefined;
   if (REFRESH_TOKEN) {
-    decoded = jwt_decode(localStorage.getItem("REFRESH_TOKEN")!)!;
+    decoded = jwt_decode(localStorage.getItem("REFRESH_TOKEN") || "");
   }
   const [isOnline, setIsOnline] = useState(
     decoded
@@ -58,7 +58,6 @@ const Home = () => {
     try {
       const response = await fetch(`${API_URL}/postings`);
       const json = await response.json();
-      console.log(json);
       return json;
     } catch (error) {
       console.error(error);

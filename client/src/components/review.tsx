@@ -28,7 +28,7 @@ interface props {
   authorId: string;
   deleteReview: MouseEventHandler<HTMLButtonElement> | undefined;
   setComment: Dispatch<SetStateAction<Comment>>;
-  editComment: (id: string) => Promise<void>; //MouseEventHandler<HTMLButtonElement> | undefined;
+  editComment: (id: string) => Promise<void>;
 }
 
 const Review = (props: props) => {
@@ -38,7 +38,11 @@ const Review = (props: props) => {
     onClose();
     props.editComment(props.comment.id || "");
   };
-  console.log(props);
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    props.setComment({ content: e.target.value });
+  };
+
   return (
     <>
       <Card maxW="8xl">
@@ -94,8 +98,7 @@ const Review = (props: props) => {
             <Textarea
               placeholder="Edit your comment"
               name="myName"
-              // HTMLTextAreaElement|React.ChangeEventHandler<HTMLTextAreaElement.target>
-              onChange={(e: any) => props.setComment(e.target.value)}
+              onChange={(e) => handleOnChange(e)}
               defaultValue={props.comment.content}
             />
           </ModalBody>

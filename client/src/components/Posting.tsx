@@ -21,7 +21,6 @@ const Posting = (props: props) => {
   }
 
   const userData = JSON.parse(localStorage.getItem("USER") || "");
-  console.log(props.post);
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
