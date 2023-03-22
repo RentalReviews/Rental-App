@@ -33,13 +33,12 @@ interface props {
 
 const Review = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userData = JSON.parse(localStorage.getItem("USER")!)
-    ? JSON.parse(localStorage.getItem("USER")!)
-    : "";
+  const userData = JSON.parse(localStorage.getItem("USER") || "");
   const handleModal = () => {
     onClose();
-    props.editComment(props.comment.id!);
+    props.editComment(props.comment.id || "");
   };
+  console.log(props);
   return (
     <>
       <Card maxW="8xl">
@@ -95,6 +94,7 @@ const Review = (props: props) => {
             <Textarea
               placeholder="Edit your comment"
               name="myName"
+              // HTMLTextAreaElement|React.ChangeEventHandler<HTMLTextAreaElement.target>
               onChange={(e: any) => props.setComment(e.target.value)}
               defaultValue={props.comment.content}
             />

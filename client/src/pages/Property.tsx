@@ -14,7 +14,9 @@ const Property = () => {
   const API_URL = import.meta.env.DEV
     ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
     : "";
+
   const { state } = useLocation();
+
   const [comment, setComment] = useState<Comment>({
     authorId: "",
     content: "",
@@ -40,7 +42,7 @@ const Property = () => {
   };
 
   const updateAfterEdit = (commentId: string | undefined): void => {
-    const prevComment = comments.find((c) => c.id === commentId);
+    const prevComment: Comment | undefined = comments.find((c) => c.id === commentId);
     // const { authorId, createdAt, updatedAt, id, postId } = prevComment;
     const newComment: Comment = {
       authorId: prevComment!.authorId,
@@ -57,7 +59,7 @@ const Property = () => {
   };
 
   const editComment = async (commentId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")!.toString();
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
       const response = await fetch(`${API_URL}/comments/${commentId}`, {
         method: "PUT",
@@ -81,7 +83,7 @@ const Property = () => {
   const deleteReview = async (commentId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch(`${API_URL}/comments/${commentId}`, {
+      const response = await fetch(`${API_URL}/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -89,15 +91,17 @@ const Property = () => {
           Authorization: token,
         },
       });
+      if (response.status == 201) {
+        removeComment(commentId);
+      }
     } catch (err) {
       console.log(err);
-    } finally {
-      removeComment(commentId);
     }
   };
 
   const postComment = () => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+
     try {
       fetch(`${API_URL}/comments`, {
         method: "POST",
@@ -108,7 +112,7 @@ const Property = () => {
         },
         body: JSON.stringify({
           content: comment.content,
-          postId: state.Post.postPhotos[0].postId,
+          postId: state.Post.id,
           authorId: token,
         }),
       });
@@ -119,7 +123,7 @@ const Property = () => {
 
   const getPostComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/postings/${state.Post.postPhotos[0].postId}`);
+      const response = await fetch(`${API_URL}/postings/${state.Post.id}`);
       const json = await response.json();
       return json.post.comments;
     } catch (error) {
@@ -134,13 +138,7 @@ const Property = () => {
         setComment={setComment}
         updateComments={updateComments}
         key={99}
-        post={{
-          title: state.Post.title,
-          postPhotos: state.Post.postPhotos,
-          rating: state.Post.rating ? state.Post.rating : 6,
-          content: state.Post.content,
-          authorId: state.Post.authorId,
-        }}
+        post={state.Post}
       />
       <br />
       <div id="comments">

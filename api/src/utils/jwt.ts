@@ -17,7 +17,8 @@ const generateToken = (user: User) => {
     },
     process.env.JWT_ACCESS_SECRET as string,
     {
-      expiresIn: "15m",
+      // expiresIn: "15m",
+      expiresIn: "7d", // temporary fix
     }
   );
 };

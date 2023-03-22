@@ -14,15 +14,14 @@ const Posting = (props: props) => {
   let imageUrl: string | undefined = "";
 
   try {
-    imageUrl = props.post.postPhotos?.at(0)!.url;
+    imageUrl = props.post.postPhotos?.at(0)?.url || "";
   } catch (err) {
     imageUrl =
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }
 
-  const userData = JSON.parse(localStorage.getItem("USER")!)
-    ? JSON.parse(localStorage.getItem("USER")!)
-    : "";
+  const userData = JSON.parse(localStorage.getItem("USER") || "");
+  console.log(props.post);
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
@@ -53,13 +52,13 @@ const Posting = (props: props) => {
           {Array(5)
             .fill("")
             .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating! ? "teal.500" : "gray.300"} />
+              <StarIcon key={i} color={i < (props.post.rating || 1) ? "teal.500" : "gray.300"} />
             ))}
           <Box as="span" ml="2" color="gray.600" fontSize="sm">
             0 comments
           </Box>
         </Box>
-        {(userData.id ? userData.id : "") == props.post.authorId ? (
+        {(userData.id || "") == props.post.authorId ? (
           <Button onClick={props.deletePost}>Delete</Button>
         ) : (
           <></>

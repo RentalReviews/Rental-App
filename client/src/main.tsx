@@ -19,6 +19,7 @@ const root = createRoot(container);
  * Return toast messages for CRUD actions on the page
  * Everything is return 201 - created
  * Saving user information on the file shows delete / edit btns when user is logged out
+ * How to get new post a generated ID?
  */
 root.render(
   <ChakraProvider theme={theme}>

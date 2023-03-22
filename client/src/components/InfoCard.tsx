@@ -36,7 +36,6 @@ interface props {
 const InfoCard = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("USER")!)
     ? JSON.parse(localStorage.getItem("USER")!)
     : "";
@@ -49,8 +48,6 @@ const InfoCard = (props: props) => {
     content: props.post.content,
     authorId: props.post.authorId,
   });
-
-  console.log(props.post);
 
   const handleModal = () => {
     onClose();
@@ -144,7 +141,6 @@ const InfoCard = (props: props) => {
           borderRadius="md"
         />
       </div>
-
       <Box display="flex">
         <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
           Like

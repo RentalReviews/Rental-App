@@ -1,4 +1,4 @@
-import { Heading, Button } from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
@@ -20,8 +20,8 @@ const Home = () => {
     authorId: "",
   });
   const [posts, setPosts] = useState<Post[]>([]);
-  const REFRESH_TOKEN: RefreshToken | string = localStorage.getItem("REFRESH_TOKEN")!
-    ? localStorage.getItem("REFRESH_TOKEN")!
+  const REFRESH_TOKEN: RefreshToken | string | null = localStorage.getItem("REFRESH_TOKEN")
+    ? localStorage.getItem("REFRESH_TOKEN")
     : "";
   let decoded: RefreshToken | undefined = undefined;
   if (REFRESH_TOKEN) {
@@ -32,7 +32,6 @@ const Home = () => {
       ? (decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER) > (new Date().getTime() + 1) / 1000
       : false
   );
-  // const [isOnline, setIsOnline] = useState((decoded.exp ? decoded.exp : Number.MAX_SAFE_INTEGER ) > (new Date().getTime() + 1) / 1000);
 
   const updatePosts = () => {
     setPosts([...posts, post]);
@@ -59,6 +58,7 @@ const Home = () => {
     try {
       const response = await fetch(`${API_URL}/postings`);
       const json = await response.json();
+      console.log(json);
       return json;
     } catch (error) {
       console.error(error);
@@ -132,6 +132,7 @@ const Home = () => {
             <Posting
               key={i}
               post={{
+                id: post.id,
                 title: post.title,
                 postPhotos: post.postPhotos,
                 rating: post.rating,
