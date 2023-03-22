@@ -56,7 +56,7 @@ const Home = () => {
           Authorization: token,
         },
         body: JSON.stringify({
-          id: post.id,
+          // Can't input the ID for the post, it's generated on server side
           content: post.content,
           title: post.title,
           authorId: token,
@@ -70,8 +70,9 @@ const Home = () => {
   };
 
   const addPostToUI = (): void => {
-    console.log("addPostToUI");
-    setPosts([post, ...posts]);
+    window.location.reload(); //temporary fix
+    // Newly created post will show on the screen but it can't be accessed
+    // setPosts([post, ...posts]);
   };
 
   const removePostFromUI = (postId: string | undefined): void => {
