@@ -50,7 +50,7 @@ const LoginForm = () => {
 
       const getUserInfo = async () => {
         try {
-          const response = await fetch(`http://localhost:4466/api/v1/users/${email}`);
+          const response = await fetch(`${API_URL}/users/${email}`);
           const json = await response.json();
           return json.user;
         } catch (err) {

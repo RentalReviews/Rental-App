@@ -6,6 +6,9 @@ import { Post } from "types/Post";
 import "styles/userHome.css";
 
 const Home = () => {
+  const API_URL = import.meta.env.DEV
+    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+    : "";
   const [post, setPost] = useState<Post>({
     id: "",
     title: "",
@@ -36,7 +39,7 @@ const Home = () => {
 
   const getAll = async () => {
     try {
-      const response = await fetch("http://localhost:4466/api/v1/postings");
+      const response = await fetch(`${API_URL}/postings`);
       const json = await response.json();
       return json;
     } catch (error) {
@@ -47,7 +50,7 @@ const Home = () => {
   const postReview = async (post: Post) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      await fetch("http://localhost:4466/api/v1/postings", {
+      await fetch(`${API_URL}/postings`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -82,7 +85,7 @@ const Home = () => {
   const deletePost = async (postId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      await fetch(`http://localhost:4466/api/v1/postings/${postId}`, {
+      await fetch(`${API_URL}/postings/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",

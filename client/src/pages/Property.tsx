@@ -11,15 +11,10 @@ import { Comment } from "../types/Comment";
  *
  */
 const Property = () => {
+  const API_URL = import.meta.env.DEV
+    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+    : "";
   const { state } = useLocation();
-  /**
-   * State contains Post which has
-   * createdAt
-   * id
-   * postId
-   * updatedAt
-   * url
-   */
   const [comment, setComment] = useState<Comment>({
     authorId: "",
     content: "",
@@ -64,7 +59,7 @@ const Property = () => {
   const editComment = async (commentId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
+      fetch(`${API_URL}/comments/${commentId}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -85,7 +80,7 @@ const Property = () => {
   const deleteReview = async (commentId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch(`http://localhost:4466/api/v1/comments/${commentId}`, {
+      fetch(`${API_URL}/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -103,7 +98,7 @@ const Property = () => {
   const postComment = () => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch("http://localhost:4466/api/v1/comments", {
+      fetch(`${API_URL}/comments`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -123,9 +118,7 @@ const Property = () => {
 
   const getPostComments = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:4466/api/v1/postings/${state.Post.postPhotos[0].postId}`
-      );
+      const response = await fetch(`${API_URL}/postings/${state.Post.postPhotos[0].postId}`);
       const json = await response.json();
       return json.post.comments;
     } catch (error) {

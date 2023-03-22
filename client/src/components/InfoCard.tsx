@@ -22,6 +22,10 @@ import { Comment } from "../types/Comment";
 import "styles/userHome.css";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.DEV
+  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
+  : "";
+
 interface props {
   post: Post;
   comment: Comment;
@@ -53,7 +57,7 @@ const InfoCard = (props: props) => {
   const editPost = () => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch(`http://localhost:4466/api/v1/postings/${post.id}`, {
+      fetch(`${API_URL}/postings/${post.id}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
