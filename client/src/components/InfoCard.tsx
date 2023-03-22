@@ -14,12 +14,14 @@ import {
   ModalCloseButton,
   useDisclosure,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon } from "@chakra-ui/icons";
 import { Post } from "../types/Post";
 import { Comment } from "../types/Comment";
 import "styles/userHome.css";
+import { genericErrorHandler } from "utils";
 
 const API_URL = import.meta.env.DEV
   ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
@@ -36,18 +38,7 @@ const InfoCard = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-
-  // authorId: string;
-  // comments: Comment[];
-  // content: string;
-  // createdAt: Date;
-  // id: string;
-  // postPhotos: Photo[];
-  // published: boolean;
-  // title: string;
-  // updatedAt: Date;
-  // //Need to include in the database
-  // rating: number;
+  const toast = useToast();
 
   const [post, setPost] = useState<Post>({
     authorId: props.post.authorId,
@@ -61,8 +52,6 @@ const InfoCard = (props: props) => {
     updatedAt: props.post.updatedAt,
     rating: props.post.rating,
   });
-
-  console.log(post);
 
   const handleModal = () => {
     onClose();
@@ -89,9 +78,8 @@ const InfoCard = (props: props) => {
         }),
       });
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     } finally {
-      console.log(window.location.hostname);
       setTimeout(() => alert("timeout"), 5000);
       window.location.assign("/");
     }

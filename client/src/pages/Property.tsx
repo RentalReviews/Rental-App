@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import Review from "components/review";
+import { useToast } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { Comment } from "../types/Comment";
+import { genericErrorHandler } from "utils";
 /**
  * Remove modal from InfoCard and bring to Property
  * Need to have it in property so we can
@@ -16,6 +18,7 @@ const Property = () => {
     : "";
 
   const { state } = useLocation();
+  const toast = useToast();
 
   const [comment, setComment] = useState<Comment>({
     authorId: "",
@@ -77,7 +80,7 @@ const Property = () => {
         updateAfterEdit(commentId || "");
       }
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     }
   };
 
@@ -96,7 +99,7 @@ const Property = () => {
         removeComment(commentId);
       }
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     }
   };
 
@@ -118,7 +121,7 @@ const Property = () => {
         }),
       });
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     }
   };
 
@@ -128,7 +131,8 @@ const Property = () => {
       const json = await response.json();
       return json.post.comments;
     } catch (error) {
-      console.error(error);
+      genericErrorHandler(error, toast);
+      return [];
     }
   };
 

@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { genericErrorHandler } from "utils";
 
 type FormValues = {
   firstName: string;
@@ -108,7 +109,7 @@ const SignupForm = () => {
           const json = await response.json();
           return json.user;
         } catch (err) {
-          console.log(err);
+          genericErrorHandler(err, toast);
         }
       };
 
@@ -125,15 +126,6 @@ const SignupForm = () => {
 
       // Add user information to localStorage to hide edit/delete btn for posts/comments that do
       // not belong to the user
-
-      /**
-       * json = {user, token, refreshToken}
-       * add token to localStorage so it can be used for post authentication
-       * user: k, k@gmail.com
-       * refresh token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJhNjg3NmE0LTg4NGMtNDAxOS1hNzFkLTZmYWRjNmJmODgwNCIsImVtYWlsIjoia0BnbWFpbC5jb20iLCJuYW1lIjoiayBrIiwianRpIjoiOWI0YjAyZWMtMzY4ZC00YzNmLTg0YzEtNzU4NmVkZGZlNWFlIiwiaWF0IjoxNjc5MzA4MTc4LCJleHAiOjE2Nzk5MTI5Nzh9.c-k-IapKkopy0IOmk29Cfpyfc7h6z_an_VVCDl8xIFs
-       * token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJhN…5Nzh9.c-k-IapKkopy0IOmk29Cfpyfc7h6z_an_VVCDl8xIFs
-       * token is a JWT? based on format
-       */
 
       if (registerRes.ok) {
         navigate("/");

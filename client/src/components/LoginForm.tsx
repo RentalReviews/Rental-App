@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { genericErrorHandler } from "utils";
 
 const API_URL = import.meta.env.DEV
   ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
@@ -89,15 +90,7 @@ const LoginForm = () => {
         });
       }
     } catch (error) {
-      if (import.meta.env.DEV) console.log(error);
-
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      genericErrorHandler(error, toast);
     }
   };
 

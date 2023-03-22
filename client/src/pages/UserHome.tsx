@@ -1,4 +1,4 @@
-import { Heading } from "@chakra-ui/react";
+import { Heading, useToast } from "@chakra-ui/react";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
@@ -6,11 +6,14 @@ import { Post } from "types/Post";
 import "styles/userHome.css";
 import jwt_decode from "jwt-decode";
 import { RefreshToken } from "types/RefreshToken";
+import { genericErrorHandler } from "utils";
 
 const Home = () => {
   const API_URL = import.meta.env.DEV
     ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
     : "";
+
+  const toast = useToast();
   const [post, setPost] = useState<Post>({
     authorId: "",
     comments: [],
@@ -109,7 +112,7 @@ const Home = () => {
         }
       });
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     }
   };
 
@@ -139,7 +142,7 @@ const Home = () => {
         }
       });
     } catch (err) {
-      console.log(err);
+      genericErrorHandler(err, toast);
     }
   };
 

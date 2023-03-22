@@ -21,12 +21,6 @@ const Posting = (props: props) => {
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }
 
-  /**
-   * displayName:"John Doe"
-   * email:"john@gmail.com"
-   * id:"4ec86c14-7314-4a91-9ae6-dd2c57c504a0"
-   * role:"USER"
-   */
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
 
   return (
