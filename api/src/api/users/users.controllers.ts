@@ -1,4 +1,4 @@
-import { getUserByEmail, getUserById, getUserRefreshTokens } from "api/users/users.services";
+import { getUserByEmail, getUserById } from "api/users/users.services";
 import HttpError from "utils/http-error";
 
 import type { Request, Response, NextFunction } from "express";
@@ -47,17 +47,4 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const GetRefreshTokenById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params;
-    const refreshTokenData = await getUserRefreshTokens(id);
-    if (!refreshTokenData) {
-      throw new HttpError(`User with id = ${id} does not have a refresh token`, 404);
-    }
-    res.status(200).json(refreshTokenData);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export { GetUserByEmail, GetUserById, GetRefreshTokenById };
+export { GetUserByEmail, GetUserById };
