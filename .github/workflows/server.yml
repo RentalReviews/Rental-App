@@ -5,10 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'api/**'
+      - '.github/workflows/server.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'api/**'
+      - '.github/workflows/server.yml'
 
 jobs:
   lint:
@@ -108,7 +110,8 @@ jobs:
     needs: [build]
     env:
       REGION: us-west1
-      IMAGE_NAME: rental-app-api
+      REPOSITORY: rental-app-api
+      IMAGE_NAME: api
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
     steps:
@@ -127,8 +130,8 @@ jobs:
     - name: Build and tag Docker image
       run: |
         docker build -t $IMAGE_NAME:${{ github.sha }} api/
-        docker tag $IMAGE_NAME:${{ github.sha }} $REGION-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:${{ github.sha }}
+        docker tag $IMAGE_NAME:${{ github.sha }} $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
 
     - name: Push image to GCP Artifact Registry
       run: |
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:${{ github.sha }}
+        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
