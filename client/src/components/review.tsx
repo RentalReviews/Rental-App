@@ -9,20 +9,35 @@ import {
   Flex,
   Heading,
   IconButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Textarea,
 } from "@chakra-ui/react";
-import { MouseEventHandler } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import { BiLike } from "react-icons/bi";
 import type { Comment } from "../types/Comment";
 
 interface props {
   comment: Comment;
   authorId: string;
-  deleteReview: void | undefined | MouseEventHandler<HTMLButtonElement>;
+  deleteReview: MouseEventHandler<HTMLButtonElement> | undefined;
+  setComment: Dispatch<SetStateAction<Comment>>;
+  editComment: (id: string) => MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 const Review = (props: props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const userData = JSON.parse(localStorage.getItem("USER"));
-
+  const handleModal = () => {
+    onClose();
+    props.editComment(props.comment.id);
+  };
   return (
     <>
       <Card maxW="8xl">
@@ -40,6 +55,7 @@ const Review = (props: props) => {
             <IconButton variant="ghost" colorScheme="gray" aria-label="See menu" />
           </Flex>
         </CardHeader>
+
         <CardBody>
           <Flex flexWrap="wrap" max-width="300px">
             <p>{props.comment.content}</p>
@@ -59,12 +75,39 @@ const Review = (props: props) => {
             Like
           </Button>
           {userData.id == props.comment.authorId ? (
-            <Button onClick={props.deleteReview}>Delete</Button>
+            <>
+              <Button onClick={onOpen}>Edit</Button>
+              <Button onClick={props.deleteReview}>Delete</Button>
+            </>
           ) : (
             <></>
           )}
         </CardFooter>
       </Card>
+      <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Comment</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Textarea
+              placeholder="Edit your comment"
+              name="myName"
+              onChange={(e: unknown) => props.setComment(e.target.value)}
+              defaultValue={props.comment.content}
+            />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost" onClick={() => handleModal()}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

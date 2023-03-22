@@ -7,7 +7,9 @@ import { BasePage, Home, Property, Login, Signup } from "pages";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-
+/**
+ * Add error handling if user does CRUD via front-end and are not authorized (throw error for 401 status code)
+ */
 root.render(
   <ChakraProvider theme={theme}>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />

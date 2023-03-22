@@ -12,6 +12,7 @@ const Home = () => {
     postPhotos: [],
     rating: 0,
     content: "",
+    authorId: "",
   });
   const [posts, setPosts] = useState<Post[]>([]);
 
@@ -29,7 +30,7 @@ const Home = () => {
 
   const getAll = async () => {
     try {
-      const response = await fetch("http://localhost:4466/api/v1/posts");
+      const response = await fetch("http://localhost:4466/api/v1/postings");
       const json = await response.json();
       return json;
     } catch (error) {
@@ -38,10 +39,9 @@ const Home = () => {
   };
 
   const postReview = async (post: Post) => {
-    console.log("posting review...", post);
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      fetch("http://localhost:4466/api/v1/posts", {
+      fetch("http://localhost:4466/api/v1/postings", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -63,14 +63,13 @@ const Home = () => {
 
   const removePostFromUI = (postId: string | undefined): void => {
     const newPostsArray = posts.filter((comment) => comment.id !== postId);
-    console.log(newPostsArray.length);
     setPosts(newPostsArray);
   };
 
   const deletePost = async (postId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      await fetch(`http://localhost:4466/api/v1/posts/${postId}`, {
+      await fetch(`http://localhost:4466/api/v1/postings/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -91,6 +90,7 @@ const Home = () => {
       </Heading>
       <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />
       <div id="posts">
+        {/* Please do not delete dummy data */}
         {/* <Posting
           key={10}
           post={{
@@ -128,9 +128,9 @@ const Home = () => {
                 postPhotos: post.postPhotos,
                 rating: post.rating,
                 content: post.content,
+                authorId: post.authorId,
               }}
               deletePost={() => deletePost(post.id)}
-              authorId={post.authorId}
             />
           ))}
         </div>

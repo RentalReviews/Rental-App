@@ -7,7 +7,6 @@ import type { Post } from "types/Post";
 export interface props {
   post: Post;
   deletePost: void | undefined | MouseEventHandler<HTMLButtonElement>;
-  authorId: string;
 }
 
 const Posting = (props: props) => {
@@ -58,7 +57,11 @@ const Posting = (props: props) => {
             0 comments
           </Box>
         </Box>
-        {userData.id == props.authorId ? <Button onClick={props.deletePost}>Delete</Button> : <></>}
+        {userData.id == props.post.authorId ? (
+          <Button onClick={props.deletePost}>Delete</Button>
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   );

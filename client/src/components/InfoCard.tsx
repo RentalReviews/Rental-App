@@ -1,10 +1,26 @@
-import { Dispatch, SetStateAction, useRef } from "react";
-import { Badge, Box, Button, Image, Textarea } from "@chakra-ui/react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  Badge,
+  Box,
+  Button,
+  Image,
+  Textarea,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Input,
+} from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon } from "@chakra-ui/icons";
 import { Post } from "../types/Post";
 import { Comment } from "../types/Comment";
 import "styles/userHome.css";
+import { useNavigate } from "react-router-dom";
 
 interface props {
   post: Post;
@@ -14,7 +30,52 @@ interface props {
 }
 
 const InfoCard = (props: props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const [post, setPost] = useState<Post>({
+    id: props.post.postPhotos[0].postId,
+    title: props.post.title,
+    postPhotos: props.post.postPhotos,
+    rating: props.post.rating,
+    content: props.post.content,
+    authorId: props.post.authorId,
+  });
+
+  const handleModal = () => {
+    onClose();
+    editPost();
+  };
+
+  const editPost = () => {
+    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+    try {
+      fetch(`http://localhost:4466/api/v1/postings/${post.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          id: post.id,
+          title: post.title,
+          postPhotos: post.postPhotos,
+          rating: post.rating,
+          content: post.content,
+          authorId: post.authorId,
+        }),
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      console.log(window.location.hostname);
+      setTimeout(() => alert("timeout"), 5000);
+      window.location.assign("/");
+    }
+  };
+
   const toggleCommentForm = () => {
     if (inputRef.current == null) {
       return;
@@ -82,6 +143,11 @@ const InfoCard = (props: props) => {
         <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
           Comment
         </Button>
+        {props.post.authorId === JSON.parse(localStorage.getItem("USER")).id && (
+          <Button flex="1" variant="ghost" onClick={onOpen}>
+            Edit
+          </Button>
+        )}
       </Box>
       <form
         onSubmit={(e) => {
@@ -105,6 +171,107 @@ const InfoCard = (props: props) => {
           <Button type="submit">Add</Button>
         </Box>
       </form>
+      <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Property</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <div>
+                <label htmlFor="">Rental Address: </label>
+                <Input
+                  type="text"
+                  onChange={(e) =>
+                    setPost({
+                      id: post.id,
+                      title: e.target.value,
+                      postPhotos: post.postPhotos,
+                      rating: post.rating,
+                      content: post.content,
+                      authorId: post.authorId,
+                    })
+                  }
+                  defaultValue={post.title}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Image URL: </label>
+                <Input
+                  type="text"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      id: post.id,
+                      title: post.title,
+                      postPhotos: [{ url: e.target.value }],
+                      rating: post.rating,
+                      content: post.content,
+                      authorId: post.authorId,
+                    })
+                  }
+                  defaultValue={post.postPhotos[0].url}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Rating: </label>
+                <Input
+                  type="number"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      id: post.id,
+                      title: post.title,
+                      postPhotos: post.postPhotos,
+                      rating: Number(e.target.value),
+                      content: post.content,
+                      authorId: post.authorId,
+                    })
+                  }
+                  defaultValue={post.rating ? post.rating : 3}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="">Caption: </label>
+                <Input
+                  type="text"
+                  name=""
+                  id=""
+                  onChange={(e) =>
+                    setPost({
+                      id: post.id,
+                      title: post.title,
+                      postPhotos: post.postPhotos,
+                      rating: post.rating,
+                      content: e.target.value,
+                      authorId: post.authorId,
+                    })
+                  }
+                  defaultValue={post.content}
+                />
+              </div>
+            </form>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost" onClick={() => handleModal()}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
