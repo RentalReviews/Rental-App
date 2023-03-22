@@ -12,12 +12,16 @@ const Home = () => {
     ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
     : "";
   const [post, setPost] = useState<Post>({
-    id: "",
-    title: "",
-    postPhotos: [],
-    rating: 0,
-    content: "",
     authorId: "",
+    comments: [],
+    content: "",
+    createdAt: new Date(),
+    id: "",
+    postPhotos: [],
+    published: false,
+    updatedAt: new Date(),
+    title: "",
+    rating: 0,
   });
   const [posts, setPosts] = useState<Post[]>([]);
   const REFRESH_TOKEN: RefreshToken | string | null = localStorage.getItem("REFRESH_TOKEN")
@@ -35,8 +39,20 @@ const Home = () => {
 
   const updatePosts = () => {
     setPosts([...posts, post]);
+    console.log(post);
     postReview(post);
-    setPost({ title: "", postPhotos: [], rating: 0 });
+    setPost({
+      authorId: "",
+      comments: [],
+      content: "",
+      createdAt: new Date(),
+      id: "",
+      postPhotos: [],
+      published: false,
+      updatedAt: new Date(),
+      title: "",
+      rating: 0,
+    });
   };
 
   useEffect(() => {
@@ -67,7 +83,7 @@ const Home = () => {
   const postReview = async (post: Post) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      const response = await fetch(`${API_URL}/postings`, {
+      await fetch(`${API_URL}/postings`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -76,15 +92,22 @@ const Home = () => {
         },
         body: JSON.stringify({
           // Can't input the ID for the post, it's generated on server side
+          authorId: post.authorId,
+          comments: post.comments,
           content: post.content,
-          title: post.title,
-          authorId: token,
+          createdAt: post.createdAt,
+          id: "Does this autogenerate",
           postPhotos: post.postPhotos,
+          published: post.published,
+          updatedAt: post.updatedAt,
+          title: post.title,
+          rating: post.rating,
         }),
+      }).then((response) => {
+        if (response.status == 201) {
+          addPostToUI();
+        }
       });
-      if (response.status == 201) {
-        addPostToUI();
-      }
     } catch (err) {
       console.log(err);
     }
@@ -103,17 +126,18 @@ const Home = () => {
   const deletePost = async (postId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      const response = await fetch(`${API_URL}/postings/${postId}`, {
+      await fetch(`${API_URL}/postings/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: token,
         },
+      }).then((response) => {
+        if (response.status == 201) {
+          removePostFromUI(postId);
+        }
       });
-      if (response.status == 201) {
-        removePostFromUI(postId);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -131,12 +155,16 @@ const Home = () => {
             <Posting
               key={i}
               post={{
-                id: post.id,
-                title: post.title,
-                postPhotos: post.postPhotos,
-                rating: post.rating,
-                content: post.content,
                 authorId: post.authorId,
+                comments: [],
+                content: post.content,
+                createdAt: new Date(),
+                id: post.id,
+                postPhotos: post.postPhotos,
+                published: false,
+                updatedAt: new Date(),
+                title: post.title,
+                rating: post.rating,
               }}
               deletePost={() => deletePost(post.id)}
             />

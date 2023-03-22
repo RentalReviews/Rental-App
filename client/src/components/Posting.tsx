@@ -16,6 +16,7 @@ const Posting = (props: props) => {
   try {
     imageUrl = props.post.postPhotos?.at(0)?.url || "";
   } catch (err) {
+    console.log("issue getting image at index 0");
     imageUrl =
       "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
   }

@@ -40,7 +40,14 @@ const Review = (props: props) => {
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    props.setComment({ content: e.target.value });
+    props.setComment({
+      authorId: props.comment.authorId,
+      content: e.target.value,
+      createdAt: props.comment.createdAt,
+      id: props.comment.id,
+      postId: props.comment.postId,
+      updatedAt: new Date(),
+    });
   };
 
   return (

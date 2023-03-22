@@ -20,8 +20,10 @@ const Property = () => {
   const [comment, setComment] = useState<Comment>({
     authorId: "",
     content: "",
+    createdAt: new Date(),
     id: "",
     postId: "",
+    updatedAt: new Date(),
   });
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -41,15 +43,15 @@ const Property = () => {
     setComments(newCommentArray);
   };
 
-  const updateAfterEdit = (commentId: string | undefined): void => {
+  const updateAfterEdit = (commentId: string): void => {
     const prevComment: Comment | undefined = comments.find((c) => c.id === commentId);
     const newComment: Comment = {
-      authorId: prevComment?.authorId,
-      createdAt: prevComment?.createdAt,
-      updatedAt: prevComment?.updatedAt,
-      id: prevComment?.id,
-      postId: prevComment?.postId,
+      authorId: prevComment?.authorId || "",
       content: comment.content,
+      createdAt: prevComment?.createdAt || new Date(),
+      id: prevComment?.id || "",
+      postId: prevComment?.postId || "",
+      updatedAt: prevComment?.updatedAt || new Date(),
     };
     const newCommentArray = comments
       .filter((comment) => comment.id !== commentId)
@@ -72,7 +74,7 @@ const Property = () => {
         }),
       });
       if (response.status == 201) {
-        updateAfterEdit(commentId);
+        updateAfterEdit(commentId || "");
       }
     } catch (err) {
       console.log(err);
@@ -98,11 +100,11 @@ const Property = () => {
     }
   };
 
-  const postComment = () => {
+  const postComment = async () => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
 
     try {
-      fetch(`${API_URL}/comments`, {
+      await fetch(`${API_URL}/comments`, {
         method: "POST",
         headers: {
           Accept: "application/json",
