@@ -50,8 +50,15 @@ export const PostForm = (props: props) => {
                       type="text"
                       onChange={(e) =>
                         props.setPost({
-                          title: e.target.value,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: props.post.content,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
                           postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: e.target.value,
+                          updatedAt: props.post.updatedAt,
                           rating: props.post.rating,
                         })
                       }
@@ -66,8 +73,15 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          title: props.post.title,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: props.post.content,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
                           postPhotos: [{ url: e.target.value }],
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
                           rating: props.post.rating,
                         })
                       }
@@ -82,8 +96,15 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          title: props.post.title,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
+                          content: e.target.value,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
                           postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
                           rating: Number(e.target.value),
                         })
                       }
@@ -98,10 +119,16 @@ export const PostForm = (props: props) => {
                       id=""
                       onChange={(e) =>
                         props.setPost({
-                          title: props.post.title,
-                          postPhotos: props.post.postPhotos,
-                          rating: props.post.rating,
+                          authorId: props.post.authorId,
+                          comments: props.post.comments,
                           content: e.target.value,
+                          createdAt: props.post.createdAt,
+                          id: props.post.id,
+                          postPhotos: props.post.postPhotos,
+                          published: props.post.published,
+                          title: props.post.title,
+                          updatedAt: props.post.updatedAt,
+                          rating: props.post.rating,
                         })
                       }
                     />

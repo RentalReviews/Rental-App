@@ -20,6 +20,7 @@ const root = createRoot(container);
  * Everything is return 201 - created
  * Saving user information on the file shows delete / edit btns when user is logged out
  * How to get new post a generated ID?
+ * Name above comment should come from the comment authorID
  */
 root.render(
   <ChakraProvider theme={theme}>

@@ -20,7 +20,6 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Post } from "../types/Post";
 import { Comment } from "../types/Comment";
 import "styles/userHome.css";
-import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.DEV
   ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
@@ -36,18 +35,34 @@ interface props {
 const InfoCard = (props: props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
-  const userData = JSON.parse(localStorage.getItem("USER")!)
-    ? JSON.parse(localStorage.getItem("USER")!)
-    : "";
+  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
+
+  // authorId: string;
+  // comments: Comment[];
+  // content: string;
+  // createdAt: Date;
+  // id: string;
+  // postPhotos: Photo[];
+  // published: boolean;
+  // title: string;
+  // updatedAt: Date;
+  // //Need to include in the database
+  // rating: number;
 
   const [post, setPost] = useState<Post>({
-    id: props.post.postPhotos![0].postId,
-    title: props.post.title,
-    postPhotos: props.post.postPhotos,
-    rating: props.post.rating,
-    content: props.post.content,
     authorId: props.post.authorId,
+    comments: props.post.comments,
+    content: props.post.content,
+    createdAt: props.post.createdAt,
+    id: props.post.id,
+    postPhotos: props.post.postPhotos,
+    published: props.post.published,
+    title: props.post.title,
+    updatedAt: props.post.updatedAt,
+    rating: props.post.rating,
   });
+
+  console.log(post);
 
   const handleModal = () => {
     onClose();
@@ -122,7 +137,7 @@ const InfoCard = (props: props) => {
           {Array(5)
             .fill("")
             .map((_, i) => (
-              <StarIcon key={i} color={i < props.post.rating! ? "teal.500" : "gray.300"} />
+              <StarIcon key={i} color={i < props.post.rating ? "teal.500" : "gray.300"} />
             ))}
         </Box>
       </Box>
@@ -133,9 +148,8 @@ const InfoCard = (props: props) => {
           boxSize="sm"
           maxH="s"
           src={
-            props.post.postPhotos![0].url
-              ? props.post.postPhotos![0].url
-              : "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
+            props.post.postPhotos[0]?.url ||
+            "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
           }
           alt={"property.imageAlt"}
           borderRadius="md"
@@ -168,8 +182,10 @@ const InfoCard = (props: props) => {
               props.setComment({
                 authorId: props.post.authorId,
                 content: e.target.value,
+                createdAt: new Date(),
                 id: props.comment.id,
                 postId: props.post.id,
+                updatedAt: new Date(),
               })
             }
           />
@@ -193,12 +209,16 @@ const InfoCard = (props: props) => {
                   type="text"
                   onChange={(e) =>
                     setPost({
-                      id: post.id,
-                      title: e.target.value,
-                      postPhotos: post.postPhotos,
-                      rating: post.rating,
-                      content: post.content,
                       authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: e.target.value,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
                     })
                   }
                   defaultValue={post.title}
@@ -213,15 +233,19 @@ const InfoCard = (props: props) => {
                   id=""
                   onChange={(e) =>
                     setPost({
-                      id: post.id,
-                      title: post.title,
-                      postPhotos: [{ url: e.target.value }],
-                      rating: post.rating,
-                      content: post.content,
                       authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: [{ url: e.target.value }],
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
                     })
                   }
-                  defaultValue={post.postPhotos![0].url}
+                  defaultValue={post.postPhotos[0]?.url}
                   required
                 />
               </div>
@@ -233,12 +257,16 @@ const InfoCard = (props: props) => {
                   id=""
                   onChange={(e) =>
                     setPost({
-                      id: post.id,
-                      title: post.title,
-                      postPhotos: post.postPhotos,
-                      rating: Number(e.target.value),
-                      content: post.content,
                       authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: post.content,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: Number(e.target.value),
                     })
                   }
                   defaultValue={post.rating ? post.rating : 3}
@@ -253,12 +281,16 @@ const InfoCard = (props: props) => {
                   id=""
                   onChange={(e) =>
                     setPost({
-                      id: post.id,
-                      title: post.title,
-                      postPhotos: post.postPhotos,
-                      rating: post.rating,
-                      content: e.target.value,
                       authorId: post.authorId,
+                      comments: props.post.comments,
+                      content: e.target.value,
+                      createdAt: props.post.createdAt,
+                      id: post.id,
+                      postPhotos: post.postPhotos,
+                      published: props.post.published,
+                      title: post.title,
+                      updatedAt: props.post.updatedAt,
+                      rating: post.rating,
                     })
                   }
                   defaultValue={post.content}
