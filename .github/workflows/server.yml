@@ -73,7 +73,8 @@ jobs:
           prisma:
             - 'api/prisma/**'
     
-    - id: auth
+    - name: Authenticate with GCP
+      id: auth
       if: steps.changes.outputs.prisma == 'true'
       uses: 'google-github-actions/auth@v1'
       with:
@@ -99,3 +100,38 @@ jobs:
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: cd api && npx prisma migrate deploy
+
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'RentalReviews' && github.event_name == 'push'
+    needs: [build]
+    env:
+      REGION: us-west1
+      IMAGE_NAME: rental-app-api
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Authenticate with GCP
+      id: auth
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.DEPLOY_CREDENTIAL }}'
+
+    - name: Login to Docker
+      uses: 'docker/login-action@v1'
+      with: 
+        registry: ${env.REGION}-docker.pkg.dev
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
+
+    - name: Build and tag Docker image
+      run: |
+        docker build -t ${env.IMAGE_NAME}:${{ github.sha }} api/
+        docker tag ${env.IMAGE_NAME}:${{ github.sha }} ${env.REGION}-docker.pkg.dev/${env.PROJECT_ID}/${env.IMAGE_NAME}:${{ github.sha }}
+
+    - name: Push image to GCP Artifact Registry
+      run: |
+        docker push ${env.REGION}-docker.pkg.dev/${env.PROJECT_ID}/${env.IMAGE_NAME}:${{ github.sha }}
