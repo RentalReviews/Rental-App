@@ -20,6 +20,7 @@
     "chakra-ui-autocomplete": "^1.4.5",
     "chakra-ui-simple-autocomplete": "^2.3.0",
     "framer-motion": "^6.5.1",
+    "jwt-decode": "^3.1.2",
     "lorem-ipsum": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

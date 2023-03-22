@@ -1,9 +1,12 @@
 import { Heading, Input, Button } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
 import { Post } from "types/Post";
 import "styles/userHome.css";
+import jwt_decode from "jwt-decode";
+import { RefreshToken } from "types/RefreshToken";
 
 const Home = () => {
   const API_URL = import.meta.env.DEV
@@ -19,6 +22,8 @@ const Home = () => {
   });
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchParam, setSearchParam] = useState("");
+  const decoded: RefreshToken = jwt_decode(localStorage.getItem("REFRESH_TOKEN")!);
+  const [isOnline, setIsOnline] = useState(decoded.exp > (new Date().getTime() + 1) / 1000);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchParam(e.target.value);
   };
@@ -35,6 +40,10 @@ const Home = () => {
         data.posts.filter((p: Post) => p.title?.toUpperCase().includes(searchParam.toUpperCase()))
       );
     });
+    const updateOnline = () => {
+      setIsOnline(decoded.exp > (new Date().getTime() + 1) / 1000);
+    };
+    updateOnline();
   }, [searchParam]);
 
   const getAll = async () => {
@@ -50,7 +59,7 @@ const Home = () => {
   const postReview = async (post: Post) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      await fetch(`${API_URL}/postings`, {
+      const response = await fetch(`${API_URL}/postings`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -65,7 +74,9 @@ const Home = () => {
           postPhotos: post.postPhotos,
         }),
       });
-      addPostToUI();
+      if (response.status != 401) {
+        addPostToUI();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -73,8 +84,6 @@ const Home = () => {
 
   const addPostToUI = (): void => {
     window.location.reload(); //temporary fix
-    // Newly created post will show on the screen but it can't be accessed
-    // setPosts([post, ...posts]);
   };
 
   const removePostFromUI = (postId: string | undefined): void => {
@@ -85,7 +94,7 @@ const Home = () => {
   const deletePost = async (postId: string | undefined) => {
     const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
     try {
-      await fetch(`${API_URL}/postings/${postId}`, {
+      const response = await fetch(`${API_URL}/postings/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -93,7 +102,10 @@ const Home = () => {
           Authorization: token,
         },
       });
-      removePostFromUI(postId);
+      console.log(response);
+      if (response.status != 401) {
+        removePostFromUI(postId);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -102,8 +114,9 @@ const Home = () => {
   return (
     <>
       <Heading textAlign="center" noOfLines={1}>
-        Home
+        Home - {isOnline ? "Online" : "Offline"}
       </Heading>
+      <SearchIcon boxSize={5} />
       <Input
         onChange={(e) => handleSearch(e)}
         textAlign="center"
@@ -113,7 +126,7 @@ const Home = () => {
         width="auto"
       />{" "}
       <Button onClick={() => window.location.reload()}>Reset</Button>
-      <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />
+      {isOnline && <PostForm post={post} setPost={setPost} updatePosts={updatePosts} />}
       <div id="posts">
         <div id="posts">
           {posts.map((post, i) => (

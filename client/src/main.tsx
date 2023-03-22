@@ -16,6 +16,7 @@ const root = createRoot(container);
  * Refine search function and remove window reloads/reduce API calls
  *  - set two lists: filteredPosts and Posts only work with filteredPosts after initial retrival
  * Add feature to allow comments to have comments
+ * Return toast messages for CRUD actions on the page
  */
 root.render(
   <ChakraProvider theme={theme}>
