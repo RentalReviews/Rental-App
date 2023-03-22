@@ -9,7 +9,7 @@ const createPost = async (
   authorId: string,
   title: string,
   content: string,
-  url: UploadedPhoto[]
+  url: UploadedPhoto[] = []
 ) => {
   const newPost = await prismaClient.post.create({
     data: {
@@ -19,7 +19,7 @@ const createPost = async (
     },
   });
 
-  url?.forEach((url) => {
+  url.forEach((url) => {
     createPostPhoto(url.url, newPost.id);
   });
 
