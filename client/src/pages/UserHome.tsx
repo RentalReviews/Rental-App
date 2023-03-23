@@ -113,7 +113,6 @@ const Home = () => {
   };
 
   const addPostToUI = (): void => {
-    // window.location.reload(); //temporary fix
     setPosts([post, ...posts]);
   };
 
