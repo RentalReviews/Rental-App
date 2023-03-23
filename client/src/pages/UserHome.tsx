@@ -9,9 +9,7 @@ import { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
 
 const Home = () => {
-  const API_URL = import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-    : "";
+  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
   const toast = useToast();
   const [post, setPost] = useState<Post>({

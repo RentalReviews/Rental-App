@@ -33,9 +33,7 @@ interface props {
 }
 
 const Review = (props: props) => {
-  const API_URL = import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-    : "";
+  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const [commentAuthor, setCommentAuthor] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));

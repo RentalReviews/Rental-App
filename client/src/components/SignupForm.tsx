@@ -28,9 +28,7 @@ type FormValues = {
 };
 
 const SignupForm = () => {
-  const API_URL = import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-    : "";
+  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -110,7 +108,7 @@ const SignupForm = () => {
           } else {
             toast({
               title: "Error",
-              description: "Error",
+              description: data.message || "Server error",
               status: "error",
               duration: 10000,
               isClosable: true,
@@ -118,24 +116,6 @@ const SignupForm = () => {
           }
         });
       });
-      // if (registerRes.ok) {
-      //   navigate("/");
-      //   toast({
-      //     title: "Account created",
-      //     description: "Your account has been created successfully.",
-      //     status: "success",
-      //     duration: 10000,
-      //     isClosable: true,
-      //   });
-      // } else {
-      //   toast({
-      //     title: "Error",
-      //     description: json.message,
-      //     status: "error",
-      //     duration: 10000,
-      //     isClosable: true,
-      //   });
-      // }
     } catch (error) {
       if (import.meta.env.DEV) console.log(error);
 
