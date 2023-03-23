@@ -111,9 +111,8 @@ jobs:
     env:
       GCP_REGION: us-west1
       GCP_REPOSITORY: rental-app-api
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       IMAGE_TAG: ${{ format('api:{0}', github.sha) }}
-      IMAGE_URL:  ${{ format('{0}-docker.pkg.dev/{1}/{2}/{3}', env.GCP_REGION, 
-        secrets.PROJECT_ID, env.GCP_REPOSITORY, env.IMAGE_TAG) }}
 
     steps:
     - uses: actions/checkout@v3
@@ -124,18 +123,22 @@ jobs:
       with:
         credentials_json: '${{ secrets.DEPLOY_CREDENTIAL }}'
 
+    - name: Set Container Image URL
+      run: |
+        echo "IMAGE_URL=$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$GCP_REPOSITORY/$IMAGE_TAG" >> $GITHUB_ENV
+
     - name: Configure Docker 
       run: |
-        gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
+        gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev" --quiet
 
     - name: Build and tag Docker image
       run: |
-        docker build -t ${{ env.IMAGE_TAG }} api/
-        docker tag ${{ env.IMAGE_TAG }} ${{ env.IMAGE_URL }}
+        docker build -t "$IMAGE_TAG" api/
+        docker tag "$IMAGE_TAG" "$IMAGE_URL"
 
     - name: Push image to GCP Artifact Registry
       run: |
-        docker push ${{ env.IMAGE_URL }}
+        docker push "$IMAGE_URL"
 
     - name: Push to Cloud Run
       id: cloud-run-deploy
@@ -143,7 +146,7 @@ jobs:
       with:
         service: 'rental-app-api'
         region: ${{ env.GCP_REGION }}
-        project_id: ${{ secrets.PROJECT_ID }}
+        project_id: ${{ env.GCP_PROJECT_ID }}
         image: ${{ env.IMAGE_URL }}
 
     - name: Output
