@@ -27,10 +27,9 @@ type FormValues = {
   confirmPassword: string;
 };
 
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
+
 const SignupForm = () => {
-  const API_URL = import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-    : "";
   const navigate = useNavigate();
   const toast = useToast();
 
