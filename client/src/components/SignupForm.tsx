@@ -18,7 +18,6 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import { genericErrorHandler } from "utils";
 
 type FormValues = {
   firstName: string;
@@ -28,9 +27,8 @@ type FormValues = {
   confirmPassword: string;
 };
 
-const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
-
 const SignupForm = () => {
+  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -83,7 +81,7 @@ const SignupForm = () => {
     e.preventDefault();
 
     try {
-      const registerRes = await fetch(`${API_URL}/auth/register`, {
+      await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,55 +91,31 @@ const SignupForm = () => {
           password: formValues.password,
           displayName: `${formValues.firstName} ${formValues.lastName}`,
         }),
+      }).then((response) => {
+        response.json().then((data) => {
+          localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
+          localStorage.setItem("BEARER_TOKEN", data.token);
+          localStorage.setItem("USER", JSON.stringify(data.user));
+          if (response.ok) {
+            navigate("/");
+            toast({
+              title: "Account created",
+              description: "Your account has been created successfully.",
+              status: "success",
+              duration: 10000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: "Error",
+              description: data.message || "Server error",
+              status: "error",
+              duration: 10000,
+              isClosable: true,
+            });
+          }
+        });
       });
-
-      const json = await registerRes.json();
-      if (import.meta.env.DEV) console.log(json);
-      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
-      localStorage.setItem("BEARER_TOKEN", json.token);
-
-      const getUserInfo = async () => {
-        try {
-          const response = await fetch(`http://localhost:4466/api/v1/users/${formValues.email}`);
-          const json = await response.json();
-          return json.user;
-        } catch (err) {
-          genericErrorHandler(err, toast);
-        }
-      };
-
-      const userData = await getUserInfo();
-      localStorage.setItem(
-        "USER",
-        JSON.stringify({
-          email: userData.email,
-          displayName: userData.displayName,
-          id: userData.id,
-          role: userData.role,
-        })
-      );
-
-      // Add user information to localStorage to hide edit/delete btn for posts/comments that do
-      // not belong to the user
-
-      if (registerRes.ok) {
-        navigate("/");
-        toast({
-          title: "Account created",
-          description: "Your account has been created successfully.",
-          status: "success",
-          duration: 10000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: json.message,
-          status: "error",
-          duration: 10000,
-          isClosable: true,
-        });
-      }
     } catch (error) {
       if (import.meta.env.DEV) console.log(error);
 

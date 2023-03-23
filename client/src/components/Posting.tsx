@@ -23,7 +23,6 @@ const Posting = (props: props) => {
   }
 
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
       <img
@@ -37,18 +36,15 @@ const Posting = (props: props) => {
           })
         }
       />
-
       <Box p="6">
         <Box display="flex" alignItems="baseline">
           <Badge borderRadius="full" px="2" colorScheme="teal">
             New
           </Badge>
         </Box>
-
         <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" noOfLines={1}>
           {props.post.title}
         </Box>
-
         <Box display="flex" mt="2" alignItems="center">
           {Array(5)
             .fill("")
@@ -56,7 +52,7 @@ const Posting = (props: props) => {
               <StarIcon key={i} color={i < (props.post.rating || 1) ? "teal.500" : "gray.300"} />
             ))}
           <Box as="span" ml="2" color="gray.600" fontSize="sm">
-            0 comments
+            {props.post.comments.length} comments
           </Box>
         </Box>
         {(userData.id || "") == props.post.authorId ? (

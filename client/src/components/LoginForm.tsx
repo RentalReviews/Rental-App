@@ -10,9 +10,11 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
+import jwt_decode from "jwt-decode";
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import type { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
@@ -30,7 +32,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const loginRes = await fetch(`${API_URL}/auth/login`, {
+      await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,54 +41,40 @@ const LoginForm = () => {
           email: email,
           password: password,
         }),
+      }).then((response) => {
+        response.json().then((data) => {
+          localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
+          localStorage.setItem("BEARER_TOKEN", data.token);
+          const token = "Bearer " + localStorage.getItem("REFRESH_TOKEN")?.toString();
+          const decoded: RefreshToken = jwt_decode(token);
+          localStorage.setItem(
+            "USER",
+            JSON.stringify({
+              displayName: decoded.name,
+              email: decoded.email,
+              id: decoded.id,
+            })
+          );
+          if (response.ok) {
+            navigate("/");
+            toast({
+              title: "Logged in",
+              description: "You are online.",
+              status: "success",
+              duration: 10000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: "Error",
+              description: data.message || "Server error",
+              status: "error",
+              duration: 10000,
+              isClosable: true,
+            });
+          }
+        });
       });
-
-      const json = await loginRes.json();
-      if (import.meta.env.DEV) console.log(json);
-
-      localStorage.setItem("REFRESH_TOKEN", json.refreshToken);
-      localStorage.setItem("BEARER_TOKEN", json.token);
-
-      const getUserInfo = async () => {
-        try {
-          const response = await fetch(`${API_URL}/users/${email}`);
-          const json = await response.json();
-          return json.user;
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      const userData = await getUserInfo();
-      console.log(userData);
-      localStorage.setItem(
-        "USER",
-        JSON.stringify({
-          email: userData.email,
-          displayName: userData.displayName,
-          id: userData.id,
-          role: userData.role,
-        })
-      );
-
-      if (loginRes.ok) {
-        navigate("/");
-        toast({
-          title: "Success",
-          description: "You have successfully logged in.",
-          status: "success",
-          duration: 10000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: json.message,
-          status: "error",
-          duration: 10000,
-          isClosable: true,
-        });
-      }
     } catch (error) {
       genericErrorHandler(error, toast);
     }
