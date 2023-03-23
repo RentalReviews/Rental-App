@@ -106,7 +106,7 @@ jobs:
   deploy:
     name: Deploy to Cloud Run
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'RentalReviews' && github.event_name == 'push'
+    if: github.repository_owner == 'RentalReviews'
     needs: [build]
     env:
       GCP_REGION: us-west1
