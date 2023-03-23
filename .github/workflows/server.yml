@@ -135,3 +135,13 @@ jobs:
     - name: Push image to GCP Artifact Registry
       run: |
         docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
+
+    - name: Push to Cloud Run
+      id: cloud-run-deploy
+      uses: 'google-github-actions/deploy-cloudrun@v1'
+      with:
+        service: rental-app-api
+        image: $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
+
+    - name: Output
+      run: 'curl "${{ steps.cloud-run-deploy.outputs.url }}"'
