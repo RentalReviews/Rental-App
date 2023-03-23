@@ -15,9 +15,7 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { genericErrorHandler } from "utils";
 
-const API_URL = import.meta.env.DEV
-  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-  : "";
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const LoginForm = () => {
   const navigate = useNavigate();

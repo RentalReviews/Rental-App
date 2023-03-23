@@ -23,9 +23,7 @@ import { genericErrorHandler } from "utils";
 
 import type { Comment, Post } from "types";
 
-const API_URL = import.meta.env.DEV
-  ? `http://localhost:${import.meta.env.VITE_SERVER_PORT || 3000}/api/v1`
-  : "";
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 interface props {
   post: Post;
