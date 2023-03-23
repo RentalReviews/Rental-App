@@ -141,7 +141,9 @@ jobs:
       uses: 'google-github-actions/deploy-cloudrun@v1'
       with:
         service: rental-app-api
-        image: $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
+        region: ${{ env.REGION }}
+        project_id: ${{ env.PROJECT_ID }}
+        image: '$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}'
 
     - name: Output
       run: 'curl "${{ steps.cloud-run-deploy.outputs.url }}"'
