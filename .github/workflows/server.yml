@@ -109,10 +109,11 @@ jobs:
     if: github.repository_owner == 'RentalReviews' && github.event_name == 'push'
     needs: [build]
     env:
-      REGION: us-west1
-      REPOSITORY: rental-app-api
-      IMAGE_NAME: api
-      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_REGION: us-west1
+      GCP_REPOSITORY: rental-app-api
+      IMAGE_TAG: ${{ format('api:{0}', github.sha) }}
+      IMAGE_URL:  ${{ format('{0}-docker.pkg.dev/{1}/{2}/{3}', env.GCP_REGION, 
+        secrets.PROJECT_ID, env.GCP_REPOSITORY, env.IMAGE_TAG) }}
 
     steps:
     - uses: actions/checkout@v3
@@ -125,25 +126,25 @@ jobs:
 
     - name: Configure Docker 
       run: |
-        gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+        gcloud auth configure-docker $GCP_REGION-docker.pkg.dev --quiet
 
     - name: Build and tag Docker image
       run: |
-        docker build -t $IMAGE_NAME:${{ github.sha }} api/
-        docker tag $IMAGE_NAME:${{ github.sha }} $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
+        docker build -t ${{ env.IMAGE_TAG }} api/
+        docker tag ${{ env.IMAGE_TAG }} ${{ env.IMAGE_URL }}
 
     - name: Push image to GCP Artifact Registry
       run: |
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}
+        docker push ${{ env.IMAGE_URL }}
 
     - name: Push to Cloud Run
       id: cloud-run-deploy
       uses: 'google-github-actions/deploy-cloudrun@v1'
       with:
-        service: rental-app-api
-        region: ${{ env.REGION }}
-        project_id: ${{ env.PROJECT_ID }}
-        image: '$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:${{ github.sha }}'
+        service: 'rental-app-api'
+        region: ${{ env.GCP_REGION }}
+        project_id: ${{ secrets.PROJECT_ID }}
+        image: ${{ env.IMAGE_URL }}
 
     - name: Output
       run: 'curl "${{ steps.cloud-run-deploy.outputs.url }}"'
