@@ -19,7 +19,6 @@ import {
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
-import "styles/userHome.css";
 import { genericErrorHandler } from "utils";
 
 import type { Comment, Post } from "types";

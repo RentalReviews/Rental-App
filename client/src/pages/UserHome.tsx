@@ -3,14 +3,12 @@ import Posting from "components/Posting";
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
 import { Post } from "types/Post";
-import "styles/userHome.css";
 import jwt_decode from "jwt-decode";
 import { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const Home = () => {
-  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
-
   const toast = useToast();
   const [post, setPost] = useState<Post>({
     authorId: "",

@@ -14,7 +14,7 @@ import jwt_decode from "jwt-decode";
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { RefreshToken } from "types/RefreshToken";
+import type { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;

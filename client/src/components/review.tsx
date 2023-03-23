@@ -21,8 +21,8 @@ import {
 } from "@chakra-ui/react";
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from "react";
 import { BiLike } from "react-icons/bi";
-
 import type { Comment } from "types";
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 interface props {
   comment: Comment;
@@ -33,7 +33,6 @@ interface props {
 }
 
 const Review = (props: props) => {
-  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const [commentAuthor, setCommentAuthor] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
