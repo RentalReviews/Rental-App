@@ -52,6 +52,8 @@ jobs:
       
     - name: Build 
       run: npm run build:client
+      env:
+        VITE_API_SERVER_URL: https://rental-app-api-k4v6eblhva-uw.a.run.app
       
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3.1.1
