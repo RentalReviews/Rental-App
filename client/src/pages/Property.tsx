@@ -56,7 +56,7 @@ const Property = () => {
   };
   const getPost = async () => {
     const url = window.location.href.split("/");
-    const id = url[url.length - 1].split(":")[1];
+    const id = url[url.length - 1];
     try {
       const response = await fetch(`${API_URL}/postings/${id}`);
       const json = await response.json();
