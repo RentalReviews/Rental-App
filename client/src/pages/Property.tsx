@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
 import { genericErrorHandler } from "utils";
-
-import type { Comment } from "types";
+import { useLocation } from "react-router-dom";
+import { Comment, Post } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
@@ -17,8 +16,20 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
  *
  */
 const Property = () => {
-  const { state } = useLocation();
   const toast = useToast();
+  const { state } = useLocation();
+  const [post, setPost] = useState<Post>({
+    authorId: "",
+    comments: [],
+    content: "",
+    createdAt: new Date(),
+    id: "",
+    postPhotos: [],
+    published: false,
+    updatedAt: new Date(),
+    title: "",
+    rating: 0,
+  });
 
   const [comment, setComment] = useState<Comment>({
     authorId: "",
@@ -31,6 +42,9 @@ const Property = () => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
+    getPost().then((data) => {
+      setPost(data.post);
+    });
     getPostComments().then((data) => {
       setComments(data);
     });
@@ -39,6 +53,17 @@ const Property = () => {
   const updateComments = () => {
     setComments([...comments, comment]);
     postComment();
+  };
+  const getPost = async () => {
+    const url = window.location.href.split("/");
+    const id = url[url.length - 1].split(":")[1];
+    try {
+      const response = await fetch(`${API_URL}/postings/${id}`);
+      const json = await response.json();
+      return json;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const removeComment = (commentId: string | undefined): void => {
@@ -116,7 +141,7 @@ const Property = () => {
         },
         body: JSON.stringify({
           content: comment.content,
-          postId: state.Post.id,
+          postId: post.id,
           authorId: token,
         }),
       });
@@ -143,7 +168,7 @@ const Property = () => {
         setComment={setComment}
         updateComments={updateComments}
         key={99}
-        post={state.Post}
+        post={post}
       />
       <br />
       <div id="comments">
