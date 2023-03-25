@@ -3,7 +3,7 @@ import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Comment, Post } from "types";
 import { Spinner } from "@chakra-ui/react";
 
@@ -19,9 +19,20 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 const Property = () => {
   const { id } = useParams();
   const toast = useToast();
-  const { state } = useLocation();
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState<string | null | boolean>(null);
+  const [post, setPost] = useState<Post>({
+    authorId: "",
+    comments: [],
+    content: "",
+    createdAt: new Date(),
+    id: "",
+    postPhotos: [],
+    published: false,
+    updatedAt: new Date(),
+    title: "",
+    rating: 0,
+  });
+  const [loadingPost, setLoadingPost] = useState<null | boolean>(null);
+  const [loadingComments, setLoadingComments] = useState<null | boolean>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [comment, setComment] = useState<Comment>({
@@ -35,19 +46,27 @@ const Property = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const navigate = useNavigate();
   useEffect(() => {
-    getPost().then((data) => {
-      setPost(data.post);
-    });
-    setLoading("loading...");
+    setLoadingPost(true);
+    setError(null);
+    getPost()
+      .then((data) => {
+        setPost(data.post);
+        setLoadingPost(false);
+      })
+      .catch(() => {
+        setLoadingPost(false);
+        setError("An error occurred.");
+      });
+    setLoadingComments(true);
     setError(null);
     getPostComments()
       .then((data) => {
         setComments(data);
-        setLoading(false);
+        setLoadingComments(false);
       })
       .catch(() => {
-        setLoading(false);
-        setError("An error occurred. Awkward..");
+        setLoadingComments(false);
+        setError("An error occurred.");
       });
   }, [comments.length]);
 
@@ -151,7 +170,7 @@ const Property = () => {
 
   const getPostComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/postings/${state.Post.id}`);
+      const response = await fetch(`${API_URL}/postings/${id}`);
       const json = await response.json();
       return json.post.comments;
     } catch (error) {
@@ -171,22 +190,19 @@ const Property = () => {
   };
   return (
     <>
-      {!state && notFound()}
-      {state && (
+      {!post && notFound()}
+      {loadingPost && <Spinner size="xl" ml="45%" mt="30%" />}
+      {!loadingPost && (
         <>
           <InfoCard
             comment={comment}
             setComment={setComment}
             updateComments={updateComments}
             key={99}
-            post={state.Post}
+            post={post}
           />
           <br />
-          {loading && (
-            <h1>
-              <Spinner />
-            </h1>
-          )}
+          {loadingComments && <Spinner size="xl" ml="45%" />}
           {comments && (
             <>
               <div id="comments">
