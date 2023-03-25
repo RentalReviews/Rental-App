@@ -19,18 +19,7 @@ const Property = () => {
   const { id } = useParams();
   const toast = useToast();
   const { state } = useLocation();
-  const [post, setPost] = useState<Post>({
-    authorId: "",
-    comments: [],
-    content: "",
-    createdAt: new Date(),
-    id: "",
-    postPhotos: [],
-    published: false,
-    updatedAt: new Date(),
-    title: "",
-    rating: 0,
-  });
+  const [post, setPost] = useState<Post | null>(null);
 
   const [comment, setComment] = useState<Comment>({
     authorId: "",
@@ -140,7 +129,7 @@ const Property = () => {
         },
         body: JSON.stringify({
           content: comment.content,
-          postId: post.id,
+          postId: post?.id,
           authorId: token,
         }),
       });
@@ -167,7 +156,7 @@ const Property = () => {
         setComment={setComment}
         updateComments={updateComments}
         key={99}
-        post={post}
+        post={state.Post}
       />
       <br />
       <div id="comments">
