@@ -3,7 +3,7 @@ import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Comment, Post } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
@@ -16,6 +16,7 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
  *
  */
 const Property = () => {
+  const { id } = useParams();
   const toast = useToast();
   const { state } = useLocation();
   const [post, setPost] = useState<Post>({
@@ -55,8 +56,6 @@ const Property = () => {
     postComment();
   };
   const getPost = async () => {
-    const url = window.location.href.split("/");
-    const id = url[url.length - 1];
     try {
       const response = await fetch(`${API_URL}/postings/${id}`);
       const json = await response.json();
