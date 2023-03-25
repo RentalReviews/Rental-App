@@ -162,21 +162,21 @@ const Property = () => {
 
   return (
     <>
+      <InfoCard
+        comment={comment}
+        setComment={setComment}
+        updateComments={updateComments}
+        key={99}
+        post={state.Post}
+      />
+      <br />
       {loading && (
         <h1>
-          {loading} <Spinner />
+          <Spinner />
         </h1>
       )}
       {comments && (
         <>
-          <InfoCard
-            comment={comment}
-            setComment={setComment}
-            updateComments={updateComments}
-            key={99}
-            post={state.Post}
-          />
-          <br />
           <div id="comments">
             {comments.map((comment, i) => (
               <Review
