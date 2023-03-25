@@ -5,6 +5,7 @@ import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
 import { useLocation, useParams } from "react-router-dom";
 import { Comment, Post } from "types";
+import { Spinner } from "@chakra-ui/react";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
@@ -20,6 +21,8 @@ const Property = () => {
   const toast = useToast();
   const { state } = useLocation();
   const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState<string | null | boolean>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [comment, setComment] = useState<Comment>({
     authorId: "",
@@ -35,9 +38,17 @@ const Property = () => {
     getPost().then((data) => {
       setPost(data.post);
     });
-    getPostComments().then((data) => {
-      setComments(data);
-    });
+    setLoading("loading...");
+    setError(null);
+    getPostComments()
+      .then((data) => {
+        setComments(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setError("An error occurred. Awkward..");
+      });
   }, [comments.length]);
 
   const updateComments = () => {
@@ -151,26 +162,36 @@ const Property = () => {
 
   return (
     <>
-      <InfoCard
-        comment={comment}
-        setComment={setComment}
-        updateComments={updateComments}
-        key={99}
-        post={state.Post}
-      />
-      <br />
-      <div id="comments">
-        {comments.map((comment, i) => (
-          <Review
-            key={i}
+      {loading && (
+        <h1>
+          {loading} <Spinner />
+        </h1>
+      )}
+      {comments && (
+        <>
+          <InfoCard
             comment={comment}
-            authorId={comment.authorId ? comment.authorId : "No ID"}
-            deleteReview={() => deleteReview(comment.id)}
             setComment={setComment}
-            editComment={() => editComment(comment.id)}
+            updateComments={updateComments}
+            key={99}
+            post={state.Post}
           />
-        ))}
-      </div>
+          <br />
+          <div id="comments">
+            {comments.map((comment, i) => (
+              <Review
+                key={i}
+                comment={comment}
+                authorId={comment.authorId ? comment.authorId : "No ID"}
+                deleteReview={() => deleteReview(comment.id)}
+                setComment={setComment}
+                editComment={() => editComment(comment.id)}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      {error && <p>{error}</p>}
     </>
   );
 };
