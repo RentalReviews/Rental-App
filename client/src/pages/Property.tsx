@@ -19,18 +19,7 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 const Property = () => {
   const { id } = useParams();
   const toast = useToast();
-  const [post, setPost] = useState<Post>({
-    authorId: "",
-    comments: [],
-    content: "",
-    createdAt: new Date(),
-    id: "",
-    postPhotos: [],
-    published: false,
-    updatedAt: new Date(),
-    title: "",
-    rating: 0,
-  });
+  const [post, setPost] = useState<Post | null>(null);
   const [loadingPost, setLoadingPost] = useState<null | boolean>(null);
   const [loadingComments, setLoadingComments] = useState<null | boolean>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +67,7 @@ const Property = () => {
     try {
       const response = await fetch(`${API_URL}/postings/${id}`);
       const json = await response.json();
+      !json.post ? notFound() : void 0;
       return json;
     } catch (error) {
       console.error(error);
@@ -190,17 +180,18 @@ const Property = () => {
   };
   return (
     <>
-      {!post && notFound()}
       {loadingPost && <Spinner size="xl" ml="45%" mt="30%" />}
       {!loadingPost && (
         <>
-          <InfoCard
-            comment={comment}
-            setComment={setComment}
-            updateComments={updateComments}
-            key={99}
-            post={post}
-          />
+          {post && (
+            <InfoCard
+              comment={comment}
+              setComment={setComment}
+              updateComments={updateComments}
+              key={99}
+              post={post}
+            />
+          )}
           <br />
           {loadingComments && <Spinner size="xl" ml="45%" />}
           {comments && (
