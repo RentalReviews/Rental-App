@@ -3,7 +3,7 @@ import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Comment, Post } from "types";
 import { Spinner } from "@chakra-ui/react";
 
@@ -33,7 +33,7 @@ const Property = () => {
     updatedAt: new Date(),
   });
   const [comments, setComments] = useState<Comment[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     getPost().then((data) => {
       setPost(data.post);
@@ -160,38 +160,52 @@ const Property = () => {
     }
   };
 
+  const notFound = () => {
+    toast({
+      title: "Page not found",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+    navigate("/");
+  };
   return (
     <>
-      <InfoCard
-        comment={comment}
-        setComment={setComment}
-        updateComments={updateComments}
-        key={99}
-        post={state.Post}
-      />
-      <br />
-      {loading && (
-        <h1>
-          <Spinner />
-        </h1>
-      )}
-      {comments && (
+      {!state && notFound()}
+      {state && (
         <>
-          <div id="comments">
-            {comments.map((comment, i) => (
-              <Review
-                key={i}
-                comment={comment}
-                authorId={comment.authorId ? comment.authorId : "No ID"}
-                deleteReview={() => deleteReview(comment.id)}
-                setComment={setComment}
-                editComment={() => editComment(comment.id)}
-              />
-            ))}
-          </div>
+          <InfoCard
+            comment={comment}
+            setComment={setComment}
+            updateComments={updateComments}
+            key={99}
+            post={state.Post}
+          />
+          <br />
+          {loading && (
+            <h1>
+              <Spinner />
+            </h1>
+          )}
+          {comments && (
+            <>
+              <div id="comments">
+                {comments.map((comment, i) => (
+                  <Review
+                    key={i}
+                    comment={comment}
+                    authorId={comment.authorId ? comment.authorId : "No ID"}
+                    deleteReview={() => deleteReview(comment.id)}
+                    setComment={setComment}
+                    editComment={() => editComment(comment.id)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          {error && <p>{error}</p>}
         </>
       )}
-      {error && <p>{error}</p>}
     </>
   );
 };
