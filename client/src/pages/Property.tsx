@@ -46,7 +46,7 @@ const Property = () => {
         setLoadingPost(false);
         setError("An error occurred.");
       });
-  }, [comments.length]);
+  }, []);
 
   const updateComments = () => {
     setComments([...comments, comment]);
