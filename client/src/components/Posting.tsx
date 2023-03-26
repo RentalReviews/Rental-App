@@ -29,7 +29,7 @@ const Posting = (props: props) => {
         src={imageUrl}
         alt={"property.imageAlt"}
         onClick={() =>
-          navigate("/property", {
+          navigate(`/posting/${props.post.id}`, {
             state: {
               Post: props.post,
             },

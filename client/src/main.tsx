@@ -29,7 +29,7 @@ root.render(
       <BasePage>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/property" element={<Property />} />
+          <Route path="/posting/:id" element={<Property />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

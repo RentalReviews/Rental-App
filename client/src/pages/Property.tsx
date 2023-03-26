@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
 import { genericErrorHandler } from "utils";
-
-import type { Comment } from "types";
+import { useNavigate, useParams } from "react-router-dom";
+import { Comment, Post } from "types";
+import { Spinner } from "@chakra-ui/react";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
@@ -17,8 +17,11 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
  *
  */
 const Property = () => {
-  const { state } = useLocation();
+  const { id } = useParams();
   const toast = useToast();
+  const [post, setPost] = useState<Post | null>(null);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [comment, setComment] = useState<Comment>({
     authorId: "",
@@ -29,16 +32,35 @@ const Property = () => {
     updatedAt: new Date(),
   });
   const [comments, setComments] = useState<Comment[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
-    getPostComments().then((data) => {
-      setComments(data);
-    });
-  }, [comments.length]);
+    setLoadingPost(true);
+    setError(null);
+    getPost()
+      .then((data) => {
+        setPost(data.post);
+        setComments(data.post.comments);
+        setLoadingPost(false);
+      })
+      .catch(() => {
+        setLoadingPost(false);
+        setError("An error occurred.");
+      });
+  }, []);
 
   const updateComments = () => {
     setComments([...comments, comment]);
     postComment();
+  };
+  const getPost = async () => {
+    try {
+      const response = await fetch(`${API_URL}/postings/${id}`);
+      const json = await response.json();
+      !json.post ? notFound() : void 0;
+      return json;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const removeComment = (commentId: string | undefined): void => {
@@ -116,7 +138,7 @@ const Property = () => {
         },
         body: JSON.stringify({
           content: comment.content,
-          postId: state.Post.id,
+          postId: post?.id,
           authorId: token,
         }),
       });
@@ -125,39 +147,47 @@ const Property = () => {
     }
   };
 
-  const getPostComments = async () => {
-    try {
-      const response = await fetch(`${API_URL}/postings/${state.Post.id}`);
-      const json = await response.json();
-      return json.post.comments;
-    } catch (error) {
-      genericErrorHandler(error, toast);
-      return [];
-    }
+  const notFound = () => {
+    toast({
+      title: "Page not found",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+    navigate("/");
   };
-
   return (
     <>
-      <InfoCard
-        comment={comment}
-        setComment={setComment}
-        updateComments={updateComments}
-        key={99}
-        post={state.Post}
-      />
-      <br />
-      <div id="comments">
-        {comments.map((comment, i) => (
-          <Review
-            key={i}
-            comment={comment}
-            authorId={comment.authorId ? comment.authorId : "No ID"}
-            deleteReview={() => deleteReview(comment.id)}
-            setComment={setComment}
-            editComment={() => editComment(comment.id)}
-          />
-        ))}
-      </div>
+      {loadingPost && <Spinner size="xl" ml="45%" mt="30%" />}
+      {!loadingPost && (
+        <>
+          {post && (
+            <InfoCard
+              comment={comment}
+              setComment={setComment}
+              updateComments={updateComments}
+              key={99}
+              post={post}
+            />
+          )}
+          <br />
+
+          <div id="comments">
+            {comments.map((comment, i) => (
+              <Review
+                key={i}
+                comment={comment}
+                authorId={comment.authorId ? comment.authorId : "No ID"}
+                deleteReview={() => deleteReview(comment.id)}
+                setComment={setComment}
+                editComment={() => editComment(comment.id)}
+              />
+            ))}
+          </div>
+
+          {error && <p>{error}</p>}
+        </>
+      )}
     </>
   );
 };
