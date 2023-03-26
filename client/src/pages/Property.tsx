@@ -21,7 +21,6 @@ const Property = () => {
   const toast = useToast();
   const [post, setPost] = useState<Post | null>(null);
   const [loadingPost, setLoadingPost] = useState<boolean>(false);
-  const [loadingComments, setLoadingComments] = useState<null | boolean>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [comment, setComment] = useState<Comment>({
@@ -40,21 +39,11 @@ const Property = () => {
     getPost()
       .then((data) => {
         setPost(data.post);
+        setComments(data.post.comments);
         setLoadingPost(false);
       })
       .catch(() => {
         setLoadingPost(false);
-        setError("An error occurred.");
-      });
-    setLoadingComments(true);
-    setError(null);
-    getPostComments()
-      .then((data) => {
-        setComments(data);
-        setLoadingComments(false);
-      })
-      .catch(() => {
-        setLoadingComments(false);
         setError("An error occurred.");
       });
   }, [comments.length]);
@@ -158,17 +147,6 @@ const Property = () => {
     }
   };
 
-  const getPostComments = async () => {
-    try {
-      const response = await fetch(`${API_URL}/postings/${id}`);
-      const json = await response.json();
-      return json.post.comments;
-    } catch (error) {
-      genericErrorHandler(error, toast);
-      return [];
-    }
-  };
-
   const notFound = () => {
     toast({
       title: "Page not found",
@@ -193,23 +171,20 @@ const Property = () => {
             />
           )}
           <br />
-          {loadingComments && <Spinner size="xl" ml="45%" />}
-          {comments && (
-            <>
-              <div id="comments">
-                {comments.map((comment, i) => (
-                  <Review
-                    key={i}
-                    comment={comment}
-                    authorId={comment.authorId ? comment.authorId : "No ID"}
-                    deleteReview={() => deleteReview(comment.id)}
-                    setComment={setComment}
-                    editComment={() => editComment(comment.id)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
+
+          <div id="comments">
+            {comments.map((comment, i) => (
+              <Review
+                key={i}
+                comment={comment}
+                authorId={comment.authorId ? comment.authorId : "No ID"}
+                deleteReview={() => deleteReview(comment.id)}
+                setComment={setComment}
+                editComment={() => editComment(comment.id)}
+              />
+            ))}
+          </div>
+
           {error && <p>{error}</p>}
         </>
       )}
