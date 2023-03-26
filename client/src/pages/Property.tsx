@@ -20,7 +20,7 @@ const Property = () => {
   const { id } = useParams();
   const toast = useToast();
   const [post, setPost] = useState<Post | null>(null);
-  const [loadingPost, setLoadingPost] = useState<null | boolean>(null);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
   const [loadingComments, setLoadingComments] = useState<null | boolean>(null);
   const [error, setError] = useState<string | null>(null);
 
