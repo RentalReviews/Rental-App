@@ -1,5 +1,5 @@
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "styles/map.css";
 import Geocode from "react-geocode";
 
@@ -27,11 +27,12 @@ export const Map = (props: props) => {
       }
     );
   });
+  const center = { lat: latlong.lat, lng: latlong.long };
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: apikey,
   });
-  const center = useMemo(() => ({ lat: latlong.lat, lng: latlong.long }), []);
+
   return (
     <div className="map">
       {!isLoaded ? (
