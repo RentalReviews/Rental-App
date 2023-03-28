@@ -1,6 +1,6 @@
 .map {
-    height: 250px;
-    width: 381px;
+    height: 100px;
+    width: 100px;
   }
   .bigmap {
     height: 380px;
@@ -11,3 +11,12 @@
     height: 100%;
     width: 100%;
   }
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}

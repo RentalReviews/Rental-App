@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Badge, Box, Button } from "@chakra-ui/react";
+import { Badge, Box, Button, Image } from "@chakra-ui/react";
 import { MouseEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import { Map } from "./map";
@@ -26,22 +26,45 @@ const Posting = (props: props) => {
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
-      <Box maxW="sm" maxH="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
-        <img
-          src={imageUrl}
-          alt={"property.imageAlt"}
-          onClick={() =>
-            navigate(`/posting/${props.post.id}`, {
-              state: {
-                Post: props.post,
-              },
-            })
-          }
-        />
-      </Box>
+      <Box position="relative" my={3}>
+        <Box
+          maxW="sm"
+          maxH="sm"
+          borderWidth="1px"
+          margin="10px"
+          borderRadius="lg"
+          overflow="hidden"
+        >
+          <Image
+            className="profile-img"
+            src={imageUrl}
+            alt={"property.imageAlt"}
+            onClick={() =>
+              navigate(`/posting/${props.post.id}`, {
+                state: {
+                  Post: props.post,
+                },
+              })
+            }
+            opacity={1}
+            transition="0.5s ease"
+          />
+        </Box>
 
-      <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
-        <Map address={props.post.title} className="map"></Map>
+        <Box
+          transform="translate(260%, -250%)"
+          boxSize="100px"
+          transition="0.5s ease"
+          opacity={1}
+          className="overlay-text"
+          maxW="sm"
+          borderWidth="1px"
+          margin="10px"
+          borderRadius="lg"
+          overflow="hidden"
+        >
+          <Map address={props.post.title} className="map"></Map>
+        </Box>
       </Box>
       <Box p="6">
         <Box display="flex" alignItems="baseline">

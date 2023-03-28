@@ -41,7 +41,12 @@ export const Map = (props: props) => {
         <h1>Loading...</h1>
       ) : (
         <>
-          <GoogleMap mapContainerClassName="map-container" center={center} zoom={10}>
+          <GoogleMap
+            mapContainerClassName="map-container"
+            center={center}
+            zoom={12}
+            options={{ disableDefaultUI: true }}
+          >
             <Marker position={{ lat: latlong.lat, lng: latlong.long }} />
           </GoogleMap>
         </>
