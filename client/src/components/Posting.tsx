@@ -26,18 +26,23 @@ const Posting = (props: props) => {
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
-      <img
-        src={imageUrl}
-        alt={"property.imageAlt"}
-        onClick={() =>
-          navigate(`/posting/${props.post.id}`, {
-            state: {
-              Post: props.post,
-            },
-          })
-        }
-      />
-      <Map address={props.post.title}></Map>
+      <Box maxW="sm" maxH="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
+        <img
+          src={imageUrl}
+          alt={"property.imageAlt"}
+          onClick={() =>
+            navigate(`/posting/${props.post.id}`, {
+              state: {
+                Post: props.post,
+              },
+            })
+          }
+        />
+      </Box>
+
+      <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
+        <Map address={props.post.title}></Map>
+      </Box>
       <Box p="6">
         <Box display="flex" alignItems="baseline">
           <Badge borderRadius="full" px="2" colorScheme="teal">

@@ -2,6 +2,7 @@ import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import { useState } from "react";
 import "styles/map.css";
 import Geocode from "react-geocode";
+import { Box } from "@chakra-ui/react";
 
 const apikey = "AIzaSyC9UOdRpOXb5QbE8DMYgyLcrfJBkOGg9Rc";
 interface latlong {
@@ -34,7 +35,7 @@ export const Map = (props: props) => {
   });
 
   return (
-    <div className="map">
+    <Box className="map">
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (
@@ -44,7 +45,7 @@ export const Map = (props: props) => {
           </GoogleMap>
         </>
       )}
-    </div>
+    </Box>
   );
 };
 //"2445 Guilford Dr, Abbotsford, BC V2S 5M1, Canada"
