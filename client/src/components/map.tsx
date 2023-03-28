@@ -11,6 +11,7 @@ interface latlong {
 }
 interface props {
   address: string;
+  className: string;
 }
 
 export const Map = (props: props) => {
@@ -35,7 +36,7 @@ export const Map = (props: props) => {
   });
 
   return (
-    <Box className="map">
+    <Box className={props.className}>
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (

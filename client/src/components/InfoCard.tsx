@@ -16,11 +16,13 @@ import {
   Input,
   useToast,
   Center,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { genericErrorHandler } from "utils";
-
+import { Map } from "./map";
 import type { Comment, Post } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
@@ -137,23 +139,30 @@ const InfoCard = (props: props) => {
             </Box>
           </Box>
         </Box>
-        <div id="posts">
-          <Center>
-            <Image
-              boxSize="sm"
-              maxH="s"
-              src={
-                props.post.postPhotos[0]?.url ||
-                "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
-              }
-              alt={"property.imageAlt"}
-              borderRadius="md"
-            />
-          </Center>
-          <Box ml={10} mr={10} mb={10} mt={10}>
-            {props.post.content}
-          </Box>
-        </div>
+        <Center>
+          <Wrap>
+            <WrapItem>
+              <Image
+                boxSize="sm"
+                maxH="s"
+                src={
+                  props.post.postPhotos[0]?.url ||
+                  "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
+                }
+                alt={"property.imageAlt"}
+                borderRadius="md"
+              />
+            </WrapItem>
+            <WrapItem>
+              <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
+                <Map address={props.post.title} className="bigmap"></Map>
+              </Box>
+            </WrapItem>
+          </Wrap>
+        </Center>
+        <Box ml={10} mr={10} mb={10} mt={10}>
+          {props.post.content}
+        </Box>
         <Box display="flex">
           <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
             Like

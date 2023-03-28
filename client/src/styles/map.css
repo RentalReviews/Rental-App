@@ -2,6 +2,10 @@
     height: 250px;
     width: 381px;
   }
+  .bigmap {
+    height: 380px;
+    width: 400px;
+  }
   
   .map-container {
     height: 100%;

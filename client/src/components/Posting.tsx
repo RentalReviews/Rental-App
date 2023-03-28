@@ -41,7 +41,7 @@ const Posting = (props: props) => {
       </Box>
 
       <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
-        <Map address={props.post.title}></Map>
+        <Map address={props.post.title} className="map"></Map>
       </Box>
       <Box p="6">
         <Box display="flex" alignItems="baseline">
