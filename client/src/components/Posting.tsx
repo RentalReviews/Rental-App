@@ -52,7 +52,7 @@ const Posting = (props: props) => {
         </Box>
 
         <Box
-          transform="translate(260%, -250%)"
+          position="absolute"
           boxSize="100px"
           transition="0.5s ease"
           opacity={1}
@@ -61,7 +61,10 @@ const Posting = (props: props) => {
           borderWidth="1px"
           margin="10px"
           borderRadius="lg"
+          border="2pt solid white"
           overflow="hidden"
+          top="-4%"
+          left="69%"
         >
           <Map address={props.post.title} className="map"></Map>
         </Box>
