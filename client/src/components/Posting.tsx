@@ -2,6 +2,7 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Button } from "@chakra-ui/react";
 import { MouseEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
+import { Map } from "./map";
 
 import type { Post } from "types";
 
@@ -36,6 +37,7 @@ const Posting = (props: props) => {
           })
         }
       />
+      <Map address={props.post.title}></Map>
       <Box p="6">
         <Box display="flex" alignItems="baseline">
           <Badge borderRadius="full" px="2" colorScheme="teal">
