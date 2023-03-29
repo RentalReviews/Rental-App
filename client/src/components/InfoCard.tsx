@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Badge,
   Box,
@@ -23,15 +23,16 @@ import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { genericErrorHandler } from "utils";
 import { Map } from "./map";
-import type { Comment, Post } from "types";
-import { coordinates } from "./Posting";
+
+import type { Comment, Post, Coordinate } from "types";
+import type { SetStateAction, Dispatch } from "react";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 interface props {
   post: Post;
   comment: Comment;
-  coordinates: coordinates;
+  coordinates: Coordinate;
   validAddr: boolean;
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: () => void;

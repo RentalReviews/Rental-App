@@ -1,33 +1,31 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Button, Image } from "@chakra-ui/react";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Map } from "./map";
 import Geocode from "react-geocode";
-import type { Post } from "types";
 
-export interface coordinates {
-  lat: number;
-  long: number;
-}
+import type { Post, Coordinate } from "types";
+import type { MouseEventHandler } from "react";
+
+const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY || "";
+
 export interface props {
   post: Post;
   deletePost: undefined | MouseEventHandler<HTMLButtonElement>;
 }
-const apikey = "AIzaSyC9UOdRpOXb5QbE8DMYgyLcrfJBkOGg9Rc";
 
 const Posting = (props: props) => {
-  const [coordinates, setCoordinates] = useState<coordinates>({ lat: 0, long: 0 });
+  const [coordinates, setCoordinates] = useState<Coordinate>({ lat: 0, long: 0 });
   const navigate = useNavigate();
   let imageUrl: string | undefined = "";
   const [validAddr, setValidAddr] = useState<boolean>(false);
 
   useState(() => {
-    Geocode.setApiKey(apikey);
+    Geocode.setApiKey(MAP_API_KEY);
     Geocode.fromAddress(props.post.title).then(
       (response) => {
         const { lat, lng } = response.results[0].geometry.location;
-        console.log(lat, lng);
         setCoordinates({ lat: lat, long: lng });
         setValidAddr(true);
       },

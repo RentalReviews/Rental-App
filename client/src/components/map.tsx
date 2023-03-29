@@ -1,17 +1,20 @@
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import "styles/map.css";
 import { Box } from "@chakra-ui/react";
-import { coordinates } from "./Posting";
-const apikey = "AIzaSyC9UOdRpOXb5QbE8DMYgyLcrfJBkOGg9Rc";
+
+import "styles/map.css";
+
+import type { Coordinate } from "types";
+
+const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY || "";
 
 interface props {
-  coordinates?: coordinates;
+  coordinates?: Coordinate;
   className: string;
 }
 
 export const Map = (props: props) => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: apikey,
+    googleMapsApiKey: MAP_API_KEY,
   });
 
   return (
