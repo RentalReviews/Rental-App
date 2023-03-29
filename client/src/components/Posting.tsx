@@ -2,8 +2,9 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Button, Image } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Map } from "./map";
 import Geocode from "react-geocode";
+
+import { Map } from "./map";
 
 import type { Post, Coordinate } from "types";
 import type { MouseEventHandler } from "react";
@@ -16,10 +17,10 @@ export interface props {
 }
 
 const Posting = (props: props) => {
-  const [coordinates, setCoordinates] = useState<Coordinate>({ lat: 0, long: 0 });
+  const [coordinates, setCoordinates] = useState<Coordinate | null>(null);
   const navigate = useNavigate();
+
   let imageUrl: string | undefined = "";
-  const [validAddr, setValidAddr] = useState<boolean>(false);
 
   useState(() => {
     Geocode.setApiKey(MAP_API_KEY);
@@ -27,10 +28,12 @@ const Posting = (props: props) => {
       (response) => {
         const { lat, lng } = response.results[0].geometry.location;
         setCoordinates({ lat: lat, long: lng });
-        setValidAddr(true);
       },
       (error) => {
-        console.error(error);
+        console.log(`Could not get coordinates for posting ${props.post.id}`);
+        if (import.meta.env.DEV) {
+          console.log(error);
+        }
       }
     );
   });
@@ -64,7 +67,6 @@ const Posting = (props: props) => {
                 state: {
                   Post: props.post,
                   Coordinates: coordinates,
-                  ValidAddr: validAddr,
                 },
               })
             }
@@ -72,7 +74,7 @@ const Posting = (props: props) => {
             transition="0.5s ease"
           />
         </Box>
-        {validAddr && (
+        {coordinates && (
           <Box
             position="absolute"
             boxSize="100px"

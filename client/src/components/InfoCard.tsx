@@ -32,8 +32,7 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 interface props {
   post: Post;
   comment: Comment;
-  coordinates: Coordinate;
-  validAddr: boolean;
+  coordinates?: Coordinate;
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: () => void;
 }
@@ -157,7 +156,7 @@ const InfoCard = (props: props) => {
                 borderRadius="md"
               />
             </WrapItem>
-            {props.validAddr && (
+            {props.coordinates && (
               <WrapItem>
                 <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
                   <Map coordinates={props.coordinates} className="bigmap"></Map>

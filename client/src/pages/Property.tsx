@@ -165,7 +165,6 @@ const Property = () => {
           {post && (
             <InfoCard
               coordinates={state.Coordinates}
-              validAddr={state.ValidAddr}
               comment={comment}
               setComment={setComment}
               updateComments={updateComments}
