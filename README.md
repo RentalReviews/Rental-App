@@ -26,6 +26,7 @@ To run the application locally, please follow the steps below:
 - Create a `.env` file in the root directory and add the following line
   ```shell
   VITE_API_URL=http://localhost:3000
+  VITE_MAP_API_KEY= ...
   ```
 
 - Run the following commands in the root directory

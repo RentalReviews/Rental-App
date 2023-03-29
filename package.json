@@ -47,5 +47,6 @@
   },
   "homepage": "https://github.com/RentalReviews/Rental-App",
   "dependencies": {
+    "@types/google.maps": "^3.52.4"
   }
 }

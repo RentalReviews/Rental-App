@@ -1,5 +1,6 @@
 import { Heading, Wrap, WrapItem, useToast } from "@chakra-ui/react";
 import Posting from "components/Posting";
+
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
 import { Post } from "types/Post";
