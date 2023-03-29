@@ -24,12 +24,15 @@ import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { genericErrorHandler } from "utils";
 import { Map } from "./map";
 import type { Comment, Post } from "types";
+import { coordinates } from "./Posting";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 interface props {
   post: Post;
   comment: Comment;
+  coordinates: coordinates;
+  validAddr: boolean;
   setComment: Dispatch<SetStateAction<Comment>>;
   updateComments: () => void;
 }
@@ -153,11 +156,13 @@ const InfoCard = (props: props) => {
                 borderRadius="md"
               />
             </WrapItem>
-            <WrapItem>
-              <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
-                <Map address={props.post.title} className="bigmap"></Map>
-              </Box>
-            </WrapItem>
+            {props.validAddr && (
+              <WrapItem>
+                <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
+                  <Map coordinates={props.coordinates} className="bigmap"></Map>
+                </Box>
+              </WrapItem>
+            )}
           </Wrap>
         </Center>
         <Box ml={10} mr={10} mb={10} mt={10}>

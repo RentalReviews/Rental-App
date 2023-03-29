@@ -1,19 +1,41 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Button, Image } from "@chakra-ui/react";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Map } from "./map";
-
+import Geocode from "react-geocode";
 import type { Post } from "types";
 
+export interface coordinates {
+  lat: number;
+  long: number;
+}
 export interface props {
   post: Post;
   deletePost: undefined | MouseEventHandler<HTMLButtonElement>;
 }
+const apikey = "AIzaSyC9UOdRpOXb5QbE8DMYgyLcrfJBkOGg9Rc";
 
 const Posting = (props: props) => {
+  const [coordinates, setCoordinates] = useState<coordinates>({ lat: 0, long: 0 });
   const navigate = useNavigate();
   let imageUrl: string | undefined = "";
+  const [validAddr, setValidAddr] = useState<boolean>(false);
+
+  useState(() => {
+    Geocode.setApiKey(apikey);
+    Geocode.fromAddress(props.post.title).then(
+      (response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        console.log(lat, lng);
+        setCoordinates({ lat: lat, long: lng });
+        setValidAddr(true);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  });
 
   try {
     imageUrl = props.post.postPhotos?.at(0)?.url || "";
@@ -43,6 +65,8 @@ const Posting = (props: props) => {
               navigate(`/posting/${props.post.id}`, {
                 state: {
                   Post: props.post,
+                  Coordinates: coordinates,
+                  ValidAddr: validAddr,
                 },
               })
             }
@@ -50,24 +74,25 @@ const Posting = (props: props) => {
             transition="0.5s ease"
           />
         </Box>
-
-        <Box
-          position="absolute"
-          boxSize="100px"
-          transition="0.5s ease"
-          opacity={1}
-          className="overlay-text"
-          maxW="sm"
-          borderWidth="1px"
-          margin="10px"
-          borderRadius="lg"
-          border="2pt solid white"
-          overflow="hidden"
-          top="-4%"
-          left="69%"
-        >
-          <Map address={props.post.title} className="map"></Map>
-        </Box>
+        {validAddr && (
+          <Box
+            position="absolute"
+            boxSize="100px"
+            transition="0.5s ease"
+            opacity={1}
+            className="overlay-text"
+            maxW="sm"
+            borderWidth="1px"
+            margin="10px"
+            borderRadius="lg"
+            border="2pt solid white"
+            overflow="hidden"
+            top="-4%"
+            left="69%"
+          >
+            <Map coordinates={coordinates} className="map"></Map>
+          </Box>
+        )}
       </Box>
       <Box p="6">
         <Box display="flex" alignItems="baseline">
