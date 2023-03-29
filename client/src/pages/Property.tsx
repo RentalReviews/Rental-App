@@ -99,7 +99,7 @@ const Property = () => {
           content: comment.content,
         }),
       });
-      if (response.status == 201) {
+      if (response.ok) {
         updateAfterEdit(commentId || "");
       }
     } catch (err) {
@@ -118,7 +118,7 @@ const Property = () => {
           Authorization: token,
         },
       });
-      if (response.status == 201) {
+      if (response.ok) {
         removeComment(commentId);
       }
     } catch (err) {
