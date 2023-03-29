@@ -29,7 +29,7 @@ const CreatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
 const GetPosts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const posts = await getAllPosts();
-    res.status(201).json({
+    res.status(200).json({
       posts,
     });
   } catch (error) {
@@ -44,7 +44,7 @@ const GetPost = async (req: Request, res: Response, next: NextFunction) => {
     if (!post) {
       throw new HttpError(`Post with id = ${id} does not exist`, 404);
     }
-    res.status(201).json({
+    res.status(200).json({
       post,
     });
   } catch (error) {
@@ -73,7 +73,7 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
 
     const upPost = await updatePost(id, title, content, postPhotos);
 
-    res.status(201).json({
+    res.status(200).json({
       upPost,
     });
   } catch (error) {
@@ -96,7 +96,7 @@ const DeletePost = async (req: RequestWithToken, res: Response, next: NextFuncti
     }
 
     await deletePost(id);
-    res.status(201).json({
+    res.status(200).json({
       message: "Post deleted",
     });
   } catch (error) {
