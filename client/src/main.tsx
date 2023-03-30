@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 
 import theme from "styles/theme";
 import { BasePage, Home, Property, Login, Signup } from "pages";
-import store from "store";
+import store from "redux/store";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
