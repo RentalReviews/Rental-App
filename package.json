@@ -45,5 +45,8 @@
   "bugs": {
     "url": "https://github.com/RentalReviews/Rental-App/issues"
   },
-  "homepage": "https://github.com/RentalReviews/Rental-App"
+  "homepage": "https://github.com/RentalReviews/Rental-App",
+  "dependencies": {
+    "@types/google.maps": "^3.52.4"
+  }
 }

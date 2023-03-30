@@ -40,7 +40,7 @@ const GetComment = async (req: Request, res: Response, next: NextFunction) => {
       throw new HttpError(`Comment with id = ${id} does not exist`, 404);
     }
 
-    res.status(201).json({
+    res.status(200).json({
       comment,
     });
   } catch (error) {
@@ -68,7 +68,7 @@ const UpdateComment = async (req: RequestWithToken, res: Response, next: NextFun
     }
 
     const updatedComment = await updateComment(id, content);
-    res.status(201).json({
+    res.status(200).json({
       updatedComment,
     });
   } catch (error) {
@@ -91,7 +91,7 @@ const DeleteComment = async (req: RequestWithToken, res: Response, next: NextFun
     }
 
     await deleteComment(id);
-    res.status(201).json({
+    res.status(200).json({
       message: "Comment deleted",
     });
   } catch (error) {

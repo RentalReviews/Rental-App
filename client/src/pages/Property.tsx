@@ -3,7 +3,7 @@ import InfoCard from "components/InfoCard";
 import Review from "components/review";
 import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Comment, Post } from "types";
 import { Spinner } from "@chakra-ui/react";
 
@@ -17,6 +17,7 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
  *
  */
 const Property = () => {
+  const { state } = useLocation();
   const { id } = useParams();
   const toast = useToast();
   const [post, setPost] = useState<Post | null>(null);
@@ -98,7 +99,7 @@ const Property = () => {
           content: comment.content,
         }),
       });
-      if (response.status == 201) {
+      if (response.ok) {
         updateAfterEdit(commentId || "");
       }
     } catch (err) {
@@ -117,7 +118,7 @@ const Property = () => {
           Authorization: token,
         },
       });
-      if (response.status == 201) {
+      if (response.ok) {
         removeComment(commentId);
       }
     } catch (err) {
@@ -163,6 +164,7 @@ const Property = () => {
         <>
           {post && (
             <InfoCard
+              coordinates={state.Coordinates}
               comment={comment}
               setComment={setComment}
               updateComments={updateComments}

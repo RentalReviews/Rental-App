@@ -1,5 +1,6 @@
 import { Heading, Wrap, WrapItem, useToast } from "@chakra-ui/react";
 import Posting from "components/Posting";
+
 import { PostForm } from "components/PostForm";
 import { useState, useEffect } from "react";
 import { Post } from "types/Post";
@@ -101,7 +102,7 @@ const Home = () => {
           rating: post.rating,
         }),
       }).then((response) => {
-        if (response.status == 201) {
+        if (response.ok) {
           addPostToUI();
         }
       });
@@ -130,7 +131,7 @@ const Home = () => {
           Authorization: token,
         },
       }).then((response) => {
-        if (response.status == 201) {
+        if (response.ok) {
           removePostFromUI(postId);
         }
       });
