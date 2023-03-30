@@ -166,7 +166,6 @@ const Home = () => {
                       title: post.title,
                       rating: post.rating,
                     }}
-                    deletePost={() => deletePost(post.id)}
                   />
                 </WrapItem>
               );
