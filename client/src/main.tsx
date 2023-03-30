@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import theme from "styles/theme";
-import { BasePage, Home, Property, Login, Signup } from "pages";
+import { BasePage, Home, Property, Login, Signup, Logout } from "pages";
 import store from "redux/store";
 
 const container = document.getElementById("root") as HTMLElement;
@@ -34,6 +34,7 @@ root.render(
             <Route path="/" element={<Home />} />
             <Route path="/posting/:id" element={<Property />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
         </BasePage>
