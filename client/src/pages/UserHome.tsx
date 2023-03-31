@@ -120,26 +120,6 @@ const Home = () => {
     setPosts(newPostsArray);
   };
 
-  const deletePost = async (postId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-    try {
-      await fetch(`${API_URL}/postings/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      }).then((response) => {
-        if (response.ok) {
-          removePostFromUI(postId);
-        }
-      });
-    } catch (err) {
-      genericErrorHandler(err, toast);
-    }
-  };
-
   return (
     <>
       <Heading textAlign="center" noOfLines={1} mb={3}>
@@ -166,7 +146,6 @@ const Home = () => {
                       title: post.title,
                       rating: post.rating,
                     }}
-                    deletePost={() => deletePost(post.id)}
                   />
                 </WrapItem>
               );

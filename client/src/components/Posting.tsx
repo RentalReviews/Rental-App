@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Badge, Box, Button, Image } from "@chakra-ui/react";
+import { Badge, Box, Image } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
@@ -7,20 +7,16 @@ import Geocode from "react-geocode";
 import { Map } from "./map";
 
 import type { Post, Coordinate } from "types";
-import type { MouseEventHandler } from "react";
 
 const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY || "";
+const NO_THUMBNAIL_URL =
+  "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
 
-export interface props {
-  post: Post;
-  deletePost: undefined | MouseEventHandler<HTMLButtonElement>;
-}
-
-const Posting = (props: props) => {
+const Posting = (props: { post: Post }) => {
   const [coordinates, setCoordinates] = useState<Coordinate | null>(null);
   const navigate = useNavigate();
 
-  let imageUrl: string | undefined = "";
+  const thumbnailImage: string = props.post.postPhotos[0]?.url || NO_THUMBNAIL_URL;
 
   useState(() => {
     Geocode.setApiKey(MAP_API_KEY);
@@ -38,15 +34,6 @@ const Posting = (props: props) => {
     );
   });
 
-  try {
-    imageUrl = props.post.postPhotos?.at(0)?.url || "";
-  } catch (err) {
-    console.log("issue getting image at index 0");
-    imageUrl =
-      "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
-  }
-
-  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
       <Box position="relative" my={3}>
@@ -60,8 +47,8 @@ const Posting = (props: props) => {
         >
           <Image
             className="profile-img"
-            src={imageUrl}
-            alt={"property.imageAlt"}
+            src={thumbnailImage}
+            alt={`Thumbnail for ${props.post.title}`}
             onClick={() =>
               navigate(`/posting/${props.post.id}`, {
                 state: {
@@ -113,13 +100,9 @@ const Posting = (props: props) => {
             {props.post.comments.length} comments
           </Box>
         </Box>
-        {(userData.id || "") == props.post.authorId ? (
-          <Button onClick={props.deletePost}>Delete</Button>
-        ) : (
-          <></>
-        )}
       </Box>
     </Box>
   );
 };
+
 export default Posting;
