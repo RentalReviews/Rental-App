@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import PostComment from "components/PostComment";
 import { useToast } from "@chakra-ui/react";
-import { genericErrorHandler } from "utils";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@chakra-ui/react";
 
@@ -13,21 +12,16 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 const Property = () => {
   const { state } = useLocation();
   const { id } = useParams();
-  const toast = useToast();
+
   const [post, setPost] = useState<Post | null>(null);
   const [loadingPost, setLoadingPost] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [comment, setComment] = useState<Comment>({
-    authorId: "",
-    content: "",
-    createdAt: new Date(),
-    id: "",
-    postId: "",
-    updatedAt: new Date(),
-  });
   const [comments, setComments] = useState<Comment[]>([]);
+
   const navigate = useNavigate();
+  const toast = useToast();
+
   useEffect(() => {
     setLoadingPost(true);
     setError(null);
@@ -43,11 +37,6 @@ const Property = () => {
       });
   }, []);
 
-  const updateComments = () => {
-    setComments([...comments, comment]);
-    postComment();
-  };
-
   const getPost = async () => {
     try {
       const response = await fetch(`${API_URL}/postings/${id}`);
@@ -56,28 +45,6 @@ const Property = () => {
       return json;
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const postComment = async () => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-
-    try {
-      await fetch(`${API_URL}/comments`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify({
-          content: comment.content,
-          postId: post?.id,
-          authorId: token,
-        }),
-      });
-    } catch (err) {
-      genericErrorHandler(err, toast);
     }
   };
 
@@ -90,21 +57,13 @@ const Property = () => {
     });
     navigate("/");
   };
+
   return (
     <>
       {loadingPost && <Spinner size="xl" ml="45%" mt="30%" />}
       {!loadingPost && (
         <>
-          {post && (
-            <InfoCard
-              coordinates={state.Coordinates}
-              comment={comment}
-              setComment={setComment}
-              updateComments={updateComments}
-              key={99}
-              post={post}
-            />
-          )}
+          {post && <InfoCard coordinates={state.Coordinates} post={post} />}
           <br />
 
           <div id="comments">
