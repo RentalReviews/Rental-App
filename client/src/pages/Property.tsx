@@ -1,21 +1,15 @@
 import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
-import Review from "components/review";
+import PostComment from "components/PostComment";
 import { useToast } from "@chakra-ui/react";
 import { genericErrorHandler } from "utils";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Comment, Post } from "types";
 import { Spinner } from "@chakra-ui/react";
+
+import type { Comment, Post } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
-/**
- * Remove modal from InfoCard and bring to Property
- * Need to have it in property so we can
- *
- * Pass post data from UserHome
- *
- */
 const Property = () => {
   const { state } = useLocation();
   const { id } = useParams();
@@ -176,7 +170,7 @@ const Property = () => {
 
           <div id="comments">
             {comments.map((comment, i) => (
-              <Review
+              <PostComment
                 key={i}
                 comment={comment}
                 authorId={comment.authorId ? comment.authorId : "No ID"}
