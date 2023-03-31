@@ -47,6 +47,7 @@ const Property = () => {
     setComments([...comments, comment]);
     postComment();
   };
+
   const getPost = async () => {
     try {
       const response = await fetch(`${API_URL}/postings/${id}`);
@@ -55,68 +56,6 @@ const Property = () => {
       return json;
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const removeComment = (commentId: string | undefined): void => {
-    const newCommentArray = comments.filter((comment) => comment.id !== commentId);
-    setComments(newCommentArray);
-  };
-
-  const updateAfterEdit = (commentId: string): void => {
-    const prevComment: Comment | undefined = comments.find((c) => c.id === commentId);
-    const newComment: Comment = {
-      authorId: prevComment?.authorId || "",
-      content: comment.content,
-      createdAt: prevComment?.createdAt || new Date(),
-      id: prevComment?.id || "",
-      postId: prevComment?.postId || "",
-      updatedAt: prevComment?.updatedAt || new Date(),
-    };
-    const newCommentArray = comments
-      .filter((comment) => comment.id !== commentId)
-      .concat(newComment);
-    setComments(newCommentArray);
-  };
-
-  const editComment = async (commentId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-    try {
-      const response = await fetch(`${API_URL}/comments/${commentId}`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify({
-          content: comment.content,
-        }),
-      });
-      if (response.ok) {
-        updateAfterEdit(commentId || "");
-      }
-    } catch (err) {
-      genericErrorHandler(err, toast);
-    }
-  };
-
-  const deleteReview = async (commentId: string | undefined) => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
-    try {
-      const response = await fetch(`${API_URL}/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      if (response.ok) {
-        removeComment(commentId);
-      }
-    } catch (err) {
-      genericErrorHandler(err, toast);
     }
   };
 
@@ -169,15 +108,8 @@ const Property = () => {
           <br />
 
           <div id="comments">
-            {comments.map((comment, i) => (
-              <PostComment
-                key={i}
-                comment={comment}
-                authorId={comment.authorId ? comment.authorId : "No ID"}
-                deleteReview={() => deleteReview(comment.id)}
-                setComment={setComment}
-                editComment={() => editComment(comment.id)}
-              />
+            {comments.map((comment) => (
+              <PostComment key={comment.id} comment={comment} />
             ))}
           </div>
 

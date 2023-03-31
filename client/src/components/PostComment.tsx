@@ -18,55 +18,99 @@ import {
   ModalCloseButton,
   useDisclosure,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
-import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from "react";
-import { BiLike } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { genericErrorHandler } from "utils";
 
 import type { Comment } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
-interface props {
-  comment: Comment;
-  authorId: string;
-  deleteReview: MouseEventHandler<HTMLButtonElement> | undefined;
-  setComment: Dispatch<SetStateAction<Comment>>;
-  editComment: (id: string) => Promise<void>;
-}
-
-const PostComment = (props: props) => {
+const PostComment = (props: { comment: Comment }) => {
   const [commentAuthor, setCommentAuthor] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const commentInput = useRef<HTMLTextAreaElement>(null);
+
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-  const handleModal = () => {
-    onClose();
-    props.editComment(props.comment.id || "");
-  };
+  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    props.setComment({
-      authorId: props.comment.authorId,
-      content: e.target.value,
-      createdAt: props.comment.createdAt,
-      id: props.comment.id,
-      postId: props.comment.postId,
-      updatedAt: new Date(),
-    });
-  };
-
-  const getCommentAuthorDisplayName = async () => {
-    try {
-      const response = await fetch(`${API_URL}/users/${props.authorId}`);
-      const json = await response.json();
-      setCommentAuthor(json.user.displayName);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     getCommentAuthorDisplayName();
   });
+
+  const updateComment = async (content: string) => {
+    if (!AuthToken) return navigate("/login");
+    if (content === "" || content === props.comment.content) return;
+
+    try {
+      const response = await fetch(`${API_URL}/comments/${props.comment.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        navigate(0);
+      } else {
+        toast({
+          title: "Error updating comment.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
+
+  const deleteComment = async () => {
+    if (!AuthToken) return navigate("/login");
+    try {
+      const response = await fetch(`${API_URL}/comments/${props.comment.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
+      console.log(AuthToken);
+      const json = await response.json();
+
+      if (response.ok) {
+        navigate(0);
+      } else {
+        toast({
+          title: "Error deleting comment.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
+
+  const getCommentAuthorDisplayName = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/${props.comment.authorId}`);
+      const json = await response.json();
+      setCommentAuthor(json.user.displayName);
+    } catch (err) {
+      if (import.meta.env.DEV) console.error(err);
+      setCommentAuthor("John Doe");
+    }
+  };
 
   return (
     <>
@@ -74,11 +118,11 @@ const PostComment = (props: props) => {
         <CardHeader>
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-
+              <Avatar name={commentAuthor} src="" />
               <Box>
-                {/* Change this to display name from locally stored user object */}
-                <Heading size="sm">{commentAuthor}</Heading>
+                <Heading size="sm">
+                  {commentAuthor + (userData.id == props.comment.authorId ? " (You)" : "")}
+                </Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
@@ -101,22 +145,14 @@ const PostComment = (props: props) => {
             },
           }}
         >
-          {userData.id != props.comment.authorId ? (
-            <Button flex="1" width={10} variant="ghost" leftIcon={<BiLike />}>
-              Like
-            </Button>
-          ) : (
-            <></>
-          )}
           {userData.id == props.comment.authorId ? (
             <>
-              <Button left={40} mr={10} flex={1} variant="ghost" leftIcon={<BiLike />}>
-                Like
-              </Button>
               <Button mr={2} onClick={onOpen}>
                 Edit
               </Button>
-              <Button onClick={props.deleteReview}>Delete</Button>
+              <Button colorScheme="red" onClick={deleteComment}>
+                Delete
+              </Button>
             </>
           ) : (
             <></>
@@ -132,16 +168,23 @@ const PostComment = (props: props) => {
             <Textarea
               placeholder="Edit your comment"
               name="myName"
-              onChange={(e) => handleOnChange(e)}
               defaultValue={props.comment.content}
+              ref={commentInput}
             />
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost" onClick={() => handleModal()}>
+            <Button
+              colorScheme="blue"
+              onClick={(e) => {
+                e.preventDefault();
+                updateComment(commentInput.current?.value || "");
+                onClose();
+              }}
+            >
               Submit
             </Button>
           </ModalFooter>
