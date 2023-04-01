@@ -132,9 +132,6 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
           {props.post.content}
         </Box>
         <Box display="flex">
-          <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
-            Like
-          </Button>
           <Button
             flex="1"
             variant="ghost"
@@ -151,12 +148,14 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
             </Button>
           )}
         </Box>
-        <Box display={showCommentForm ? "block" : "none"} id="textArea">
-          <Textarea m={3} placeholder="Add a comment" ref={newCommentRef} />
+        <Box display={showCommentForm ? "flex" : "none"} id="textArea" flexDirection="column" p={5}>
+          <Textarea placeholder="Add a comment..." ref={newCommentRef} />
           <Button
-            ml={3}
+            size="sm"
+            colorScheme="teal"
             mt={3}
-            mb={3}
+            alignSelf="flex-end"
+            w="100px"
             onClick={(e) => {
               e.preventDefault();
               addComment(newCommentRef.current?.value || "");
