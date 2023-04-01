@@ -21,7 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { genericErrorHandler } from "utils";
 
 import type { Comment } from "types";
@@ -29,7 +29,6 @@ import type { Comment } from "types";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const PostComment = (props: { comment: Comment }) => {
-  const [commentAuthor, setCommentAuthor] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const commentInput = useRef<HTMLTextAreaElement>(null);
 
@@ -38,10 +37,6 @@ const PostComment = (props: { comment: Comment }) => {
 
   const navigate = useNavigate();
   const toast = useToast();
-
-  useEffect(() => {
-    getCommentAuthorDisplayName();
-  });
 
   const updateComment = async (content: string) => {
     if (!AuthToken) return navigate("/login");
@@ -101,27 +96,17 @@ const PostComment = (props: { comment: Comment }) => {
     }
   };
 
-  const getCommentAuthorDisplayName = async () => {
-    try {
-      const response = await fetch(`${API_URL}/users/${props.comment.authorId}`);
-      const json = await response.json();
-      setCommentAuthor(json.user.displayName);
-    } catch (err) {
-      if (import.meta.env.DEV) console.error(err);
-      setCommentAuthor("John Doe");
-    }
-  };
-
   return (
     <>
       <Card maxW="8xl" mb={3}>
         <CardHeader>
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar name={commentAuthor} src="" />
+              <Avatar name={props.comment.author.displayName} src="" />
               <Box>
                 <Heading size="sm">
-                  {commentAuthor + (userData.id == props.comment.authorId ? " (You)" : "")}
+                  {props.comment.author.displayName +
+                    (userData.id == props.comment.authorId ? " (You)" : "")}
                 </Heading>
                 <p>Tenent</p>
               </Box>
