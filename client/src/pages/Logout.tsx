@@ -1,4 +1,4 @@
-import { Box, Heading, Button, Text, useToast } from "@chakra-ui/react";
+import { Box, Heading, Button, Text, Link, useToast } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
 import { clearUser } from "redux/user";
@@ -46,7 +46,16 @@ const Logout = () => {
   return (
     <Box w="40%" mx="auto">
       <Heading mb="20px">Logout</Heading>
-      {user ? <Button onClick={handleLogout}>Logout</Button> : <Text>You are not logged in</Text>}
+      {user ? (
+        <>
+          <Button onClick={handleLogout}>Logout</Button>
+          <Link href="/" display="block" mt="50px">
+            <Text as="u">Return to homepage</Text>
+          </Link>
+        </>
+      ) : (
+        <Text>You are not logged in</Text>
+      )}
     </Box>
   );
 };
