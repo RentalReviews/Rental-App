@@ -8,6 +8,7 @@ import {
   addRefreshTokenToWhitelist,
   findRefreshTokenById,
   revokeRefreshToken,
+  revokeRefreshTokensByUserId,
 } from "api/auth/auth.services";
 import HttpError from "utils/http-error";
 
@@ -140,7 +141,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
       throw new HttpError("Unauthorized", 401);
     }
 
-    await revokeRefreshToken(savedRefreshToken.userId);
+    await revokeRefreshTokensByUserId(savedRefreshToken.userId);
 
     res.status(200).json({ message: "Logged out" });
   } catch (error) {
