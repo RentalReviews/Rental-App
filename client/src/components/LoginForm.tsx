@@ -16,10 +16,13 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import type { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "redux/user";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -64,6 +67,15 @@ const LoginForm = () => {
               duration: 10000,
               isClosable: true,
             });
+            dispatch(
+              setUser({
+                displayName: decoded.name,
+                email: decoded.email,
+                id: decoded.id,
+                authToken: data.token,
+                refreshToken: data.refreshToken,
+              })
+            );
           } else {
             toast({
               title: "Error",
