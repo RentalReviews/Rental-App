@@ -17,13 +17,24 @@ const createPost = async (
       content,
       authorId,
     },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
+      postPhotos: true,
+    },
   });
 
   url.forEach((url) => {
     createPostPhoto(url.url, newPost.id);
   });
 
-  return newPost;
+  return {
+    ...newPost,
+    comments: [],
+  };
 };
 
 const updatePost = async (postId: string, title: string, content: string, url: UploadedPhoto[]) => {
@@ -41,6 +52,23 @@ const updatePost = async (postId: string, title: string, content: string, url: U
     data: {
       title: title,
       content: content,
+    },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
+      postPhotos: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return post;
@@ -61,8 +89,21 @@ const getPost = async (postId: string) => {
       id: postId,
     },
     include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
       postPhotos: true,
-      comments: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return post;
@@ -71,8 +112,21 @@ const getPost = async (postId: string) => {
 const getAllPosts = async () => {
   const posts = await prismaClient.post.findMany({
     include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
       postPhotos: true,
-      comments: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return posts;
