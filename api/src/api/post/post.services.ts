@@ -85,9 +85,12 @@ const updatePost = async (
 };
 
 const deletePost = async (postId: string) => {
-  const del = await prismaClient.post.delete({
+  const del = await prismaClient.post.update({
     where: {
       id: postId,
+    },
+    data: {
+      published: false,
     },
   });
   return del;
@@ -116,11 +119,17 @@ const getPost = async (postId: string) => {
       },
     },
   });
+
+  if (post && !post.published) return null;
+
   return post;
 };
 
 const getAllPosts = async () => {
   const posts = await prismaClient.post.findMany({
+    where: {
+      published: true,
+    },
     include: {
       author: {
         select: {
@@ -137,6 +146,9 @@ const getAllPosts = async () => {
           },
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
   return posts;
