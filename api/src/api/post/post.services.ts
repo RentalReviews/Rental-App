@@ -7,31 +7,51 @@ interface UploadedPhoto {
 
 const createPost = async (
   authorId: string,
+  rating: number,
   title: string,
   content: string,
-  url: UploadedPhoto[] = []
+  postPhotos: UploadedPhoto[] = []
 ) => {
   const newPost = await prismaClient.post.create({
     data: {
       title,
       content,
+      rating,
       authorId,
+      postPhotos: {
+        create: postPhotos.map((photo) => ({
+          url: photo.url,
+        })),
+      },
+    },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
+      postPhotos: true,
     },
   });
 
-  url.forEach((url) => {
-    createPostPhoto(url.url, newPost.id);
-  });
-
-  return newPost;
+  return {
+    ...newPost,
+    comments: [],
+  };
 };
 
-const updatePost = async (postId: string, title: string, content: string, url: UploadedPhoto[]) => {
-  url.forEach((url) => {
-    if (url.id) {
-      updatePostPhoto(url.url, url.id);
+const updatePost = async (
+  postId: string,
+  title: string,
+  rating: number,
+  content: string,
+  postPhotos: UploadedPhoto[]
+) => {
+  postPhotos.forEach((photo) => {
+    if (photo.id) {
+      updatePostPhoto(photo.url, photo.id);
     } else {
-      createPostPhoto(url.url, postId);
+      createPostPhoto(photo.url, postId);
     }
   });
   const post = await prismaClient.post.update({
@@ -41,6 +61,24 @@ const updatePost = async (postId: string, title: string, content: string, url: U
     data: {
       title: title,
       content: content,
+      rating: rating,
+    },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
+      postPhotos: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return post;
@@ -61,8 +99,21 @@ const getPost = async (postId: string) => {
       id: postId,
     },
     include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
       postPhotos: true,
-      comments: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return post;
@@ -71,8 +122,21 @@ const getPost = async (postId: string) => {
 const getAllPosts = async () => {
   const posts = await prismaClient.post.findMany({
     include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
       postPhotos: true,
-      comments: true,
+      comments: {
+        include: {
+          author: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
   return posts;
