@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Flex,
   Heading,
@@ -19,7 +18,9 @@ import {
   useDisclosure,
   Textarea,
   useToast,
+  Text,
 } from "@chakra-ui/react";
+import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { genericErrorHandler } from "utils";
@@ -100,7 +101,7 @@ const PostComment = (props: { comment: Comment }) => {
     <>
       <Card maxW="8xl" mb={3}>
         <CardHeader>
-          <Flex>
+          <Flex gap={3}>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
               <Avatar name={props.comment.author.displayName} src="" />
               <Box>
@@ -111,38 +112,38 @@ const PostComment = (props: { comment: Comment }) => {
                 <p>Tenent</p>
               </Box>
             </Flex>
-            <IconButton variant="ghost" colorScheme="gray" aria-label="See menu" />
+
+            {userData.id == props.comment.authorId ? (
+              <>
+                <IconButton icon={<BiEdit />} aria-label="Edit Comment" onClick={onOpen} />
+                <IconButton
+                  icon={<BiTrash />}
+                  colorScheme="red"
+                  aria-label="Delete Comment"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    deleteComment();
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
           </Flex>
         </CardHeader>
 
         <CardBody>
-          <Flex flexWrap="wrap" max-width="300px">
-            <p>{props.comment.content}</p>
-          </Flex>
+          <Text>{props.comment.content}</Text>
+          <Text fontSize="sm" color="gray.500" align="right">{`Commented on ${new Date(
+            props.comment.createdAt
+          ).toLocaleTimeString([], {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}`}</Text>
         </CardBody>
-
-        <CardFooter
-          justify="space-between"
-          flexWrap="wrap"
-          sx={{
-            "& > button": {
-              minW: "136px",
-            },
-          }}
-        >
-          {userData.id == props.comment.authorId ? (
-            <>
-              <Button mr={2} onClick={onOpen}>
-                Edit
-              </Button>
-              <Button colorScheme="red" onClick={deleteComment}>
-                Delete
-              </Button>
-            </>
-          ) : (
-            <></>
-          )}
-        </CardFooter>
       </Card>
       <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
