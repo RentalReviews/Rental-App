@@ -24,7 +24,6 @@ const Navbar = () => {
     { name: "Home", href: "/" },
     user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
   ];
-  console.log(user);
 
   return (
     <>
