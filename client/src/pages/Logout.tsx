@@ -1,14 +1,14 @@
 import { Box, Heading, Button, Text, Link, useToast } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
-import { clearUser } from "redux/user";
+import { clearUser, userSelector } from "redux/user";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const Logout = () => {
   const toast = useToast();
   const dispatch = useDispatch();
-  const { user } = useSelector((state: any) => state.user);
+  const { user } = useSelector(userSelector);
 
   const handleLogout = async () => {
     const response = await fetch(`${API_URL}/auth/logout`, {
@@ -17,7 +17,7 @@ const Logout = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        refreshToken: user.refreshToken,
+        refreshToken: user?.refreshToken,
       }),
     });
 
