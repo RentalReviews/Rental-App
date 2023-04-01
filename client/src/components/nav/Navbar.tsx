@@ -6,21 +6,25 @@ import {
   useColorMode,
   useDisclosure,
   Stack,
+  Avatar,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { IoMenu, IoClose, IoSunny, IoMoon } from "react-icons/io5";
-
+import { useSelector } from "react-redux";
+import { userSelector } from "redux/user";
 import NavLink from "./NavLink";
 
-const Links: Array<{ name: string; href: string }> = [
-  { name: "Login", href: "/login" },
-  { name: "Home", href: "/" },
-];
-
 const Navbar = () => {
+  const { user } = useSelector(userSelector);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
+
+  const Links: Array<{ name: string; href: string }> = [
+    { name: "Home", href: "/" },
+    user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
+  ];
+  console.log(user);
 
   return (
     <>
@@ -48,12 +52,15 @@ const Navbar = () => {
             ))}
           </HStack>
         </HStack>
-        <IconButton
-          onClick={toggleColorMode}
-          size={"md"}
-          icon={colorMode === "light" ? <IoMoon /> : <IoSunny />}
-          aria-label={"Toggle Color Mode"}
-        />
+        <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
+          <Avatar name={user?.displayName} />
+          <IconButton
+            onClick={toggleColorMode}
+            size={"md"}
+            icon={colorMode === "light" ? <IoMoon /> : <IoSunny />}
+            aria-label={"Toggle Color Mode"}
+          />
+        </HStack>
       </Flex>
 
       {isOpen ? (
