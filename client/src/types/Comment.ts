@@ -1,8 +1,11 @@
 export interface Comment {
-  authorId: string;
+  readonly id: string;
   content: string;
-  createdAt: Date;
-  id: string;
+  readonly authorId: string;
+  readonly author: {
+    displayName: string;
+  };
   postId: string;
-  updatedAt: Date;
+  readonly createdAt: string;
+  readonly updatedAt: string;
 }
