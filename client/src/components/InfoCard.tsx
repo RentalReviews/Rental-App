@@ -5,15 +5,7 @@ import {
   Button,
   Image,
   Textarea,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Input,
   useToast,
   Center,
   Wrap,
@@ -22,8 +14,10 @@ import {
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+
+import { PostForm } from "components/PostForm";
+import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
-import { Map } from "./map";
 
 import type { Post, Coordinate } from "types";
 
@@ -32,11 +26,6 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const [updatePostFormState, setUpdatePostFormState] = useState({
-    title: props.post.title,
-    content: props.post.content,
-    rating: props.post.rating,
-  });
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
   const toast = useToast();
@@ -44,43 +33,6 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
 
   const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-
-  const updatePost = async ({
-    title,
-    content,
-    rating,
-  }: {
-    title: string;
-    content: string;
-    rating: number;
-  }) => {
-    if (!AuthToken) return navigate("/login");
-    if (title === "" || content === "") return;
-
-    try {
-      const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
-        },
-        body: JSON.stringify({ title, content, rating, postPhotos: props.post.postPhotos }),
-      });
-      const json = await response.json();
-      if (response.ok) {
-        navigate(0);
-      } else {
-        toast({
-          title: "Error updating post.",
-          status: "error",
-          description: json.message || "Something went wrong.",
-          duration: 3000,
-        });
-      }
-    } catch (err) {
-      genericErrorHandler(err, toast);
-    }
-  };
 
   const addComment = async (content: string) => {
     if (!AuthToken) return;
@@ -214,88 +166,7 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
           </Button>
         </Box>
       </Box>
-      <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Property</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form>
-              <div>
-                <label htmlFor="title">Title: </label>
-                <Input
-                  type="text"
-                  name="title"
-                  defaultValue={props.post.title}
-                  onChange={(e) => {
-                    setUpdatePostFormState({
-                      ...updatePostFormState,
-                      title: e.target.value,
-                    });
-                  }}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="image-url">Image URL: </label>
-                <Input
-                  type="text"
-                  name="image-url"
-                  defaultValue={props.post.postPhotos[0]?.url}
-                  disabled
-                />
-              </div>
-              <div>
-                <label htmlFor="rating">Rating: </label>
-                <Input
-                  type="number"
-                  min={1}
-                  max={5}
-                  name="rating"
-                  defaultValue={props.post.rating || 3}
-                  onChange={(e) => {
-                    setUpdatePostFormState({
-                      ...updatePostFormState,
-                      rating: Number(e.target.value),
-                    });
-                  }}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="content">Content: </label>
-                <Input
-                  type="text"
-                  name="content"
-                  defaultValue={props.post.content}
-                  onChange={(e) => {
-                    setUpdatePostFormState({
-                      ...updatePostFormState,
-                      content: e.target.value,
-                    });
-                  }}
-                  required
-                />
-              </div>
-            </form>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-                updatePost(updatePostFormState);
-              }}
-            >
-              Submit
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <PostForm post={props.post} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </div>
   );
 };
