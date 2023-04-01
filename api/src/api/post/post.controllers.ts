@@ -6,7 +6,7 @@ import type { RequestWithToken } from "middlewares/auth";
 
 const CreatePost = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   try {
-    const { title, content, postPhotos } = req.body;
+    const { title, rating, content, postPhotos } = req.body;
     const userId = req.payload?.id || "";
 
     if (!userId) {
@@ -17,7 +17,7 @@ const CreatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
       throw new HttpError("Missing required fields", 400);
     }
 
-    const newPost = await createPost(userId, title, content, postPhotos);
+    const newPost = await createPost(userId, parseInt(rating) || 3, title, content, postPhotos);
     res.status(201).json({
       newPost,
     });
@@ -56,7 +56,7 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
   try {
     const { id } = req.params;
     const userId = req.payload?.id || "";
-    const { title, content, postPhotos } = req.body;
+    const { title, content, postPhotos, rating } = req.body;
 
     if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
@@ -71,7 +71,7 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
       throw new HttpError("Unauthorized", 401);
     }
 
-    const upPost = await updatePost(id, title, content, postPhotos);
+    const upPost = await updatePost(id, title, parseInt(rating) || 3, content, postPhotos);
 
     res.status(200).json({
       upPost,

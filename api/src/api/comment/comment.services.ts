@@ -7,6 +7,13 @@ const createComment = async (content: string, postId: string, authorId: string) 
       postId: postId,
       authorId: authorId,
     },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
+    },
   });
   return newcomment;
 };
@@ -18,6 +25,13 @@ const updateComment = async (commentId: string, content: string) => {
     },
     data: {
       content: content,
+    },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
     },
   });
   return comment;
@@ -36,6 +50,13 @@ const getComment = async (commentId: string) => {
   const comment = await prismaClient.comment.findUnique({
     where: {
       id: commentId,
+    },
+    include: {
+      author: {
+        select: {
+          displayName: true,
+        },
+      },
     },
   });
   return comment;

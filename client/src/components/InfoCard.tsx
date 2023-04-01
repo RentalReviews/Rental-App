@@ -21,87 +21,98 @@ import {
 } from "@chakra-ui/react";
 import { BiLike, BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 import { genericErrorHandler } from "utils";
 import { Map } from "./map";
 
-import type { Comment, Post, Coordinate } from "types";
-import type { SetStateAction, Dispatch } from "react";
+import type { Post, Coordinate } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
-interface props {
-  post: Post;
-  comment: Comment;
-  coordinates?: Coordinate;
-  setComment: Dispatch<SetStateAction<Comment>>;
-  updateComments: () => void;
-}
-
-const InfoCard = (props: props) => {
+const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-  const toast = useToast();
-
-  const [post, setPost] = useState<Post>({
-    authorId: props.post.authorId,
-    comments: props.post.comments,
-    content: props.post.content,
-    createdAt: props.post.createdAt,
-    id: props.post.id,
-    postPhotos: props.post.postPhotos,
-    published: props.post.published,
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const [updatePostFormState, setUpdatePostFormState] = useState({
     title: props.post.title,
-    updatedAt: props.post.updatedAt,
+    content: props.post.content,
     rating: props.post.rating,
   });
+  const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleModal = () => {
-    onClose();
-    editPost();
-  };
+  const toast = useToast();
+  const navigate = useNavigate();
 
-  const editPost = () => {
-    const token = "Bearer " + localStorage.getItem("BEARER_TOKEN")?.toString();
+  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
+  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
+
+  const updatePost = async ({
+    title,
+    content,
+    rating,
+  }: {
+    title: string;
+    content: string;
+    rating: number;
+  }) => {
+    if (!AuthToken) return navigate("/login");
+    if (title === "" || content === "") return;
+
     try {
-      fetch(`${API_URL}/postings/${post.id}`, {
+      const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${AuthToken}`,
         },
-        body: JSON.stringify({
-          id: post.id,
-          title: post.title,
-          postPhotos: post.postPhotos,
-          rating: post.rating,
-          content: post.content,
-          authorId: post.authorId,
-        }),
+        body: JSON.stringify({ title, content, rating, postPhotos: props.post.postPhotos }),
       });
+      const json = await response.json();
+      if (response.ok) {
+        navigate(0);
+      } else {
+        toast({
+          title: "Error updating post.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
     } catch (err) {
       genericErrorHandler(err, toast);
-    } finally {
-      setTimeout(() => alert("timeout"), 5000);
-      window.location.assign("/");
     }
   };
 
-  const toggleCommentForm = () => {
-    if (inputRef.current == null) {
-      return;
-    }
+  const addComment = async (content: string) => {
+    if (!AuthToken) return;
+    if (content === "") return;
 
-    if (inputRef.current.style.display == "block") {
-      inputRef.current.style.display = "none";
-      return;
+    try {
+      const response = await fetch(`${API_URL}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+        body: JSON.stringify({
+          content,
+          authorId: userData.id,
+          postId: props.post.id,
+        }),
+      });
+      const json = await response.json();
+      if (response.ok) {
+        navigate(0);
+      } else {
+        toast({
+          title: "Error adding comment.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      genericErrorHandler(err, toast);
     }
-    if (inputRef.current.style.display == "") {
-      inputRef.current.style.display = "block";
-      return;
-    }
-    inputRef.current.style.display = "block";
   };
 
   return (
@@ -172,7 +183,14 @@ const InfoCard = (props: props) => {
           <Button flex="1" variant="ghost" leftIcon={<BiLike />}>
             Like
           </Button>
-          <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={toggleCommentForm}>
+          <Button
+            flex="1"
+            variant="ghost"
+            leftIcon={<BiChat />}
+            onClick={() => {
+              setShowCommentForm(!showCommentForm);
+            }}
+          >
             Comment
           </Button>
           {props.post.authorId === (userData.id ? userData.id : "") && (
@@ -181,136 +199,82 @@ const InfoCard = (props: props) => {
             </Button>
           )}
         </Box>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            props.updateComments();
-          }}
-        >
-          <Box display="none" id="textArea" ref={inputRef}>
-            <Textarea
-              placeholder="Add a comment"
-              name="myName"
-              onChange={(e) =>
-                props.setComment({
-                  authorId: props.post.authorId,
-                  content: e.target.value,
-                  createdAt: new Date(),
-                  id: props.comment.id,
-                  postId: props.post.id,
-                  updatedAt: new Date(),
-                })
-              }
-            />
-            <Button ml={3} mt={3} mb={3} type="submit">
-              Add
-            </Button>
-          </Box>
-        </form>
+        <Box display={showCommentForm ? "block" : "none"} id="textArea">
+          <Textarea m={3} placeholder="Add a comment" ref={newCommentRef} />
+          <Button
+            ml={3}
+            mt={3}
+            mb={3}
+            onClick={(e) => {
+              e.preventDefault();
+              addComment(newCommentRef.current?.value || "");
+            }}
+          >
+            Add
+          </Button>
+        </Box>
       </Box>
-      {/* Pop ups can be placed outside of shown component */}
       <Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Edit Property</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
+            <form>
               <div>
-                <label htmlFor="">Rental Address: </label>
+                <label htmlFor="title">Title: </label>
                 <Input
                   type="text"
-                  onChange={(e) =>
-                    setPost({
-                      authorId: post.authorId,
-                      comments: props.post.comments,
-                      content: post.content,
-                      createdAt: props.post.createdAt,
-                      id: post.id,
-                      postPhotos: post.postPhotos,
-                      published: props.post.published,
+                  name="title"
+                  defaultValue={props.post.title}
+                  onChange={(e) => {
+                    setUpdatePostFormState({
+                      ...updatePostFormState,
                       title: e.target.value,
-                      updatedAt: props.post.updatedAt,
-                      rating: post.rating,
-                    })
-                  }
-                  defaultValue={post.title}
+                    });
+                  }}
                   required
                 />
               </div>
               <div>
-                <label htmlFor="">Image URL: </label>
+                <label htmlFor="image-url">Image URL: </label>
                 <Input
                   type="text"
-                  name=""
-                  id=""
-                  onChange={(e) =>
-                    setPost({
-                      authorId: post.authorId,
-                      comments: props.post.comments,
-                      content: post.content,
-                      createdAt: props.post.createdAt,
-                      id: post.id,
-                      postPhotos: [{ url: e.target.value }],
-                      published: props.post.published,
-                      title: post.title,
-                      updatedAt: props.post.updatedAt,
-                      rating: post.rating,
-                    })
-                  }
-                  defaultValue={post.postPhotos[0]?.url}
-                  required
+                  name="image-url"
+                  defaultValue={props.post.postPhotos[0]?.url}
+                  disabled
                 />
               </div>
               <div>
-                <label htmlFor="">Rating: </label>
+                <label htmlFor="rating">Rating: </label>
                 <Input
                   type="number"
-                  name=""
-                  id=""
-                  onChange={(e) =>
-                    setPost({
-                      authorId: post.authorId,
-                      comments: props.post.comments,
-                      content: post.content,
-                      createdAt: props.post.createdAt,
-                      id: post.id,
-                      postPhotos: post.postPhotos,
-                      published: props.post.published,
-                      title: post.title,
-                      updatedAt: props.post.updatedAt,
+                  min={1}
+                  max={5}
+                  name="rating"
+                  defaultValue={props.post.rating || 3}
+                  onChange={(e) => {
+                    setUpdatePostFormState({
+                      ...updatePostFormState,
                       rating: Number(e.target.value),
-                    })
-                  }
-                  defaultValue={post.rating ? post.rating : 3}
+                    });
+                  }}
                   required
                 />
               </div>
               <div>
-                <label htmlFor="">Caption: </label>
+                <label htmlFor="content">Content: </label>
                 <Input
                   type="text"
-                  name=""
-                  id=""
-                  onChange={(e) =>
-                    setPost({
-                      authorId: post.authorId,
-                      comments: props.post.comments,
+                  name="content"
+                  defaultValue={props.post.content}
+                  onChange={(e) => {
+                    setUpdatePostFormState({
+                      ...updatePostFormState,
                       content: e.target.value,
-                      createdAt: props.post.createdAt,
-                      id: post.id,
-                      postPhotos: post.postPhotos,
-                      published: props.post.published,
-                      title: post.title,
-                      updatedAt: props.post.updatedAt,
-                      rating: post.rating,
-                    })
-                  }
-                  defaultValue={post.content}
+                    });
+                  }}
+                  required
                 />
               </div>
             </form>
@@ -320,7 +284,13 @@ const InfoCard = (props: props) => {
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost" onClick={() => handleModal()}>
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault();
+                updatePost(updatePostFormState);
+              }}
+            >
               Submit
             </Button>
           </ModalFooter>
@@ -329,4 +299,5 @@ const InfoCard = (props: props) => {
     </div>
   );
 };
+
 export default InfoCard;

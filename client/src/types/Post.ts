@@ -1,15 +1,17 @@
 import { Photo } from "./Photo";
 
 export interface Post {
-  authorId: string;
-  comments: Comment[];
-  content: string;
-  createdAt: Date;
-  id: string;
-  postPhotos: Photo[];
-  published: boolean;
+  readonly id: string;
   title: string;
-  updatedAt: Date;
-  //Need to include in the database
+  content: string;
+  published: boolean;
   rating: number;
+  readonly authorId: string;
+  readonly author: {
+    displayName: string;
+  };
+  readonly comments: Comment[];
+  postPhotos: Photo[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
 }
