@@ -14,10 +14,11 @@ import jwt_decode from "jwt-decode";
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import type { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
 import { useDispatch } from "react-redux";
 import { setUser } from "redux/user";
+
+import type { JwtPayload } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
@@ -48,16 +49,7 @@ const LoginForm = () => {
         response.json().then((data) => {
           localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
           localStorage.setItem("BEARER_TOKEN", data.token);
-          const token = "Bearer " + localStorage.getItem("REFRESH_TOKEN")?.toString();
-          const decoded: RefreshToken = jwt_decode(token);
-          localStorage.setItem(
-            "USER",
-            JSON.stringify({
-              displayName: decoded.name,
-              email: decoded.email,
-              id: decoded.id,
-            })
-          );
+          const decoded = jwt_decode(data.token) as JwtPayload;
           if (response.ok) {
             navigate("/");
             toast({
@@ -69,7 +61,7 @@ const LoginForm = () => {
             });
             dispatch(
               setUser({
-                displayName: decoded.name,
+                displayName: decoded.displayName,
                 email: decoded.email,
                 id: decoded.id,
                 authToken: data.token,
