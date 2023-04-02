@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getTokens } from "utils/validate_tokens";
+import { getTokens } from "utils/tokens";
 import jwt_decode from "jwt-decode";
 
 import type { JwtPayload } from "types";
