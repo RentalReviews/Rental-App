@@ -28,7 +28,7 @@ const generateRefreshToken = (user: User, jti: string) => {
     {
       id: user.id,
       email: user.email,
-      name: user.displayName,
+      displayName: user.displayName,
       jti,
     },
     process.env.JWT_REFRESH_SECRET as string,
