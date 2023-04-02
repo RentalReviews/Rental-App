@@ -132,39 +132,48 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
         <Box ml={10} mr={10} mb={10} mt={10}>
           {props.post.content}
         </Box>
-        <Box display="flex">
-          <Button
-            flex="1"
-            variant="ghost"
-            leftIcon={<BiChat />}
-            onClick={() => {
-              setShowCommentForm(!showCommentForm);
-            }}
-          >
-            Comment
-          </Button>
-          {props.post.authorId === (user?.id || "") && (
-            <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
-              Edit
-            </Button>
-          )}
-        </Box>
-        <Box display={showCommentForm ? "flex" : "none"} id="textArea" flexDirection="column" p={5}>
-          <Textarea placeholder="Add a comment..." ref={newCommentRef} />
-          <Button
-            size="sm"
-            colorScheme="teal"
-            mt={3}
-            alignSelf="flex-end"
-            w="100px"
-            onClick={(e) => {
-              e.preventDefault();
-              addComment(newCommentRef.current?.value || "");
-            }}
-          >
-            Add
-          </Button>
-        </Box>
+        {user && (
+          <>
+            <Box display="flex">
+              <Button
+                flex="1"
+                variant="ghost"
+                leftIcon={<BiChat />}
+                onClick={() => {
+                  setShowCommentForm(!showCommentForm);
+                }}
+              >
+                Comment
+              </Button>
+              {props.post.authorId === (user?.id || "") && (
+                <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+                  Edit
+                </Button>
+              )}
+            </Box>
+            <Box
+              display={showCommentForm ? "flex" : "none"}
+              id="textArea"
+              flexDirection="column"
+              p={5}
+            >
+              <Textarea placeholder="Add a comment..." ref={newCommentRef} />
+              <Button
+                size="sm"
+                colorScheme="teal"
+                mt={3}
+                alignSelf="flex-end"
+                w="100px"
+                onClick={(e) => {
+                  e.preventDefault();
+                  addComment(newCommentRef.current?.value || "");
+                }}
+              >
+                Add
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
       <PostForm post={props.post} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </div>
