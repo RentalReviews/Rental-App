@@ -47,10 +47,19 @@ const LoginForm = () => {
         }),
       }).then((response) => {
         response.json().then((data) => {
-          localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
-          localStorage.setItem("BEARER_TOKEN", data.token);
-          const decoded = jwt_decode(data.token) as JwtPayload;
           if (response.ok) {
+            localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
+            localStorage.setItem("BEARER_TOKEN", data.token);
+            const { id, displayName, email } = jwt_decode(data.token) as JwtPayload;
+
+            dispatch(
+              setUser({
+                ...{ id, displayName, email },
+                authToken: data.token,
+                refreshToken: data.refreshToken,
+              })
+            );
+
             navigate("/");
             toast({
               title: "Logged in",
@@ -59,15 +68,6 @@ const LoginForm = () => {
               duration: 10000,
               isClosable: true,
             });
-            dispatch(
-              setUser({
-                displayName: decoded.displayName,
-                email: decoded.email,
-                id: decoded.id,
-                authToken: data.token,
-                refreshToken: data.refreshToken,
-              })
-            );
           } else {
             toast({
               title: "Error",

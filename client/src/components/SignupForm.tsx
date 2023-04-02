@@ -16,8 +16,14 @@ import {
   ListItem,
   UnorderedList,
 } from "@chakra-ui/react";
+import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+
+import { setUser } from "redux/user";
+
+import type { JwtPayload } from "types";
 
 type FormValues = {
   firstName: string;
@@ -27,10 +33,12 @@ type FormValues = {
   confirmPassword: string;
 };
 
+const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
+
 const SignupForm = () => {
-  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const navigate = useNavigate();
   const toast = useToast();
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -93,9 +101,19 @@ const SignupForm = () => {
         }),
       }).then((response) => {
         response.json().then((data) => {
-          localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
-          localStorage.setItem("BEARER_TOKEN", data.token);
           if (response.ok) {
+            localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
+            localStorage.setItem("BEARER_TOKEN", data.token);
+            const { id, displayName, email } = jwt_decode(data.token) as JwtPayload;
+
+            dispatch(
+              setUser({
+                ...{ id, displayName, email },
+                authToken: data.token,
+                refreshToken: data.refreshToken,
+              })
+            );
+
             navigate("/");
             toast({
               title: "Account created",
