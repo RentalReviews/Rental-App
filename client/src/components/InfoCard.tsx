@@ -11,13 +11,15 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { BiLike, BiChat } from "react-icons/bi";
+import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { PostForm } from "components/PostForm";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
+import { userSelector } from "redux/user";
 
 import type { Post, Coordinate } from "types";
 
@@ -28,14 +30,13 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
+  const { user } = useSelector(userSelector);
+
   const toast = useToast();
   const navigate = useNavigate();
 
-  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-
   const addComment = async (content: string) => {
-    if (!AuthToken) return;
+    if (!user) return;
     if (content === "") return;
 
     try {
@@ -43,11 +44,11 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
+          Authorization: `Bearer ${user.bearerToken}`,
         },
         body: JSON.stringify({
           content,
-          authorId: userData.id,
+          authorId: user.id,
           postId: props.post.id,
         }),
       });
@@ -131,39 +132,48 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
         <Box ml={10} mr={10} mb={10} mt={10}>
           {props.post.content}
         </Box>
-        <Box display="flex">
-          <Button
-            flex="1"
-            variant="ghost"
-            leftIcon={<BiChat />}
-            onClick={() => {
-              setShowCommentForm(!showCommentForm);
-            }}
-          >
-            Comment
-          </Button>
-          {props.post.authorId === (userData.id ? userData.id : "") && (
-            <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
-              Edit
-            </Button>
-          )}
-        </Box>
-        <Box display={showCommentForm ? "flex" : "none"} id="textArea" flexDirection="column" p={5}>
-          <Textarea placeholder="Add a comment..." ref={newCommentRef} />
-          <Button
-            size="sm"
-            colorScheme="teal"
-            mt={3}
-            alignSelf="flex-end"
-            w="100px"
-            onClick={(e) => {
-              e.preventDefault();
-              addComment(newCommentRef.current?.value || "");
-            }}
-          >
-            Add
-          </Button>
-        </Box>
+        {user && (
+          <>
+            <Box display="flex">
+              <Button
+                flex="1"
+                variant="ghost"
+                leftIcon={<BiChat />}
+                onClick={() => {
+                  setShowCommentForm(!showCommentForm);
+                }}
+              >
+                Comment
+              </Button>
+              {props.post.authorId === (user?.id || "") && (
+                <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+                  Edit
+                </Button>
+              )}
+            </Box>
+            <Box
+              display={showCommentForm ? "flex" : "none"}
+              id="textArea"
+              flexDirection="column"
+              p={5}
+            >
+              <Textarea placeholder="Add a comment..." ref={newCommentRef} />
+              <Button
+                size="sm"
+                colorScheme="teal"
+                mt={3}
+                alignSelf="flex-end"
+                w="100px"
+                onClick={(e) => {
+                  e.preventDefault();
+                  addComment(newCommentRef.current?.value || "");
+                }}
+              >
+                Add
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
       <PostForm post={props.post} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </div>

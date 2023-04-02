@@ -14,12 +14,16 @@ import jwt_decode from "jwt-decode";
 import { useState } from "react";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import type { RefreshToken } from "types/RefreshToken";
 import { genericErrorHandler } from "utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "redux/user";
+
+import type { JwtPayload } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -43,19 +47,19 @@ const LoginForm = () => {
         }),
       }).then((response) => {
         response.json().then((data) => {
-          localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
-          localStorage.setItem("BEARER_TOKEN", data.token);
-          const token = "Bearer " + localStorage.getItem("REFRESH_TOKEN")?.toString();
-          const decoded: RefreshToken = jwt_decode(token);
-          localStorage.setItem(
-            "USER",
-            JSON.stringify({
-              displayName: decoded.name,
-              email: decoded.email,
-              id: decoded.id,
-            })
-          );
           if (response.ok) {
+            localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
+            localStorage.setItem("BEARER_TOKEN", data.token);
+            const { id, displayName, email } = jwt_decode(data.token) as JwtPayload;
+
+            dispatch(
+              setUser({
+                ...{ id, displayName, email },
+                authToken: data.token,
+                refreshToken: data.refreshToken,
+              })
+            );
+
             navigate("/");
             toast({
               title: "Logged in",

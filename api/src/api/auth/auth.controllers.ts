@@ -8,6 +8,7 @@ import {
   addRefreshTokenToWhitelist,
   findRefreshTokenById,
   revokeRefreshToken,
+  revokeRefreshTokensByUserId,
 } from "api/auth/auth.services";
 import HttpError from "utils/http-error";
 
@@ -121,4 +122,31 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export { register, login, refreshToken };
+const logout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      throw new HttpError("Missing required fields", 400);
+    }
+
+    const payload = jwtVerify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as JwtPayload;
+
+    if (typeof payload !== "object" || !payload.jti) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    const savedRefreshToken = await findRefreshTokenById(payload.jti);
+
+    if (!savedRefreshToken || savedRefreshToken.revoked) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    await revokeRefreshTokensByUserId(savedRefreshToken.userId);
+
+    res.status(200).json({ message: "Logged out" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { register, login, refreshToken, logout };
