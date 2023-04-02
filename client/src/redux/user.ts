@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { validateTokens } from "utils/validate_tokens";
+import { getTokens } from "utils/validate_tokens";
 import jwt_decode from "jwt-decode";
 
 import type { JwtPayload } from "types";
@@ -14,14 +14,11 @@ interface UserState {
   } | null;
 }
 
-const refreshToken = localStorage.getItem("REFRESH_TOKEN") || "";
-const bearerToken = localStorage.getItem("BEARER_TOKEN") || "";
+const { refreshToken, bearerToken } = await getTokens();
 
 const initialState: UserState = {
   user: null,
 };
-
-validateTokens(bearerToken, refreshToken);
 
 if (refreshToken && bearerToken) {
   const { displayName, email, id } = jwt_decode(bearerToken) as JwtPayload;
