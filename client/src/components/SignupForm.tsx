@@ -95,7 +95,6 @@ const SignupForm = () => {
         response.json().then((data) => {
           localStorage.setItem("REFRESH_TOKEN", data.refreshToken);
           localStorage.setItem("BEARER_TOKEN", data.token);
-          localStorage.setItem("USER", JSON.stringify(data.user));
           if (response.ok) {
             navigate("/");
             toast({

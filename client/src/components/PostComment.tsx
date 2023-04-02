@@ -23,6 +23,9 @@ import {
 import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
+import { useSelector } from "react-redux";
+
+import { userSelector } from "redux/user";
 import { genericErrorHandler } from "utils";
 
 import type { Comment } from "types";
@@ -31,16 +34,14 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const PostComment = (props: { comment: Comment }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useSelector(userSelector);
   const commentInput = useRef<HTMLTextAreaElement>(null);
-
-  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
   const navigate = useNavigate();
   const toast = useToast();
 
   const updateComment = async (content: string) => {
-    if (!AuthToken) return navigate("/login");
+    if (!user) return navigate("/login");
     if (content === "" || content === props.comment.content) return;
 
     try {
@@ -48,7 +49,7 @@ const PostComment = (props: { comment: Comment }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
+          Authorization: `Bearer ${user.bearerToken}`,
         },
         body: JSON.stringify({ content }),
       });
@@ -70,16 +71,15 @@ const PostComment = (props: { comment: Comment }) => {
   };
 
   const deleteComment = async () => {
-    if (!AuthToken) return navigate("/login");
+    if (!user) return navigate("/login");
     try {
       const response = await fetch(`${API_URL}/comments/${props.comment.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
+          Authorization: `Bearer ${user.bearerToken}`,
         },
       });
-      console.log(AuthToken);
       const json = await response.json();
 
       if (response.ok) {
@@ -107,13 +107,13 @@ const PostComment = (props: { comment: Comment }) => {
               <Box>
                 <Heading size="sm">
                   {props.comment.author.displayName +
-                    (userData.id == props.comment.authorId ? " (You)" : "")}
+                    (user?.id == props.comment.authorId ? " (You)" : "")}
                 </Heading>
                 <p>Tenent</p>
               </Box>
             </Flex>
 
-            {userData.id == props.comment.authorId ? (
+            {user?.id == props.comment.authorId ? (
               <>
                 <IconButton icon={<BiEdit />} aria-label="Edit Comment" onClick={onOpen} />
                 <IconButton

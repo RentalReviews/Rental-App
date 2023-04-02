@@ -31,7 +31,6 @@ const Logout = () => {
         duration: 10000,
         isClosable: true,
       });
-      localStorage.removeItem("USER");
       localStorage.removeItem("REFRESH_TOKEN");
       localStorage.removeItem("BEARER_TOKEN");
     } else {

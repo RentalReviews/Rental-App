@@ -11,13 +11,15 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { BiLike, BiChat } from "react-icons/bi";
+import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { PostForm } from "components/PostForm";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
+import { userSelector } from "redux/user";
 
 import type { Post, Coordinate } from "types";
 
@@ -28,14 +30,13 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
+  const { user } = useSelector(userSelector);
+
   const toast = useToast();
   const navigate = useNavigate();
 
-  const userData = JSON.parse(localStorage.getItem("USER") || JSON.stringify({}));
-  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-
   const addComment = async (content: string) => {
-    if (!AuthToken) return;
+    if (!user) return;
     if (content === "") return;
 
     try {
@@ -43,11 +44,11 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
+          Authorization: `Bearer ${user.bearerToken}`,
         },
         body: JSON.stringify({
           content,
-          authorId: userData.id,
+          authorId: user.id,
           postId: props.post.id,
         }),
       });
@@ -142,7 +143,7 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
           >
             Comment
           </Button>
-          {props.post.authorId === (userData.id ? userData.id : "") && (
+          {props.post.authorId === (user?.id || "") && (
             <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
               Edit
             </Button>

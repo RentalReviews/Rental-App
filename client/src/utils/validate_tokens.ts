@@ -1,4 +1,6 @@
-import jwt_decode, { JwtPayload } from "jwt-decode";
+import jwt_decode from "jwt-decode";
+
+import type { JwtPayload } from "types";
 
 /**
  * handles validating the user's auth token and refresh token
@@ -20,7 +22,6 @@ const validateTokens = async (bearerToken: string | null, refreshToken: string |
       // refresh token is expired, user needs to log in again
       localStorage.removeItem("REFRESH_TOKEN");
       localStorage.removeItem("BEARER_TOKEN");
-      localStorage.removeItem("USER");
       await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
