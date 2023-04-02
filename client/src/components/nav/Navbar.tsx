@@ -7,6 +7,7 @@ import {
   useDisclosure,
   Stack,
   Avatar,
+  Image,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { IoMenu, IoClose, IoSunny, IoMoon } from "react-icons/io5";
@@ -38,7 +39,7 @@ const Navbar = () => {
         />
         <HStack spacing={8} alignItems={"center"}>
           <Box as={RouterLink} to={"/"}>
-            Logo Here
+            <Image src="/logo.png" w="175px" />
           </Box>
           <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
             {Links.map((link) => (
