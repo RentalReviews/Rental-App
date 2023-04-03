@@ -3,12 +3,13 @@ import { Box } from "@chakra-ui/react";
 
 import "styles/map.css";
 
-import type { Coordinate } from "types";
-
 const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY || "";
 
 interface props {
-  coordinates?: Coordinate;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
   className: string;
 }
 
@@ -26,15 +27,13 @@ export const Map = (props: props) => {
           {props.coordinates && (
             <GoogleMap
               mapContainerClassName="map-container"
-              center={
-                props.coordinates
-                  ? { lat: props.coordinates.lat, lng: props.coordinates.long }
-                  : { lat: 0, lng: 0 }
-              }
+              center={{ lat: props.coordinates.latitude, lng: props.coordinates.longitude }}
               zoom={12}
               options={{ disableDefaultUI: true }}
             >
-              <Marker position={{ lat: props.coordinates.lat, lng: props.coordinates.long }} />
+              <Marker
+                position={{ lat: props.coordinates.latitude, lng: props.coordinates.longitude }}
+              />
             </GoogleMap>
           )}
         </>
