@@ -42,11 +42,12 @@ export const PostForm = (props: {
 }) => {
   const IS_EDITING = props.post !== undefined;
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-  const [inputFields, setInputFields] = useState([
-    {
-      "image-url": "",
-    },
-  ]);
+  const [inputFields, setInputFields] = useState([]);
+  // const [inputFields, setInputFields] = useState(
+  //   props.post?.postPhotos.map((photo) => {
+  //     return {"imageUrl": photo.url};
+  //   })
+  // );
 
   const [formState, setFormState] = useState({
     title: props.post?.title || "",
@@ -56,13 +57,12 @@ export const PostForm = (props: {
   });
   const navigate = useNavigate();
   const toast = useToast();
-  console.log("input fields", inputFields);
 
   const createPost = async () => {
     if (!AuthToken) return navigate("/login");
     if (formState.title === "" || formState.content === "") return;
-    const imageUrlList = inputFields.map((inputField) => {
-      return { url: inputField["image-url"] };
+    const imageUrlList = inputFields?.map((inputField) => {
+      return { url: inputField["imageUrl"] };
     });
 
     try {
@@ -103,6 +103,9 @@ export const PostForm = (props: {
     if (formState.title === "" || formState.content === "") return;
 
     try {
+      const imageUrlList = inputFields?.map((inputField) => {
+        return { url: inputField["imageUrl"] };
+      });
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
         headers: {
@@ -113,12 +116,7 @@ export const PostForm = (props: {
           title: formState.title,
           content: formState.content,
           rating: formState.rating,
-          postPhotos: [
-            {
-              ...props.post.postPhotos[0],
-              url: formState.imageUrl,
-            },
-          ],
+          postPhotos: imageUrlList,
         }),
       });
 
@@ -143,7 +141,7 @@ export const PostForm = (props: {
     setInputFields([
       ...inputFields,
       {
-        "image-url": "",
+        imageUrl: "",
       },
     ]);
   };
@@ -159,7 +157,8 @@ export const PostForm = (props: {
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const list = [...inputFields];
-    list[index]["image-url"] = value;
+    console.log("list", list);
+    list[index]["imageUrl"] = value;
     setInputFields(list);
   };
 
@@ -190,7 +189,7 @@ export const PostForm = (props: {
 
               <FormControl>
                 <Box display={"flex"}>
-                  <FormLabel htmlFor="image-url">Image URL</FormLabel>
+                  <FormLabel htmlFor="imageUrl">Image URL</FormLabel>
                   <Button
                     onClick={addInputField}
                     color={"red.200"}
@@ -206,8 +205,9 @@ export const PostForm = (props: {
                     <Box key={index} display={"flex"} flexDirection={"row"}>
                       <Input
                         key={index}
+                        value={inputFields[index].imageUrl}
                         type="text"
-                        name="image-url"
+                        name="imageUrl"
                         onChange={(e) => {
                           handleChange(index, e);
                         }}
