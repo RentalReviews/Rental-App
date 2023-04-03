@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { userSelector } from "redux/user";
@@ -39,6 +39,17 @@ const PostComment = (props: { comment: Comment }) => {
 
   const navigate = useNavigate();
   const toast = useToast();
+
+  console.log("comment", props.comment);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`);
+      const userData = await response.json();
+      setAvatarUrl(userData?.profile?.avatarUrl || "");
+    };
+    fetchProfile();
+  }, [props.comment]);
 
   const updateComment = async (content: string) => {
     if (!user) return navigate("/login");
@@ -103,7 +114,7 @@ const PostComment = (props: { comment: Comment }) => {
         <CardHeader>
           <Flex gap={3}>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar name={props.comment.author.displayName} src="" />
+              <Avatar name={props.comment.author.displayName} src={avatarUrl} />
               <Box>
                 <Heading size="sm">
                   {props.comment.author.displayName +

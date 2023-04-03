@@ -1,6 +1,12 @@
 import express from "express";
 
-import { GetUserById, GetUserByEmail } from "./users.controllers";
+import {
+  GetUserById,
+  GetUserByEmail,
+  GetUserProfileById,
+  UpdateUser,
+  UpdateProfile,
+} from "./users.controllers";
 
 const router = express.Router();
 
@@ -10,6 +16,9 @@ const idRegex =
 const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}";
 
 router.get(`/:id(${idRegex})`, GetUserById);
+router.put(`/:id(${idRegex})`, UpdateUser);
 router.get(`/:email(${emailRegex})`, GetUserByEmail);
+router.get(`/profile/:id(${idRegex})`, GetUserProfileById);
+router.put(`/profile/:id(${idRegex})`, UpdateProfile);
 
 export default router;

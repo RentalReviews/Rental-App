@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import theme from "styles/theme";
 import { BasePage, Home, Property, Login, Signup, Logout } from "pages";
 import store from "redux/store";
+import Profile from "pages/Profile";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
@@ -36,6 +37,7 @@ root.render(
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </BasePage>
       </BrowserRouter>

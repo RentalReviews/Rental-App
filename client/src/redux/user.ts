@@ -22,6 +22,7 @@ const initialState: UserState = {
 
 if (refreshToken && bearerToken) {
   const { displayName, email, id } = jwt_decode(bearerToken) as JwtPayload;
+
   initialState.user = {
     ...{
       id,
