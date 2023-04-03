@@ -48,6 +48,8 @@ const Posting = (props: { post: Post }) => {
           <Image
             className="profile-img"
             src={thumbnailImage}
+            maxHeight={"225px"}
+            width={"auto"}
             alt={`Thumbnail for ${props.post.title}`}
             onClick={() =>
               navigate(`/posting/${props.post.id}`, {

@@ -3,14 +3,16 @@ import {
   Badge,
   Box,
   Button,
-  Image,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
-  Center,
+  Flex,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
@@ -106,20 +108,23 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
             </Box>
           </Box>
         </Box>
-        <Center>
+        <Flex flexDirection={"row"}>
+          <Box maxW={"60%"}>
+            <Carousel
+              swipeable={true}
+              autoPlay={true}
+              width={"100%"}
+              showThumbs={true}
+              thumbWidth={200}
+            >
+              {props.post.postPhotos.map((photo, index) => (
+                <div key={index}>
+                  <img src={photo.url} />
+                </div>
+              ))}
+            </Carousel>
+          </Box>
           <Wrap>
-            <WrapItem>
-              <Image
-                boxSize="sm"
-                maxH="s"
-                src={
-                  props.post.postPhotos[0]?.url ||
-                  "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
-                }
-                alt={"property.imageAlt"}
-                borderRadius="md"
-              />
-            </WrapItem>
             {props.coordinates && (
               <WrapItem>
                 <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
@@ -128,10 +133,12 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
               </WrapItem>
             )}
           </Wrap>
-        </Center>
-        <Box ml={10} mr={10} mb={10} mt={10}>
-          {props.post.content}
-        </Box>
+          <Box maxHeight={"100%"} width={"50%"}>
+            <Text ml={"20px"} mr={"20px"}>
+              {props.post.content}
+            </Text>
+          </Box>
+        </Flex>
         {user && (
           <>
             <Box display="flex">
