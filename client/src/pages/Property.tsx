@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import InfoCard from "components/InfoCard";
 import PostComment from "components/PostComment";
 import { useToast } from "@chakra-ui/react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@chakra-ui/react";
 
 import type { Comment, Post } from "types";
@@ -10,7 +10,6 @@ import type { Comment, Post } from "types";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const Property = () => {
-  const { state } = useLocation();
   const { id } = useParams();
 
   const [post, setPost] = useState<Post | null>(null);
@@ -63,7 +62,7 @@ const Property = () => {
       {loadingPost && <Spinner size="xl" ml="45%" mt="30%" />}
       {!loadingPost && (
         <>
-          {post && <InfoCard coordinates={state.Coordinates} post={post} />}
+          {post && <InfoCard post={post} />}
           <br />
 
           <div id="comments">

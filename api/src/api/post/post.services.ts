@@ -1,4 +1,5 @@
 import { prismaClient } from "utils/db";
+import { getCoordinates } from "utils/google-map";
 
 interface UploadedPhoto {
   id?: string;
@@ -32,6 +33,22 @@ const createPost = async (
       },
       postPhotos: true,
     },
+  });
+
+  getCoordinates(newPost.title).then((coordinates) => {
+    if (coordinates) {
+      prismaClient.post
+        .update({
+          where: {
+            id: newPost.id,
+          },
+          data: {
+            latitude: parseFloat(coordinates.lat),
+            longitude: parseFloat(coordinates.lng),
+          },
+        })
+        .then();
+    }
   });
 
   return {
@@ -81,6 +98,23 @@ const updatePost = async (
       },
     },
   });
+
+  getCoordinates(post.title).then((coordinates) => {
+    if (coordinates) {
+      prismaClient.post
+        .update({
+          where: {
+            id: post.id,
+          },
+          data: {
+            latitude: parseFloat(coordinates.lat),
+            longitude: parseFloat(coordinates.lng),
+          },
+        })
+        .then();
+    }
+  });
+
   return post;
 };
 
