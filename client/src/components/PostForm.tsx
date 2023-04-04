@@ -115,9 +115,10 @@ export const PostForm = (props: {
       });
       imageUrlList = imageUrlList ? imageUrlList : [];
       console.log("imageUrlList", imageUrlList);
-      const result = imageUrlList.map(({ url }) => {
-        const matchingImage = props.post?.postPhotos.find((image) => image?.url === url);
+      const result = imageUrlList.map((input) => {
+        const matchingImage = props.post?.postPhotos.find((image) => image?.url === input?.url);
         const id = matchingImage?.id;
+        const url = input?.url;
         if (matchingImage) {
           return { id, url };
         } else {
