@@ -24,6 +24,7 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
   const navigate = useNavigate();
+  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
   const Links: Array<{ name: string; href: string }> = [
     { name: "Home", href: "/" },
     user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
@@ -31,15 +32,21 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${user?.id}`);
+      const response = await fetch(`${API_URL}/users/profile/${user?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
       const userData = await response.json();
       console.log("nav bar user data", userData.profile.avatarUrl);
       setAvatarUrl(userData.profile.avatarUrl);
     };
     fetchProfile();
-  }, []);
+  }, [user]);
 
   const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
+    if (!user) return;
     navigate(`/profile`);
     return;
     throw new Error("Function not implemented.");

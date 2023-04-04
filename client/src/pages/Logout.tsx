@@ -11,36 +11,42 @@ const Logout = () => {
   const { user } = useSelector(userSelector);
 
   const handleLogout = async () => {
-    const response = await fetch(`${API_URL}/auth/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        refreshToken: user?.refreshToken,
-      }),
-    });
+    try {
+      const response = await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken: user?.refreshToken,
+        }),
+      });
 
-    if (response.ok) {
-      dispatch(clearUser());
-      redirect("/");
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-        status: "success",
-        duration: 10000,
-        isClosable: true,
-      });
-      localStorage.removeItem("REFRESH_TOKEN");
-      localStorage.removeItem("BEARER_TOKEN");
-    } else {
-      toast({
-        title: "Error logging out",
-        description: "There was an error logging out",
-        status: "error",
-        duration: 10000,
-        isClosable: true,
-      });
+      if (response.ok) {
+        dispatch(clearUser());
+        redirect("/");
+        toast({
+          title: "Logged out",
+          description: "You have been successfully logged out.",
+          status: "success",
+          duration: 10000,
+          isClosable: true,
+        });
+        localStorage.removeItem("REFRESH_TOKEN");
+        localStorage.removeItem("BEARER_TOKEN");
+      } else {
+        toast({
+          title: "Error logging out",
+          description: "There was an error logging out",
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      window.location.reload();
     }
   };
 

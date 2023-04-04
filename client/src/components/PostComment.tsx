@@ -31,6 +31,7 @@ import { genericErrorHandler } from "utils";
 import type { Comment } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
+const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
 const PostComment = (props: { comment: Comment }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,7 +45,12 @@ const PostComment = (props: { comment: Comment }) => {
   const [avatarUrl, setAvatarUrl] = useState("");
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`);
+      const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
       const userData = await response.json();
       setAvatarUrl(userData?.profile?.avatarUrl || "");
     };

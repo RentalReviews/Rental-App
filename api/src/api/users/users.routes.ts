@@ -7,6 +7,7 @@ import {
   UpdateUser,
   UpdateProfile,
 } from "./users.controllers";
+import { isAuthenticated } from "middlewares/auth";
 
 const router = express.Router();
 
@@ -15,10 +16,10 @@ const idRegex =
   "[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}";
 const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}";
 
-router.get(`/:id(${idRegex})`, GetUserById);
-router.put(`/:id(${idRegex})`, UpdateUser);
+router.get(`/:id(${idRegex})`, isAuthenticated, GetUserById);
+router.put(`/:id(${idRegex})`, isAuthenticated, UpdateUser);
 router.get(`/:email(${emailRegex})`, GetUserByEmail);
 router.get(`/profile/:id(${idRegex})`, GetUserProfileById);
-router.put(`/profile/:id(${idRegex})`, UpdateProfile);
+router.put(`/profile/:id(${idRegex})`, isAuthenticated, UpdateProfile);
 
 export default router;

@@ -26,6 +26,7 @@ import { userSelector } from "redux/user";
 const Profile = () => {
   // The URL of the API server.
   const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
+  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
   // The user object from the Redux store.
   const { user } = useSelector(userSelector);
@@ -46,7 +47,12 @@ const Profile = () => {
   // Fetches the user's profile data when the component mounts or when the user changes.
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${user?.id}`);
+      const response = await fetch(`${API_URL}/users/profile/${user?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
       const userData = await response.json();
       setBio(userData?.profile?.bio || "");
       setAvatarUrl(userData?.profile?.avatarUrl || "");
@@ -54,7 +60,12 @@ const Profile = () => {
     };
 
     const fetchUser = async () => {
-      const response = await fetch(`${API_URL}/users/${user?.id}`);
+      const response = await fetch(`${API_URL}/users/${user?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
       const userData = await response.json();
       setDisplayName(userData?.user.displayName);
       setEmail(userData?.user.email);
@@ -72,6 +83,7 @@ const Profile = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
         },
         body: JSON.stringify({ displayName, email }),
       });
@@ -85,6 +97,7 @@ const Profile = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
         },
         body: JSON.stringify({ bio, avatarUrl, body }),
       });

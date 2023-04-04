@@ -56,6 +56,7 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
   try {
     const { id } = req.params;
     const userId = req.payload?.id || "";
+    console.log(req.payload);
     const { title, content, postPhotos, rating } = req.body;
 
     if (!title || !content) {
