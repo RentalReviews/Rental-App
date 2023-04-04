@@ -167,22 +167,6 @@ const InfoCard = (props: { post: Post }) => {
             className="bigmap"
           ></Map>
         </Box>
-
-        {/* <Wrap>
-        {latitude && longitude && (
-          <WrapItem>
-            <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
-              <Map
-                coordinates={{
-                  latitude,
-                  longitude,
-                }}
-                className="bigmap"
-              ></Map>
-            </Box>
-          </WrapItem>
-        )}
-      </Wrap> */}
         {user && (
           <>
             <Box display="flex">
