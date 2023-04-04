@@ -6,6 +6,8 @@ export interface Post {
   content: string;
   published: boolean;
   rating: number;
+  latitude: number;
+  longitude: number;
   readonly authorId: string;
   readonly author: {
     displayName: string;

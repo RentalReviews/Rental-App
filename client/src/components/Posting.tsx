@@ -1,38 +1,21 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Image } from "@chakra-ui/react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Geocode from "react-geocode";
 
 import { Map } from "./map";
 
-import type { Post, Coordinate } from "types";
+import type { Post } from "types";
 
-const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY || "";
 const NO_THUMBNAIL_URL =
   "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw";
 
 const Posting = (props: { post: Post }) => {
-  const [coordinates, setCoordinates] = useState<Coordinate | null>(null);
   const navigate = useNavigate();
 
   const thumbnailImage: string = props.post.postPhotos[0]?.url || NO_THUMBNAIL_URL;
 
-  useState(() => {
-    Geocode.setApiKey(MAP_API_KEY);
-    Geocode.fromAddress(props.post.title).then(
-      (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        setCoordinates({ lat: lat, long: lng });
-      },
-      (error) => {
-        console.log(`Could not get coordinates for posting ${props.post.id}`);
-        if (import.meta.env.DEV) {
-          console.log(error);
-        }
-      }
-    );
-  });
+  const latitude = props.post.latitude;
+  const longitude = props.post.longitude;
 
   return (
     <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
@@ -55,7 +38,6 @@ const Posting = (props: { post: Post }) => {
               navigate(`/posting/${props.post.id}`, {
                 state: {
                   Post: props.post,
-                  Coordinates: coordinates,
                 },
               })
             }
@@ -63,7 +45,7 @@ const Posting = (props: { post: Post }) => {
             transition="0.5s ease"
           />
         </Box>
-        {coordinates && (
+        {latitude && longitude && (
           <Box
             position="absolute"
             boxSize="100px"
@@ -79,7 +61,7 @@ const Posting = (props: { post: Post }) => {
             top="-4%"
             left="69%"
           >
-            <Map coordinates={coordinates} className="map"></Map>
+            <Map coordinates={{ latitude, longitude }} className="map"></Map>
           </Box>
         )}
       </Box>
