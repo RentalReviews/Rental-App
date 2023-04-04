@@ -40,7 +40,6 @@ const PostComment = (props: { comment: Comment }) => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  console.log("comment", props.comment);
   const [avatarUrl, setAvatarUrl] = useState("");
   useEffect(() => {
     const fetchProfile = async () => {

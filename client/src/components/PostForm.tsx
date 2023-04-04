@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Flex,
   FormControl,
@@ -42,21 +42,24 @@ export const PostForm = (props: {
 }) => {
   const IS_EDITING = props.post !== undefined;
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-  const [inputFields, setInputFields] = useState([]);
-  // const [inputFields, setInputFields] = useState(
-  //   props.post?.postPhotos.map((photo) => {
-  //     return {"imageUrl": photo.url};
-  //   })
-  // );
-
+  const photoArray = ((props.post?.postPhotos.length || 0) < 2 ? [] : props.post?.postPhotos) || [];
+  const [inputFields, setInputFields] = useState(
+    photoArray.map((photo) => {
+      return { imageUrl: photo.url };
+    })
+  );
   const [formState, setFormState] = useState({
     title: props.post?.title || "",
     content: props.post?.content || "",
     rating: props.post?.rating || 1,
-    imageUrl: props.post?.postPhotos[0]?.url || "",
+    imageUrl: props.post?.postPhotos || "",
   });
   const navigate = useNavigate();
   const toast = useToast();
+
+  useEffect(() => {
+    console.log("post", props.post);
+  }, []);
 
   const createPost = async () => {
     if (!AuthToken) return navigate("/login");
@@ -98,14 +101,30 @@ export const PostForm = (props: {
   };
 
   const updatePost = async () => {
+    console.log("update post");
     if (!props.post) return;
     if (!AuthToken) return navigate("/login");
     if (formState.title === "" || formState.content === "") return;
 
     try {
-      const imageUrlList = inputFields?.map((inputField) => {
-        return { url: inputField["imageUrl"] };
+      let imageUrlList = inputFields?.map((inputField) => {
+        const flag = inputField.imageUrl || "";
+        if (flag) {
+          return { url: inputField["imageUrl"] };
+        }
       });
+      imageUrlList = imageUrlList ? imageUrlList : [];
+      console.log("imageUrlList", imageUrlList);
+      const result = imageUrlList.map(({ url }) => {
+        const matchingImage = props.post?.postPhotos.find((image) => image?.url === url);
+        const id = matchingImage?.id;
+        if (matchingImage) {
+          return { id, url };
+        } else {
+          return { url };
+        }
+      });
+
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
         headers: {
@@ -116,7 +135,7 @@ export const PostForm = (props: {
           title: formState.title,
           content: formState.content,
           rating: formState.rating,
-          postPhotos: imageUrlList,
+          postPhotos: result,
         }),
       });
 
@@ -157,7 +176,6 @@ export const PostForm = (props: {
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const list = [...inputFields];
-    console.log("list", list);
     list[index]["imageUrl"] = value;
     setInputFields(list);
   };
@@ -214,7 +232,7 @@ export const PostForm = (props: {
                         required
                         mb={"10px"}
                       />
-                      <Button ml={"8px"} onClick={(e) => removeInputFields(e)}>
+                      <Button ml={"8px"} onClick={() => removeInputFields(index)}>
                         <MinusIcon />
                       </Button>
                     </Box>

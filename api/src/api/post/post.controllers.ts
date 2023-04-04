@@ -58,6 +58,8 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
     const userId = req.payload?.id || "";
     const { title, content, postPhotos, rating } = req.body;
 
+    console.log("postPhotos", postPhotos);
+
     if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
     }
@@ -71,12 +73,17 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
       throw new HttpError("Unauthorized", 401);
     }
 
+    if (postPhotos.includes(null)) {
+      throw new HttpError("Empty image URL input", 400);
+    }
+
     const upPost = await updatePost(id, title, parseInt(rating) || 3, content, postPhotos);
 
     res.status(200).json({
       upPost,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

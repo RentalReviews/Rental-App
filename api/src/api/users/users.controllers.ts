@@ -35,7 +35,6 @@ const GetUserProfileById = async (req: Request, res: Response, next: NextFunctio
   try {
     const { id } = req.params;
     const profile = await getUserProfileById(id);
-    console.log("profile", profile);
     if (!profile) {
       throw new HttpError(`User profile with id = ${id} does not exist`, 404);
     }
