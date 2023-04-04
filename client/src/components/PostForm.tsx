@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Flex,
   FormControl,
@@ -19,9 +19,8 @@ import {
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { genericErrorHandler } from "utils";
-
 import type { Post } from "types";
-
+import ResizeTextarea from "react-textarea-autosize";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 /**
@@ -42,7 +41,7 @@ export const PostForm = (props: {
 }) => {
   const IS_EDITING = props.post !== undefined;
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-  const photoArray = ((props.post?.postPhotos.length || 0) < 2 ? [] : props.post?.postPhotos) || [];
+  const photoArray = ((props.post?.postPhotos.length || 0) < 1 ? [] : props.post?.postPhotos) || [];
   const [inputFields, setInputFields] = useState(
     photoArray.map((photo) => {
       return { imageUrl: photo.url };
@@ -56,10 +55,6 @@ export const PostForm = (props: {
   });
   const navigate = useNavigate();
   const toast = useToast();
-
-  useEffect(() => {
-    console.log("post", props.post);
-  }, []);
 
   const createPost = async () => {
     if (!AuthToken) return navigate("/login");
@@ -114,17 +109,6 @@ export const PostForm = (props: {
         }
       });
       imageUrlList = imageUrlList ? imageUrlList : [];
-      console.log("imageUrlList", imageUrlList);
-      const result = imageUrlList.map((input) => {
-        const matchingImage = props.post?.postPhotos.find((image) => image?.url === input?.url);
-        const id = matchingImage?.id;
-        const url = input?.url;
-        if (matchingImage) {
-          return { id, url };
-        } else {
-          return { url };
-        }
-      });
 
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
@@ -136,7 +120,7 @@ export const PostForm = (props: {
           title: formState.title,
           content: formState.content,
           rating: formState.rating,
-          postPhotos: result,
+          postPhotos: imageUrlList,
         }),
       });
 
@@ -167,7 +151,7 @@ export const PostForm = (props: {
   };
   // React.MouseEventHandler<HTMLButtonElement>
   const removeInputFields = (
-    index: number | any
+    index: number
   ): React.MouseEvent<HTMLButtonElement, MouseEvent> | void => {
     const rows = [...inputFields];
     rows.splice(index, 1);
@@ -205,7 +189,6 @@ export const PostForm = (props: {
                   required
                 />
               </FormControl>
-
               <FormControl>
                 <Box display={"flex"}>
                   <FormLabel htmlFor="imageUrl">Image URL</FormLabel>
@@ -240,7 +223,6 @@ export const PostForm = (props: {
                   );
                 })}
               </FormControl>
-
               <FormControl>
                 <FormLabel htmlFor="rating">Rating</FormLabel>
                 <Input
@@ -251,7 +233,7 @@ export const PostForm = (props: {
                   onChange={(e) => {
                     setFormState({
                       ...formState,
-                      rating: Number(e!.target.value),
+                      rating: Number(e.target.value),
                     });
                   }}
                   required
@@ -262,6 +244,9 @@ export const PostForm = (props: {
                 <Textarea
                   placeholder="Write your review here..."
                   name="content"
+                  resize={"vertical"}
+                  overflow={"hidden"}
+                  as={ResizeTextarea}
                   value={formState.content}
                   onChange={(e) => {
                     setFormState({

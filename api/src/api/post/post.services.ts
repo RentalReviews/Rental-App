@@ -47,13 +47,32 @@ const updatePost = async (
   content: string,
   postPhotos: UploadedPhoto[]
 ) => {
-  postPhotos.forEach((photo) => {
+  // for each photo use prisma client and delete them, then recreate them, easier than
+  // doing multiple put requests, we can optimize later. Just delete all, and then create all.
+  // front-end needs to change for this as well, no filtering is required.
+
+  // Get all the images
+  const currentPost = await getPost(postId);
+
+  // Deleting
+  await currentPost?.postPhotos.forEach(async (photo) => {
     if (photo.id) {
-      updatePostPhoto(photo.url, photo.id);
-    } else {
-      createPostPhoto(photo.url, postId);
+      await deletePostPhoto(photo.id);
     }
   });
+
+  // Add all of the photos back to the database
+  await postPhotos.forEach((photo) => {
+    createPostPhoto(photo.url, postId);
+  });
+
+  // postPhotos.forEach((photo) => {
+  //   if (photo.id) {
+  //     updatePostPhoto(photo.url, photo.id);
+  //   } else {
+  //     createPostPhoto(photo.url, postId);
+  //   }
+  // });
   const post = await prismaClient.post.update({
     where: {
       id: postId,
@@ -162,6 +181,15 @@ const createPostPhoto = async (url: string, postId: string) => {
     },
   });
   return newPostPhoto;
+};
+
+const deletePostPhoto = async (photoId: string) => {
+  const deletePostPhoto = await prismaClient.postPhoto.delete({
+    where: {
+      id: photoId,
+    },
+  });
+  return deletePostPhoto;
 };
 
 const updatePostPhoto = async (url: string, photoId: string) => {
