@@ -14,7 +14,7 @@ import {
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { BiChat } from "react-icons/bi";
-import { StarIcon, EditIcon } from "@chakra-ui/icons";
+import { StarIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -60,6 +60,33 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
       } else {
         toast({
           title: "Error adding comment.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
+
+  const deletePost = async () => {
+    if (!user) return;
+    try {
+      const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.bearerToken}`,
+        },
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        navigate("/");
+      } else {
+        toast({
+          title: "Error deleting post.",
           status: "error",
           description: json.message || "Something went wrong.",
           duration: 3000,
@@ -155,6 +182,11 @@ const InfoCard = (props: { post: Post; coordinates?: Coordinate }) => {
               {props.post.authorId === (user?.id || "") && (
                 <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
                   Edit
+                </Button>
+              )}
+              {props.post.authorId === (user?.id || "") && (
+                <Button flex="1" variant="ghost" leftIcon={<DeleteIcon />} onClick={deletePost}>
+                  Delete
                 </Button>
               )}
             </Box>
