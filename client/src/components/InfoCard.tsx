@@ -8,6 +8,7 @@ import {
   useDisclosure,
   useToast,
   Flex,
+  Image,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
