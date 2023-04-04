@@ -17,7 +17,6 @@ import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import { PostForm } from "components/PostForm";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
@@ -110,7 +109,7 @@ const InfoCard = (props: { post: Post }) => {
         flexDirection="column"
       >
         <Box p="6">
-          <Box display={"flex"} justifyContent="space-around">
+          <Box display={"flex"} justifyContent={"space-around"}>
             <Box mt="2" display="flex" alignItems="baseline">
               <Badge borderRadius="full" px="2" colorScheme="teal">
                 New
@@ -153,27 +152,37 @@ const InfoCard = (props: { post: Post }) => {
               ))}
             </Carousel>
           </Box>
-          <Wrap>
-            {latitude && longitude && (
-              <WrapItem>
-                <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
-                  <Map
-                    coordinates={{
-                      latitude,
-                      longitude,
-                    }}
-                    className="bigmap"
-                  ></Map>
-                </Box>
-              </WrapItem>
-            )}
-          </Wrap>
-          <Box maxHeight={"100%"} width={"50%"}>
+          <Box maxHeight={"100%"} width={"50%"} ml={"10px"}>
             <Text ml={"20px"} mr={"20px"}>
               {props.post.content}
             </Text>
           </Box>
         </Flex>
+        <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
+          <Map
+            coordinates={{
+              latitude,
+              longitude,
+            }}
+            className="bigmap"
+          ></Map>
+        </Box>
+
+        {/* <Wrap>
+        {latitude && longitude && (
+          <WrapItem>
+            <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
+              <Map
+                coordinates={{
+                  latitude,
+                  longitude,
+                }}
+                className="bigmap"
+              ></Map>
+            </Box>
+          </WrapItem>
+        )}
+      </Wrap> */}
         {user && (
           <>
             <Box display="flex">
@@ -222,7 +231,6 @@ const InfoCard = (props: { post: Post }) => {
           </>
         )}
       </Box>
-      <PostForm post={props.post} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </div>
   );
 };
