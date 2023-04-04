@@ -20,11 +20,12 @@ import { genericErrorHandler } from "utils";
 import { userSelector } from "redux/user";
 
 import type { Post } from "types";
+import { PostForm } from "./PostForm";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const InfoCard = (props: { post: Post }) => {
-  const { onOpen } = useDisclosure();
+  const { onOpen, isOpen, onClose } = useDisclosure();
   const [showCommentForm, setShowCommentForm] = useState(false);
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -212,6 +213,7 @@ const InfoCard = (props: { post: Post }) => {
           </>
         )}
       </Box>
+      <PostForm post={props.post} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </div>
   );
 };
