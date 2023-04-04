@@ -155,18 +155,6 @@ const InfoCard = (props: { post: Post }) => {
             </Carousel>
           </Box>
           <Wrap>
-            <WrapItem>
-              <Image
-                boxSize="sm"
-                maxH="s"
-                src={
-                  props.post.postPhotos[0]?.url ||
-                  "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
-                }
-                alt={"property.imageAlt"}
-                borderRadius="md"
-              />
-            </WrapItem>
             {latitude && longitude && (
               <WrapItem>
                 <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
