@@ -8,8 +8,6 @@ import {
   useDisclosure,
   useToast,
   Flex,
-  Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
@@ -17,7 +15,6 @@ import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { PostForm } from "components/PostForm";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
 import { userSelector } from "redux/user";
@@ -27,7 +24,7 @@ import type { Post } from "types";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const InfoCard = (props: { post: Post }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen } = useDisclosure();
   const [showCommentForm, setShowCommentForm] = useState(false);
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
