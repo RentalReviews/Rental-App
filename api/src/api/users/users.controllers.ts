@@ -1,6 +1,6 @@
-import { getUserByEmail, getUserById } from "api/users/users.services";
+import { getUserByEmail, getUserById, updateProfile } from "api/users/users.services";
 import HttpError from "utils/http-error";
-
+import type { RequestWithToken } from "middlewares/auth";
 import type { Request, Response, NextFunction } from "express";
 
 const GetUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
@@ -27,10 +27,10 @@ const GetUserByEmail = async (req: Request, res: Response, next: NextFunction) =
 
 const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const user = await getUserById(id);
+    const paramId = req.params.id;
+    const user = await getUserById(paramId);
     if (!user) {
-      throw new HttpError(`User with id = ${id} does not exist`, 404);
+      throw new HttpError(`User with id = ${paramId} does not exist`, 404);
     }
     res.status(200).json({
       user: {
@@ -40,6 +40,8 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
         role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
       },
     });
   } catch (error) {
@@ -47,4 +49,22 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { GetUserByEmail, GetUserById };
+const UpdateUser = async (req: RequestWithToken, res: Response, next: NextFunction) => {
+  try {
+    const payloadId = req.payload?.id || "";
+    const paramId = req.params.id;
+    if (paramId !== payloadId) throw new HttpError("user not authenticated", 401);
+    const { avatarUrl, bio, email, displayName } = req.body;
+    if (!displayName || !email) {
+      throw new HttpError("Missing required display name, email cannot update", 400);
+    }
+    const updatedProfile = await updateProfile(payloadId, avatarUrl, bio, email, displayName);
+    res.status(200).json({
+      updatedProfile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { GetUserByEmail, GetUserById, UpdateUser };

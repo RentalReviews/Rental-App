@@ -29,18 +29,50 @@ const getUserByEmail = async (email: string) => {
       email,
     },
   });
-
   return result;
 };
 
 const getUserById = async (id: string) => {
-  const result = await prismaClient.user.findUnique({
+  const user = await prismaClient.user.findUnique({
     where: {
       id,
     },
   });
-
-  return result;
+  const profile = await prismaClient.profile.findUnique({
+    where: {
+      userId: id,
+    },
+  });
+  return { ...user, ...profile };
 };
 
-export { createUser, getUserByEmail, getUserById };
+const updateProfile = async (
+  userId: string,
+  avatarUrl: string,
+  bio: string,
+  email: string,
+  displayName: string
+) => {
+  const result = await prismaClient.profile.update({
+    where: {
+      userId: userId,
+    },
+    data: {
+      avatarUrl: avatarUrl,
+      bio: bio,
+    },
+  });
+  const result2 = await prismaClient.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      email: email,
+      displayName: displayName,
+    },
+  });
+  const finalResult = { ...result, ...result2 };
+  return finalResult;
+};
+
+export { createUser, getUserByEmail, getUserById, updateProfile };

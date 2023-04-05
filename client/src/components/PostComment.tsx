@@ -22,23 +22,36 @@ import {
 } from "@chakra-ui/react";
 import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
 import { userSelector } from "redux/user";
 import { genericErrorHandler } from "utils";
-
 import type { Comment } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const PostComment = (props: { comment: Comment }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useSelector(userSelector);
+  const AuthToken = user?.bearerToken || "";
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const commentInput = useRef<HTMLTextAreaElement>(null);
-
   const navigate = useNavigate();
   const toast = useToast();
+  const [avatarUrl, setAvatarUrl] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await fetch(`${API_URL}/users/${props.comment.authorId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
+      const userData = await response.json();
+      setAvatarUrl(userData?.user.avatarUrl || "");
+    };
+    fetchProfile();
+  }, []);
 
   const updateComment = async (content: string) => {
     if (!user) return navigate("/login");
@@ -103,7 +116,7 @@ const PostComment = (props: { comment: Comment }) => {
         <CardHeader>
           <Flex gap={3}>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar name={props.comment.author.displayName} src="" />
+              <Avatar name={props.comment.author.displayName} src={avatarUrl} />
               <Box>
                 <Heading size="sm">
                   {props.comment.author.displayName +

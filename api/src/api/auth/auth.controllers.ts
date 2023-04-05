@@ -114,7 +114,7 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
     const newJti = uuid();
 
     const { token, refreshToken: newRefreshToken } = generateTokens(user, newJti);
-    await addRefreshTokenToWhitelist(newJti, newRefreshToken, user.id);
+    await addRefreshTokenToWhitelist(newJti, newRefreshToken, user.id || "");
 
     res.status(200).json({ token, refreshToken: newRefreshToken });
   } catch (error) {

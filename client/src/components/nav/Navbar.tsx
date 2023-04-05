@@ -9,22 +9,45 @@ import {
   Avatar,
   Image,
 } from "@chakra-ui/react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { IoMenu, IoClose, IoSunny, IoMoon } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { userSelector } from "redux/user";
 import NavLink from "./NavLink";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const { user } = useSelector(userSelector);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
-
+  const navigate = useNavigate();
+  const AuthToken = user?.bearerToken;
   const Links: Array<{ name: string; href: string }> = [
     { name: "Home", href: "/" },
     user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
   ];
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await fetch(`${API_URL}/users/${user?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
+      const userData = await response.json();
+      setAvatarUrl(userData.user.avatarUrl);
+    };
+    fetchProfile();
+  }, [user]);
+
+  const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
+    if (!user) return;
+    navigate(`/profile`);
+  };
 
   return (
     <>
@@ -53,7 +76,7 @@ const Navbar = () => {
           </HStack>
         </HStack>
         <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
-          <Avatar name={user?.displayName} />
+          <Avatar onClick={openProfile} name={user?.displayName} src={avatarUrl} />
           <IconButton
             onClick={toggleColorMode}
             size={"md"}
