@@ -55,7 +55,6 @@ const UpdateUser = async (req: RequestWithToken, res: Response, next: NextFuncti
     const paramId = req.params.id;
     if (paramId !== payloadId) throw new HttpError("user not authenticated", 401);
     const { avatarUrl, bio, email, displayName } = req.body;
-    if (paramId !== payloadId) throw new HttpError("user not authenticated", 401);
     if (!displayName || !email) {
       throw new HttpError("Missing required display name, email cannot update", 400);
     }
