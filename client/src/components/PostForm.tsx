@@ -39,6 +39,7 @@ export const PostForm = (props: {
   onClose: () => void;
 }) => {
   const IS_EDITING = props.post !== undefined;
+
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
   const [formState, setFormState] = useState({

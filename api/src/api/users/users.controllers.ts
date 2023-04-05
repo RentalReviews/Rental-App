@@ -78,14 +78,11 @@ const UpdateUser = async (req: RequestWithToken, res: Response, next: NextFuncti
     const payloadId = req.payload?.id || "";
     const paramId = req.params.id;
     if (paramId !== payloadId) throw new HttpError("user not authenticated", 500);
-    const { displayName, email } = req.body;
-
+    const { displayName, email } = req.body.formState;
     if (!displayName || !email) {
       throw new HttpError("Missing required display name and email, cannot update", 400);
     }
-
     const updatedUser = await updateUser(payloadId, email, displayName);
-
     res.status(200).json({
       updatedUser,
     });
@@ -99,7 +96,7 @@ const UpdateProfile = async (req: RequestWithToken, res: Response, next: NextFun
     const payloadId = req.payload?.id || "";
     const paramId = req.params.id;
     if (paramId !== payloadId) throw new HttpError("user not authenticated", 500);
-    const { avatarUrl, bio } = req.body;
+    const { avatarUrl, bio } = req.body.formState;
     const updatedProfile = await updateProfile(payloadId, avatarUrl, bio);
     res.status(200).json({
       updatedProfile,
