@@ -35,7 +35,7 @@ const Home = () => {
   return (
     <>
       <Heading textAlign="center" noOfLines={1} mb={3}>
-        Home - {user ? "Online" : "Offline"}
+        Home
       </Heading>
       {user && (
         <>

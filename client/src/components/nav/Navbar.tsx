@@ -42,7 +42,7 @@ const Navbar = () => {
       setAvatarUrl(userData.profile.avatarUrl);
     };
     fetchProfile();
-  }, []);
+  }, [user]);
 
   const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
     if (!user) return;

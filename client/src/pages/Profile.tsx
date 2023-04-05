@@ -35,7 +35,7 @@ const Profile = () => {
       });
       const userData = await response.json();
       setBio(userData?.profile?.bio || "");
-      setAvatarUrl(userData?.profile?.avatarUrl || "");
+      setAvatarUrl(userData?.profile?.avatarUrl || undefined);
     };
 
     const fetchUser = async () => {
@@ -52,11 +52,11 @@ const Profile = () => {
 
     fetchProfile();
     fetchUser();
-  }, [isEditing]);
+  }, []);
 
   return (
     <Box p={4}>
-      {avatarUrl && displayName && (
+      {displayName && (
         <Flex direction="column" alignItems="center">
           <Heading as="h1" size="xl" my={4}>
             Welcome {displayName?.split(" ")[0]}
@@ -81,7 +81,7 @@ const Profile = () => {
           <Button mt={4} onClick={() => setIsEditing(true)}>
             Edit Profile
           </Button>
-          {avatarUrl && displayName && (
+          {displayName && (
             <ProfileForm
               isOpen={isEditing}
               onClose={() => setIsEditing(false)}
