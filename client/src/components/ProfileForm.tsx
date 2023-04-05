@@ -112,6 +112,7 @@ export const ProfileForm = (props: {
             }}
             mb={4}
             placeholder="Display Name"
+            required
           />
           <Input
             value={formState.email}
@@ -123,6 +124,7 @@ export const ProfileForm = (props: {
             }}
             mb={4}
             placeholder="Email"
+            required
           />
           <Input
             value={formState.avatarUrl}
