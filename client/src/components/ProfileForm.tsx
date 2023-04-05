@@ -15,6 +15,7 @@ import {
 import { Profile } from "types/Profile";
 import { useSelector } from "react-redux";
 import { userSelector } from "redux/user";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   displayName: string;
@@ -30,6 +31,7 @@ export const ProfileForm = (props: {
   profileData: Profile;
 }) => {
   const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
+  const { user } = useSelector(userSelector);
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
   const [formState, setFormState] = useState({
     displayName: props.userData?.displayName || "",
@@ -38,7 +40,7 @@ export const ProfileForm = (props: {
     bio: props.profileData.bio || "",
   });
   const toast = useToast();
-  const { user } = useSelector(userSelector);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     const emailRegex =
@@ -99,7 +101,7 @@ export const ProfileForm = (props: {
         isClosable: true,
       });
     } finally {
-      window.location.reload();
+      navigate(0);
     }
   };
 

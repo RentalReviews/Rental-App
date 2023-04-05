@@ -32,7 +32,7 @@ const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const PostComment = (props: { comment: Comment }) => {
   const { user } = useSelector(userSelector);
-  const AuthToken = user?.bearerToken;
+  const AuthToken = user?.bearerToken || "";
   const { isOpen, onOpen, onClose } = useDisclosure();
   const commentInput = useRef<HTMLTextAreaElement>(null);
   const navigate = useNavigate();

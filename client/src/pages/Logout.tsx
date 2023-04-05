@@ -2,6 +2,7 @@ import { Box, Heading, Button, Text, Link, useToast } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { redirect } from "react-router-dom";
 import { clearUser, userSelector } from "redux/user";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
@@ -9,6 +10,7 @@ const Logout = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const { user } = useSelector(userSelector);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -46,7 +48,7 @@ const Logout = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      window.location.reload();
+      navigate(0);
     }
   };
 
