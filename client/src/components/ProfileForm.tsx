@@ -48,8 +48,8 @@ export const ProfileForm = (props: {
     if (!emailRegex.test(formState.email)) {
       throw new Error("Invalid email address");
     }
-    if (!formState.avatarUrl) {
-      throw new Error("Invalid email address");
+    if (!formState.displayName) {
+      throw new Error("Display name cannot be left blank");
     }
     try {
       // Update user display name, email, avatar, and bio.
