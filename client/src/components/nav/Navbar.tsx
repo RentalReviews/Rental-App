@@ -32,14 +32,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${user?.id}`, {
+      const response = await fetch(`${API_URL}/users/${user?.id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${AuthToken}`,
         },
       });
       const userData = await response.json();
-      setAvatarUrl(userData.profile.avatarUrl);
+      setAvatarUrl(userData.user.avatarUrl);
     };
     fetchProfile();
   }, [user]);

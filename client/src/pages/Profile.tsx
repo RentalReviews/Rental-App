@@ -26,18 +26,6 @@ const Profile = () => {
 
   // Fetches the user's profile data when the component mounts or when the user changes.
   useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${user?.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
-        },
-      });
-      const userData = await response.json();
-      setBio(userData?.profile?.bio || "");
-      setAvatarUrl(userData?.profile?.avatarUrl || undefined);
-    };
-
     const fetchUser = async () => {
       const response = await fetch(`${API_URL}/users/${user?.id}`, {
         headers: {
@@ -48,9 +36,9 @@ const Profile = () => {
       const userData = await response.json();
       setDisplayName(userData?.user.displayName);
       setEmail(userData?.user.email);
+      setBio(userData?.user.bio || "");
+      setAvatarUrl(userData?.user.avatarUrl || undefined);
     };
-
-    fetchProfile();
     fetchUser();
   }, []);
 
@@ -81,7 +69,7 @@ const Profile = () => {
           <Button mt={4} onClick={() => setIsEditing(true)}>
             Edit Profile
           </Button>
-          {displayName && (
+          {displayName && avatarUrl && (
             <ProfileForm
               isOpen={isEditing}
               onClose={() => setIsEditing(false)}

@@ -38,7 +38,7 @@ const generateRefreshToken = (user: User, jti: string) => {
   );
 };
 
-const generateTokens = (user: User, jti: string) => {
+const generateTokens = (user: any, jti: string) => {
   const token = generateToken(user);
   const refreshToken = generateRefreshToken(user, jti);
 

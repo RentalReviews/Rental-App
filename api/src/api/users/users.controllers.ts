@@ -1,10 +1,4 @@
-import {
-  getUserByEmail,
-  getUserById,
-  getUserProfileById,
-  updateProfile,
-  updateUser,
-} from "api/users/users.services";
+import { getUserByEmail, getUserById, updateProfile } from "api/users/users.services";
 import HttpError from "utils/http-error";
 import type { RequestWithToken } from "middlewares/auth";
 import type { Request, Response, NextFunction } from "express";
@@ -31,26 +25,6 @@ const GetUserByEmail = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-const GetUserProfileById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const paramId = req.params.id;
-    const profile = await getUserProfileById(paramId);
-    if (!profile) {
-      throw new HttpError(`User profile with id = ${paramId} does not exist`, 404);
-    }
-    res.status(200).json({
-      profile: {
-        bio: profile.bio,
-        avatarUrl: profile.avatarUrl,
-        createdAt: profile.createdAt,
-        updatedAt: profile.updatedAt,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const paramId = req.params.id;
@@ -66,6 +40,8 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
         role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
       },
     });
   } catch (error) {
@@ -78,26 +54,12 @@ const UpdateUser = async (req: RequestWithToken, res: Response, next: NextFuncti
     const payloadId = req.payload?.id || "";
     const paramId = req.params.id;
     if (paramId !== payloadId) throw new HttpError("user not authenticated", 401);
-    const { displayName, email } = req.body.formState;
-    if (!displayName || !email) {
-      throw new HttpError("Missing required display name and email, cannot update", 400);
-    }
-    const updatedUser = await updateUser(payloadId, email, displayName);
-    res.status(200).json({
-      updatedUser,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-const UpdateProfile = async (req: RequestWithToken, res: Response, next: NextFunction) => {
-  try {
-    const payloadId = req.payload?.id || "";
-    const paramId = req.params.id;
+    const { avatarUrl, bio, email, displayName } = req.body;
     if (paramId !== payloadId) throw new HttpError("user not authenticated", 401);
-    const { avatarUrl, bio } = req.body.formState;
-    const updatedProfile = await updateProfile(payloadId, avatarUrl, bio);
+    if (!displayName || !email) {
+      throw new HttpError("Missing required display name, email cannot update", 400);
+    }
+    const updatedProfile = await updateProfile(payloadId, avatarUrl, bio, email, displayName);
     res.status(200).json({
       updatedProfile,
     });
@@ -106,4 +68,4 @@ const UpdateProfile = async (req: RequestWithToken, res: Response, next: NextFun
   }
 };
 
-export { GetUserByEmail, GetUserById, GetUserProfileById, UpdateUser, UpdateProfile };
+export { GetUserByEmail, GetUserById, UpdateUser };

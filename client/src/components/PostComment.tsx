@@ -41,14 +41,14 @@ const PostComment = (props: { comment: Comment }) => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`, {
+      const response = await fetch(`${API_URL}/users/${props.comment.authorId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${AuthToken}`,
         },
       });
       const userData = await response.json();
-      setAvatarUrl(userData?.profile?.avatarUrl || "");
+      setAvatarUrl(userData?.user.avatarUrl || "");
     };
     fetchProfile();
   }, []);

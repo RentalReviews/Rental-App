@@ -52,32 +52,18 @@ export const ProfileForm = (props: {
       throw new Error("Invalid email address");
     }
     try {
-      // Update user display name and email.
+      // Update user display name, email, avatar, and bio.
       const userResponse = await fetch(`${API_URL}/users/${user?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${AuthToken}`,
         },
-        body: JSON.stringify({ formState }),
+        body: JSON.stringify({ ...formState }),
       });
 
       if (!userResponse.ok) {
         throw new Error("Error updating user data");
-      }
-
-      // Update user profile data.
-      const profileResponse = await fetch(`${API_URL}/users/profile/${user?.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
-        },
-        body: JSON.stringify({ formState }),
-      });
-
-      if (!profileResponse.ok) {
-        throw new Error("Error updating profile data");
       }
 
       // Close modal and turn off editing mode.
