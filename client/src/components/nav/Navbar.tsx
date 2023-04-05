@@ -47,8 +47,6 @@ const Navbar = () => {
   const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
     if (!user) return;
     navigate(`/profile`);
-    return;
-    throw new Error("Function not implemented.");
   };
 
   return (
