@@ -2,7 +2,7 @@
 [![Client](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml/badge.svg)](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml)
 [![Client pipeline](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml/badge.svg)](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml)
 
-<img src="https://user-images.githubusercontent.com/46719079/230217500-b4c36017-a894-442d-bf20-801d0b5d5cc3.png" alt="preview" width="860" height="703">
+<img src="https://user-images.githubusercontent.com/46719079/230218492-8a4ee36f-f9f3-4ace-a601-25f1329974b1.png" alt="preview" height="550">
 
 Available live at [rentalranking.surge.sh](https://rentalranking.surge.sh/)
 
