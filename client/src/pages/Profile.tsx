@@ -19,10 +19,16 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // The display name, email, avatar URL, bio, and body of the user.
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [bio, setBio] = useState("");
+  // const [displayName, setDisplayName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [avatarUrl, setAvatarUrl] = useState("");
+  // const [bio, setBio] = useState("");
+  const [formState, setFormState] = useState({
+    displayName: "",
+    email: "",
+    avatarUrl: "",
+    bio: "",
+  });
 
   // Fetches the user's profile data when the component mounts or when the user changes.
   useEffect(() => {
@@ -34,49 +40,50 @@ const Profile = () => {
         },
       });
       const userData = await response.json();
-      setDisplayName(userData?.user.displayName);
-      setEmail(userData?.user.email);
-      setBio(userData?.user.bio || "");
-      setAvatarUrl(userData?.user.avatarUrl || undefined);
+      setFormState({
+        displayName: userData?.user.displayName,
+        email: userData?.user.email,
+        bio: userData?.user.bio,
+        avatarUrl: userData?.user.avatarUrl,
+      });
     };
     fetchUser();
   }, []);
 
   return (
     <Box p={4}>
-      {displayName && (
+      {formState.displayName && (
         <Flex direction="column" alignItems="center">
           <Heading as="h1" size="xl" my={4}>
-            Welcome {displayName?.split(" ")[0]}
+            Welcome {formState.displayName?.split(" ")[0]}
           </Heading>
           <Flex alignItems="flex-start">
-            <Avatar size="2xl" name={displayName} src={avatarUrl} mr={4} />
+            <Avatar size="2xl" name={formState.displayName} src={formState.avatarUrl} mr={4} />
             <Box>
               <Text fontWeight="bold" fontSize="lg" mb={2}>
                 Email:
               </Text>
-              <Text mb={4}>{email}</Text>
+              <Text mb={4}>{formState.email}</Text>
               <Text fontWeight="bold" fontSize="lg" mb={2}>
                 Display Name:
               </Text>
-              <Text mb={4}>{displayName}</Text>
+              <Text mb={4}>{formState.displayName}</Text>
               <Text fontWeight="bold" fontSize="lg" mb={2}>
                 Bio:
               </Text>
-              <Text>{bio}</Text>
+              <Text>{formState.bio}</Text>
             </Box>
           </Flex>
           <Button mt={4} onClick={() => setIsEditing(true)}>
             Edit Profile
           </Button>
-          {displayName && avatarUrl && (
+          {formState.displayName && (
             <ProfileForm
               isOpen={isEditing}
               onClose={() => setIsEditing(false)}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
-              userData={{ displayName, email }}
-              profileData={{ avatarUrl, bio }}
+              userData={{ ...formState }}
             />
           )}
         </Flex>

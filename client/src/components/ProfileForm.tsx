@@ -12,7 +12,6 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { Profile } from "types/Profile";
 import { useSelector } from "react-redux";
 import { userSelector } from "redux/user";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 interface UserData {
   displayName: string;
   email: string;
+  avatarUrl: string;
+  bio: string;
 }
 
 export const ProfileForm = (props: {
@@ -28,7 +29,6 @@ export const ProfileForm = (props: {
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   userData: UserData | null | undefined;
-  profileData: Profile;
 }) => {
   const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
   const { user } = useSelector(userSelector);
@@ -36,8 +36,8 @@ export const ProfileForm = (props: {
   const [formState, setFormState] = useState({
     displayName: props.userData?.displayName || "",
     email: props.userData?.email || "",
-    avatarUrl: props.profileData.avatarUrl || "",
-    bio: props.profileData.bio || "",
+    avatarUrl: props.userData?.avatarUrl || "",
+    bio: props.userData?.bio || "",
   });
   const toast = useToast();
   const navigate = useNavigate();
