@@ -53,12 +53,10 @@ const GetUserProfileById = async (req: RequestWithToken, res: Response, next: Ne
 
 const GetUserById = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   try {
-    const payloadId = req.payload?.id || "";
     const paramId = req.params.id;
-    if (paramId !== payloadId) throw new HttpError("user not authenticated", 500);
-    const user = await getUserById(payloadId);
+    const user = await getUserById(paramId);
     if (!user) {
-      throw new HttpError(`User with id = ${payloadId} does not exist`, 404);
+      throw new HttpError(`User with id = ${paramId} does not exist`, 404);
     }
     res.status(200).json({
       user: {

@@ -24,7 +24,7 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
   const navigate = useNavigate();
-  const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
+  const AuthToken = user?.bearerToken;
   const Links: Array<{ name: string; href: string }> = [
     { name: "Home", href: "/" },
     user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
@@ -39,7 +39,6 @@ const Navbar = () => {
         },
       });
       const userData = await response.json();
-      console.log("nav bar user data", userData.profile.avatarUrl);
       setAvatarUrl(userData.profile.avatarUrl);
     };
     fetchProfile();

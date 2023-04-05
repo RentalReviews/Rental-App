@@ -24,25 +24,21 @@ import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
 import { userSelector } from "redux/user";
 import { genericErrorHandler } from "utils";
-
 import type { Comment } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
-const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
 
 const PostComment = (props: { comment: Comment }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useSelector(userSelector);
+  const AuthToken = user?.bearerToken;
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const commentInput = useRef<HTMLTextAreaElement>(null);
-
   const navigate = useNavigate();
   const toast = useToast();
-
-  console.log("comment", props.comment);
   const [avatarUrl, setAvatarUrl] = useState("");
+
   useEffect(() => {
     const fetchProfile = async () => {
       const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`, {
@@ -55,7 +51,7 @@ const PostComment = (props: { comment: Comment }) => {
       setAvatarUrl(userData?.profile?.avatarUrl || "");
     };
     fetchProfile();
-  }, [props.comment]);
+  }, []);
 
   const updateComment = async (content: string) => {
     if (!user) return navigate("/login");
