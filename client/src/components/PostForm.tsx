@@ -85,7 +85,7 @@ export const PostForm = (props: {
       const json = await response.json();
 
       if (response.ok) {
-        navigate(0);
+        // navigate(0);
       } else {
         toast({
           title: "Error creating post",
@@ -95,6 +95,7 @@ export const PostForm = (props: {
         });
       }
     } catch (err) {
+      console.log(err);
       genericErrorHandler(err, toast);
     }
   };

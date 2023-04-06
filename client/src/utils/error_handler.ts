@@ -8,11 +8,11 @@ import type { CreateToastFnReturn } from "@chakra-ui/react";
  */
 const genericErrorHandler = (error: unknown, toast: CreateToastFnReturn) => {
   if (import.meta.env.DEV) {
-    console.log(error);
+    console.error(error);
   }
   toast({
     title: "Error",
-    description: "Something went wrong. Please try again.",
+    description: String(error), // ||"Something went wrong. Please try again.",
     status: "error",
     duration: 5000,
     isClosable: true,
