@@ -3,30 +3,27 @@ import {
   Badge,
   Box,
   Button,
-  Image,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
-  Center,
-  Wrap,
-  WrapItem,
+  Flex,
 } from "@chakra-ui/react";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 import { BiChat } from "react-icons/bi";
 import { StarIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
-import { PostForm } from "components/PostForm";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
 import { userSelector } from "redux/user";
-
 import type { Post } from "types";
-
+import { PostForm } from "./PostForm";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const InfoCard = (props: { post: Post }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen, isOpen, onClose } = useDisclosure();
   const [showCommentForm, setShowCommentForm] = useState(false);
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -108,7 +105,7 @@ const InfoCard = (props: { post: Post }) => {
         flexDirection="column"
       >
         <Box p="6">
-          <Box display={"flex"} justifyContent="space-around">
+          <Box display={"flex"} justifyContent={"space-around"}>
             <Box mt="2" display="flex" alignItems="baseline">
               <Badge borderRadius="full" px="2" colorScheme="teal">
                 New
@@ -135,37 +132,36 @@ const InfoCard = (props: { post: Post }) => {
             </Box>
           </Box>
         </Box>
-        <Center>
-          <Wrap>
-            <WrapItem>
-              <Image
-                boxSize="sm"
-                maxH="s"
-                src={
-                  props.post.postPhotos[0]?.url ||
-                  "https://imgs.search.brave.com/LJ9-GKNIeyw1YRkvjalT-KZ-wVjldzp4BRjFk_tgJ3U/rs:fit:1200:1200:1/g:ce/aHR0cDovL2NsaXBh/cnRzLmNvL2NsaXBh/cnRzLzhURy9FcjYv/OFRHRXI2cjdjLnBu/Zw"
-                }
-                alt={"property.imageAlt"}
-                borderRadius="md"
-              />
-            </WrapItem>
-            {latitude && longitude && (
-              <WrapItem>
-                <Box maxW="4xl" borderWidth="1px" ml="10px" borderRadius="lg" overflow="hidden">
-                  <Map
-                    coordinates={{
-                      latitude,
-                      longitude,
-                    }}
-                    className="bigmap"
-                  ></Map>
-                </Box>
-              </WrapItem>
-            )}
-          </Wrap>
-        </Center>
-        <Box ml={10} mr={10} mb={10} mt={10}>
-          {props.post.content}
+        <Flex flexDirection={"row"}>
+          <Box maxW={"60%"}>
+            <Carousel
+              swipeable={true}
+              autoPlay={true}
+              width={"100%"}
+              showThumbs={true}
+              thumbWidth={200}
+            >
+              {props.post.postPhotos.map((photo, index) => (
+                <div key={index}>
+                  <img src={photo.url} />
+                </div>
+              ))}
+            </Carousel>
+          </Box>
+          <Box maxHeight={"100%"} width={"50%"} ml={"10px"}>
+            <Text ml={"20px"} mr={"20px"}>
+              {props.post.content}
+            </Text>
+          </Box>
+        </Flex>
+        <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
+          <Map
+            coordinates={{
+              latitude,
+              longitude,
+            }}
+            className="bigmap"
+          ></Map>
         </Box>
         {user && (
           <>

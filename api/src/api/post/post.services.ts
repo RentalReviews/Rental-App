@@ -62,8 +62,17 @@ const updatePost = async (
   title: string,
   rating: number,
   content: string,
-  postPhotos: UploadedPhoto[]
+  postPhotos: UploadedPhoto[],
+  deletePhotos: UploadedPhoto[]
 ) => {
+  if (deletePhotos[0]) {
+    deletePhotos.forEach(async (photo) => {
+      if (photo.id) {
+        await deletePostPhoto(photo.id);
+      }
+    });
+  }
+
   postPhotos.forEach((photo) => {
     if (photo.id) {
       updatePostPhoto(photo.url, photo.id);
@@ -196,6 +205,15 @@ const createPostPhoto = async (url: string, postId: string) => {
     },
   });
   return newPostPhoto;
+};
+
+const deletePostPhoto = async (photoId: string) => {
+  const deletePostPhoto = await prismaClient.postPhoto.delete({
+    where: {
+      id: photoId,
+    },
+  });
+  return deletePostPhoto;
 };
 
 const updatePostPhoto = async (url: string, photoId: string) => {

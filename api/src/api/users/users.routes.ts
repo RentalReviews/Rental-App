@@ -1,11 +1,6 @@
 import express from "express";
 
-import {
-  GetUserById,
-  GetUserByEmail,
-  UpdateUser,
-  // UpdateProfile,
-} from "./users.controllers";
+import { GetUserById, GetUserByEmail, UpdateUser } from "./users.controllers";
 import { isAuthenticated } from "middlewares/auth";
 
 const router = express.Router();

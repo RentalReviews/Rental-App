@@ -19,7 +19,7 @@ export const Map = (props: props) => {
   });
 
   return (
-    <Box className={props.className}>
+    <Box width={"100%"} className={props.className}>
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (

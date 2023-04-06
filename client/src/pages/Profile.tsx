@@ -18,11 +18,6 @@ const Profile = () => {
   // Whether or not the user is in editing mode.
   const [isEditing, setIsEditing] = useState(false);
 
-  // The display name, email, avatar URL, bio, and body of the user.
-  // const [displayName, setDisplayName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [avatarUrl, setAvatarUrl] = useState("");
-  // const [bio, setBio] = useState("");
   const [formState, setFormState] = useState({
     displayName: "",
     email: "",

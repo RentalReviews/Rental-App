@@ -45,6 +45,8 @@ const Posting = (props: { post: Post }) => {
           <Image
             className="profile-img"
             src={thumbnailImage}
+            maxHeight={"225px"}
+            width={"auto"}
             alt={`Thumbnail for ${props.post.title}`}
             opacity={1}
             transition="0.5s ease"
