@@ -15,6 +15,7 @@ import {
   Input,
   Box,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
@@ -249,7 +250,13 @@ export const PostForm = (props: {
           <ModalBody>
             <Flex direction="column" gap={4}>
               <FormControl>
-                <FormLabel htmlFor="title">Title</FormLabel>
+                <FormLabel htmlFor="title">
+                  Title
+                  <Text as="span" color="pink">
+                    {" "}
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
                   name="title"
                   type="text"
@@ -265,7 +272,13 @@ export const PostForm = (props: {
               </FormControl>
               <FormControl>
                 <Box display={"flex"}>
-                  <FormLabel htmlFor="imageUrl">Image URL</FormLabel>
+                  <FormLabel htmlFor="imageUrl">
+                    Image URL
+                    <Text as="span" color="pink">
+                      {" "}
+                      *
+                    </Text>
+                  </FormLabel>
                   <Button
                     onClick={addInputField}
                     color={"red.200"}
@@ -303,7 +316,13 @@ export const PostForm = (props: {
                 })}
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="rating">Rating</FormLabel>
+                <FormLabel htmlFor="rating">
+                  Rating
+                  <Text as="span" color="pink">
+                    {" "}
+                    *
+                  </Text>
+                </FormLabel>
                 <Input
                   type="number"
                   value={formState.rating}
@@ -320,7 +339,13 @@ export const PostForm = (props: {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="content">Content</FormLabel>
+                <FormLabel htmlFor="content">
+                  Content
+                  <Text as="span" color="pink">
+                    {" "}
+                    *
+                  </Text>
+                </FormLabel>
                 <Textarea
                   placeholder="Write your review here..."
                   name="content"
