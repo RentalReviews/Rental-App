@@ -135,7 +135,9 @@ const PostComment = (props: { comment: Comment }) => {
                   aria-label="Delete Comment"
                   onClick={(e) => {
                     e.preventDefault();
-                    deleteComment();
+                    if (window.confirm("Are you sure you want to delete this comment?")) {
+                      deleteComment();
+                    }
                   }}
                 />
               </>
