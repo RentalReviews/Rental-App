@@ -154,15 +154,17 @@ const InfoCard = (props: { post: Post }) => {
             </Text>
           </Box>
         </Flex>
-        <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
-          <Map
-            coordinates={{
-              latitude,
-              longitude,
-            }}
-            className="bigmap"
-          ></Map>
-        </Box>
+        {latitude && longitude && (
+          <Box width={"100%"} borderWidth="1px" mt={"20px"} borderRadius="lg" overflow="hidden">
+            <Map
+              coordinates={{
+                latitude,
+                longitude,
+              }}
+              className="bigmap"
+            ></Map>
+          </Box>
+        )}
         {user && (
           <>
             <Box display="flex">
