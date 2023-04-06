@@ -202,6 +202,15 @@ export const PostForm = (props: {
   const removeInputFields = (
     index: number
   ): React.MouseEvent<HTMLButtonElement, MouseEvent> | void => {
+    if (inputFields.length === 1) {
+      toast({
+        title: "Error",
+        description: "Posting requires at least one image",
+        status: "error",
+        duration: 3000,
+      });
+      return;
+    }
     const rows = [...inputFields];
     rows.splice(index, 1);
     setInputFields(rows);
@@ -281,6 +290,7 @@ export const PostForm = (props: {
                 <FormLabel htmlFor="rating">Rating</FormLabel>
                 <Input
                   type="number"
+                  value={formState.rating}
                   name="rating"
                   min={1}
                   max={5}
