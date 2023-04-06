@@ -63,7 +63,7 @@ export const PostForm = (props: {
 
   const createPost = async () => {
     if (!AuthToken) return navigate("/login");
-    if (formState.title === "" || formState.content === "" || inputFields.length <= 1) {
+    if (formState.title === "" || formState.content === "" || inputFields.length < 1) {
       toast({
         title: "Error updating post",
         description: "Please fill out all fields.",
@@ -147,7 +147,7 @@ export const PostForm = (props: {
   const updatePost = async () => {
     if (!props.post) return;
     if (!AuthToken) return navigate("/login");
-    if (formState.title === "" || formState.content === "" || inputFields.length <= 1) {
+    if (formState.title === "" || formState.content === "" || inputFields.length < 1) {
       toast({
         title: "Error updating post",
         description: "Please fill out all fields.",
