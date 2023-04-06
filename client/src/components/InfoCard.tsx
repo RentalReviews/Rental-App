@@ -18,10 +18,8 @@ import { useSelector } from "react-redux";
 import { Map } from "components/map";
 import { genericErrorHandler } from "utils";
 import { userSelector } from "redux/user";
-
 import type { Post } from "types";
 import { PostForm } from "./PostForm";
-
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const InfoCard = (props: { post: Post }) => {
