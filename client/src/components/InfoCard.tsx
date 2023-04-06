@@ -12,7 +12,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { BiChat } from "react-icons/bi";
-import { StarIcon, EditIcon } from "@chakra-ui/icons";
+import { StarIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -60,6 +60,33 @@ const InfoCard = (props: { post: Post }) => {
       } else {
         toast({
           title: "Error adding comment.",
+          status: "error",
+          description: json.message || "Something went wrong.",
+          duration: 3000,
+        });
+      }
+    } catch (err) {
+      genericErrorHandler(err, toast);
+    }
+  };
+
+  const deletePost = async () => {
+    if (!user || user.id !== props.post.authorId) return;
+    try {
+      const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.bearerToken}`,
+        },
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        navigate("/");
+      } else {
+        toast({
+          title: "Error deleting post.",
           status: "error",
           description: json.message || "Something went wrong.",
           duration: 3000,
@@ -154,9 +181,25 @@ const InfoCard = (props: { post: Post }) => {
                 Comment
               </Button>
               {props.post.authorId === (user?.id || "") && (
-                <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
-                  Edit
-                </Button>
+                <>
+                  <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+                    Edit
+                  </Button>
+                  <Button
+                    flex="1"
+                    variant="ghost"
+                    colorScheme="red"
+                    leftIcon={<DeleteIcon />}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (window.confirm("Are you sure you want to delete this post?")) {
+                        deletePost();
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </>
               )}
             </Box>
             <Box
