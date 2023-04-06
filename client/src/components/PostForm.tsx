@@ -41,6 +41,7 @@ export const PostForm = (props: {
   onClose: () => void;
 }) => {
   const IS_EDITING = props.post !== undefined;
+
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
   const photoArray = ((props.post?.postPhotos.length || 0) < 1 ? [] : props.post?.postPhotos) || [];
   const [inputFields, setInputFields] = useState(

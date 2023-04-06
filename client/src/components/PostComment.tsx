@@ -24,21 +24,34 @@ import { BiTrash, BiEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
 import { userSelector } from "redux/user";
 import { genericErrorHandler } from "utils";
-
 import type { Comment } from "types";
 
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 const PostComment = (props: { comment: Comment }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useSelector(userSelector);
+  const AuthToken = user?.bearerToken || "";
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const commentInput = useRef<HTMLTextAreaElement>(null);
-
   const navigate = useNavigate();
   const toast = useToast();
+  const [avatarUrl, setAvatarUrl] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await fetch(`${API_URL}/users/${props.comment.authorId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthToken}`,
+        },
+      });
+      const userData = await response.json();
+      setAvatarUrl(userData?.user.avatarUrl || "");
+    };
+    fetchProfile();
+  }, []);
 
   const [avatarUrl, setAvatarUrl] = useState("");
   useEffect(() => {
@@ -132,7 +145,9 @@ const PostComment = (props: { comment: Comment }) => {
                   aria-label="Delete Comment"
                   onClick={(e) => {
                     e.preventDefault();
-                    deleteComment();
+                    if (window.confirm("Are you sure you want to delete this comment?")) {
+                      deleteComment();
+                    }
                   }}
                 />
               </>

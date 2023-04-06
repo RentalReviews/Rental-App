@@ -3,10 +3,10 @@ import express from "express";
 import {
   GetUserById,
   GetUserByEmail,
-  GetUserProfileById,
   UpdateUser,
-  UpdateProfile,
+  // UpdateProfile,
 } from "./users.controllers";
+import { isAuthenticated } from "middlewares/auth";
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ const idRegex =
 const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}";
 
 router.get(`/:id(${idRegex})`, GetUserById);
-router.put(`/:id(${idRegex})`, UpdateUser);
+router.put(`/:id(${idRegex})`, isAuthenticated, UpdateUser);
 router.get(`/:email(${emailRegex})`, GetUserByEmail);
 router.get(`/profile/:id(${idRegex})`, GetUserProfileById);
 router.put(`/profile/:id(${idRegex})`, UpdateProfile);

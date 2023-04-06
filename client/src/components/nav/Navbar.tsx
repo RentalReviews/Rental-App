@@ -31,16 +31,20 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${user?.id}`);
+      const response = await fetch(`${API_URL}/users/${user?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const userData = await response.json();
-      setAvatarUrl(userData.profile.avatarUrl);
+      setAvatarUrl(userData.user.avatarUrl);
     };
     fetchProfile();
-  }, []);
+  }, [user]);
 
   const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
+    if (!user) return;
     navigate(`/profile`);
-    return;
   };
 
   return (
@@ -70,7 +74,12 @@ const Navbar = () => {
           </HStack>
         </HStack>
         <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
-          <Avatar onClick={openProfile} name={user?.displayName} src={avatarUrl} />
+          <Avatar
+            onClick={openProfile}
+            name={user?.displayName}
+            src={avatarUrl}
+            cursor={user ? "pointer" : "default"}
+          />
           <IconButton
             onClick={toggleColorMode}
             size={"md"}

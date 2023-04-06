@@ -55,7 +55,7 @@ const LoginForm = () => {
             dispatch(
               setUser({
                 ...{ id, displayName, email },
-                authToken: data.token,
+                bearerToken: data.token,
                 refreshToken: data.refreshToken,
               })
             );

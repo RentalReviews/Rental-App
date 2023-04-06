@@ -2,6 +2,8 @@
 [![Client](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml/badge.svg)](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml)
 [![Client pipeline](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml/badge.svg)](https://github.com/RentalReviews/Rental-App/actions/workflows/client.yml)
 
+<img src="https://user-images.githubusercontent.com/46719079/230218492-8a4ee36f-f9f3-4ace-a601-25f1329974b1.png" alt="preview" height="550">
+
 Available live at [rentalranking.surge.sh](https://rentalranking.surge.sh/)
 
 This repo is hosted on Github and can be found at [github.com/RentalReviews/Rental-App](https://github.com/RentalReviews/Rental-App)

@@ -70,7 +70,7 @@ const InfoCard = (props: { post: Post }) => {
   };
 
   const deletePost = async () => {
-    if (!user) return;
+    if (!user || user.id !== props.post.authorId) return;
     try {
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "DELETE",
@@ -179,9 +179,25 @@ const InfoCard = (props: { post: Post }) => {
                 Comment
               </Button>
               {props.post.authorId === (user?.id || "") && (
-                <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
-                  Edit
-                </Button>
+                <>
+                  <Button flex="1" variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+                    Edit
+                  </Button>
+                  <Button
+                    flex="1"
+                    variant="ghost"
+                    colorScheme="red"
+                    leftIcon={<DeleteIcon />}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (window.confirm("Are you sure you want to delete this post?")) {
+                        deletePost();
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </>
               )}
               {props.post.authorId === (user?.id || "") && (
                 <Button flex="1" variant="ghost" leftIcon={<DeleteIcon />} onClick={deletePost}>
