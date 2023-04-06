@@ -24,7 +24,6 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
   const navigate = useNavigate();
-  const AuthToken = user?.bearerToken;
   const Links: Array<{ name: string; href: string }> = [
     { name: "Home", href: "/" },
     user ? { name: "Logout", href: "/logout" } : { name: "Login", href: "/login" },
@@ -35,7 +34,6 @@ const Navbar = () => {
       const response = await fetch(`${API_URL}/users/${user?.id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthToken}`,
         },
       });
       const userData = await response.json();
