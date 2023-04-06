@@ -76,7 +76,7 @@ const Navbar = () => {
           </HStack>
         </HStack>
         <HStack as={"nav"} spacing={4} display={{ base: "none", lg: "flex" }}>
-          <Avatar onClick={openProfile} name={user?.displayName} src={avatarUrl} />
+          <Avatar onClick={openProfile} name={user?.displayName} src={avatarUrl} cursor="pointer" />
           <IconButton
             onClick={toggleColorMode}
             size={"md"}
