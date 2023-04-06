@@ -53,16 +53,6 @@ const PostComment = (props: { comment: Comment }) => {
     fetchProfile();
   }, []);
 
-  const [avatarUrl, setAvatarUrl] = useState("");
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await fetch(`${API_URL}/users/profile/${props.comment.authorId}`);
-      const userData = await response.json();
-      setAvatarUrl(userData?.profile?.avatarUrl || "");
-    };
-    fetchProfile();
-  }, [props.comment]);
-
   const updateComment = async (content: string) => {
     if (!user) return navigate("/login");
     if (content === "" || content === props.comment.content) return;

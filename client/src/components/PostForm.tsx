@@ -121,12 +121,13 @@ export const PostForm = (props: {
   };
 
   const toBeDeletedImagesList = (inputImages: InputImageUrl[] | undefined[], postUrls: Photo[]) => {
-    const result = [];
-    const inputImageUrlList = inputImages.map((inputImage) => inputImage?.url);
+    const result: Photo[] = [];
+    const inputImageUrlList = inputImages.map((inputImage) => inputImage?.url) || [null];
     const postImageUrlList = postUrls.map((postUrl) => postUrl.url);
-    for (let i = 0; i < inputImages.length; i++) {
-      if (!inputImageUrlList.includes(postImageUrlList[i])) {
-        result.push(postUrls[i]);
+    for (let i = 0; i < postImageUrlList.length; i++) {
+      const image = inputImageUrlList.find((post) => post === postImageUrlList[i]);
+      if (!image) {
+        result.push({ url: postUrls[i].url, id: postUrls[i].id });
       }
     }
     return result;

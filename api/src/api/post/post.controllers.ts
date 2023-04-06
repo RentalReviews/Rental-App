@@ -57,6 +57,7 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
     const { id } = req.params;
     const userId = req.payload?.id || "";
     const { title, content, postPhotos, rating, deletePhotos } = req.body;
+
     if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
     }

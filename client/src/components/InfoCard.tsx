@@ -199,11 +199,6 @@ const InfoCard = (props: { post: Post }) => {
                   </Button>
                 </>
               )}
-              {props.post.authorId === (user?.id || "") && (
-                <Button flex="1" variant="ghost" leftIcon={<DeleteIcon />} onClick={deletePost}>
-                  Delete
-                </Button>
-              )}
             </Box>
             <Box
               display={showCommentForm ? "flex" : "none"}
