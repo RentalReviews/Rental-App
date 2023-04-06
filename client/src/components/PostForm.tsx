@@ -157,6 +157,9 @@ export const PostForm = (props: {
       const postImages = props.post.postPhotos || [];
       const finalList = onlyNewImagesList(imageUrlList, postImages, props.post.id);
       const toBeDeletedImages = toBeDeletedImagesList(imageUrlList, postImages);
+      if (inputFields.length === 0 && IS_EDITING) {
+        throw new Error("Posting requires at least one image");
+      }
 
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
