@@ -56,29 +56,28 @@ const UpdatePost = async (req: RequestWithToken, res: Response, next: NextFuncti
   try {
     const { id } = req.params;
     const userId = req.payload?.id || "";
-    const { title, content, postPhotos, rating } = req.body;
-
-    console.log("postPhotos", postPhotos);
-
+    const { title, content, postPhotos, rating, deletePhotos } = req.body;
     if (!title || !content) {
       throw new HttpError("Missing required fields", 400);
     }
-
     const post = await getPost(id);
     if (!post) {
       throw new HttpError(`Post with id = ${id} does not exist`, 404);
     }
-
     if (post.authorId !== userId) {
       throw new HttpError("Unauthorized", 401);
     }
-
     if (postPhotos.includes(null)) {
       throw new HttpError("Empty image URL input", 400);
     }
-
-    const upPost = await updatePost(id, title, parseInt(rating) || 3, content, postPhotos);
-
+    const upPost = await updatePost(
+      id,
+      title,
+      parseInt(rating) || 3,
+      content,
+      postPhotos,
+      deletePhotos
+    );
     res.status(200).json({
       upPost,
     });

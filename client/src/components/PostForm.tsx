@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { genericErrorHandler } from "utils";
 import type { Post } from "types";
 import ResizeTextarea from "react-textarea-autosize";
+import { Photo } from "types/Photo";
 const API_URL = `${import.meta.env.VITE_API_SERVER_URL}/api/v1`;
 
 /**
@@ -95,20 +96,63 @@ export const PostForm = (props: {
     }
   };
 
+  interface InputImageUrl {
+    url: string | undefined;
+    insidePost: boolean;
+  }
+
+  const onlyNewImagesList = (
+    inputImages: InputImageUrl[] | undefined[],
+    postUrls: Photo[],
+    postId: string
+  ) => {
+    const result = [];
+    const finalInputImages = inputImages || [];
+    for (let i = 0; i < finalInputImages?.length; i++) {
+      const image: Photo | undefined = postUrls.find(
+        (post) => post.url === finalInputImages[i]?.url
+      );
+      if (!image && finalInputImages[i]?.url) {
+        result.push({ url: finalInputImages[i]?.url, postId: postId });
+      }
+    }
+    return result;
+  };
+
+  const toBeDeletedImagesList = (inputImages: InputImageUrl[] | undefined[], postUrls: Photo[]) => {
+    const result = [];
+    const inputImageUrlList = inputImages.map((inputImage) => inputImage?.url);
+    const postImageUrlList = postUrls.map((postUrl) => postUrl.url);
+    for (let i = 0; i < inputImages.length; i++) {
+      if (!inputImageUrlList.includes(postImageUrlList[i])) {
+        result.push(postUrls[i]);
+      }
+    }
+    return result;
+  };
+
   const updatePost = async () => {
-    console.log("update post");
     if (!props.post) return;
     if (!AuthToken) return navigate("/login");
     if (formState.title === "" || formState.content === "") return;
 
     try {
-      let imageUrlList = inputFields?.map((inputField) => {
-        const flag = inputField.imageUrl || "";
-        if (flag) {
-          return { url: inputField["imageUrl"] };
-        }
-      });
+      let imageUrlList: InputImageUrl[] = inputFields
+        ?.map((inputField) => {
+          const flag = inputField.imageUrl || "";
+          const result: InputImageUrl = {
+            url: inputField["imageUrl"],
+            insidePost: false,
+          };
+          if (flag) {
+            return result;
+          }
+        })
+        .filter((imageUrl) => imageUrl !== undefined) as InputImageUrl[];
       imageUrlList = imageUrlList ? imageUrlList : [];
+      const postImages = props.post.postPhotos || [];
+      const finalList = onlyNewImagesList(imageUrlList, postImages, props.post.id);
+      const toBeDeletedImages = toBeDeletedImagesList(imageUrlList, postImages);
 
       const response = await fetch(`${API_URL}/postings/${props.post.id}`, {
         method: "PUT",
@@ -120,7 +164,8 @@ export const PostForm = (props: {
           title: formState.title,
           content: formState.content,
           rating: formState.rating,
-          postPhotos: imageUrlList,
+          postPhotos: finalList,
+          deletePhotos: toBeDeletedImages,
         }),
       });
 
@@ -149,7 +194,7 @@ export const PostForm = (props: {
       },
     ]);
   };
-  // React.MouseEventHandler<HTMLButtonElement>
+
   const removeInputFields = (
     index: number
   ): React.MouseEvent<HTMLButtonElement, MouseEvent> | void => {
@@ -195,11 +240,16 @@ export const PostForm = (props: {
                   <Button
                     onClick={addInputField}
                     color={"red.200"}
-                    width={"10px"}
-                    height={"15px"}
+                    width={"30px"}
+                    height={"30px"}
                     mb={"10px"}
                   >
                     <AddIcon w={2} h={2} />
+                  </Button>
+                  <Button ml={"10px"} mb={"5px"} width={"60px"} height={"30px"}>
+                    <a target="_blank" href="http://www.imgur.com" rel="noreferrer">
+                      Imgur
+                    </a>
                   </Button>
                 </Box>
                 {inputFields.map((data, index) => {

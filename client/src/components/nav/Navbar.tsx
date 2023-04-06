@@ -33,7 +33,6 @@ const Navbar = () => {
     const fetchProfile = async () => {
       const response = await fetch(`${API_URL}/users/profile/${user?.id}`);
       const userData = await response.json();
-      console.log("nav bar user data", userData.profile.avatarUrl);
       setAvatarUrl(userData.profile.avatarUrl);
     };
     fetchProfile();
@@ -42,7 +41,6 @@ const Navbar = () => {
   const openProfile = (): MouseEventHandler<HTMLSpanElement> | undefined => {
     navigate(`/profile`);
     return;
-    throw new Error("Function not implemented.");
   };
 
   return (

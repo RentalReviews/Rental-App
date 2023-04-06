@@ -55,7 +55,6 @@ const GetUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const user = await getUserById(id);
-    console.log(user);
     if (!user) {
       throw new HttpError(`User with id = ${id} does not exist`, 404);
     }
