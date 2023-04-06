@@ -62,7 +62,15 @@ export const PostForm = (props: {
 
   const createPost = async () => {
     if (!AuthToken) return navigate("/login");
-    if (formState.title === "" || formState.content === "") return;
+    if (formState.title === "" || formState.content === "" || inputFields.length <= 1) {
+      toast({
+        title: "Error updating post",
+        description: "Please fill out all fields.",
+        status: "error",
+        duration: 3000,
+      });
+      return;
+    }
     const imageUrlList = inputFields?.map((inputField) => {
       return { url: inputField["imageUrl"] };
     });
@@ -138,7 +146,15 @@ export const PostForm = (props: {
   const updatePost = async () => {
     if (!props.post) return;
     if (!AuthToken) return navigate("/login");
-    if (formState.title === "" || formState.content === "") return;
+    if (formState.title === "" || formState.content === "" || inputFields.length <= 1) {
+      toast({
+        title: "Error updating post",
+        description: "Please fill out all fields.",
+        status: "error",
+        duration: 3000,
+      });
+      return;
+    }
 
     try {
       let imageUrlList: InputImageUrl[] = inputFields
