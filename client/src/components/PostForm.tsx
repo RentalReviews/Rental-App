@@ -43,7 +43,9 @@ export const PostForm = (props: {
   const IS_EDITING = props.post !== undefined;
 
   const AuthToken = localStorage.getItem("BEARER_TOKEN") || "";
-  const photoArray = ((props.post?.postPhotos.length || 0) < 1 ? [] : props.post?.postPhotos) || [];
+  // Keeps at least one image on the posting to show in user feed
+  // const photoArray = ((props.post?.postPhotos.length || 0) < 1 ? [] : props.post?.postPhotos) || [];
+  const photoArray = props.post?.postPhotos || [];
   const [inputFields, setInputFields] = useState(
     photoArray.map((photo) => {
       return { imageUrl: photo.url };
