@@ -18,7 +18,21 @@ const Posting = (props: { post: Post }) => {
   const longitude = props.post.longitude;
 
   return (
-    <Box maxW="sm" borderWidth="1px" margin="10px" borderRadius="lg" overflow="hidden">
+    <Box
+      maxW="sm"
+      borderWidth="1px"
+      margin="10px"
+      borderRadius="lg"
+      overflow="hidden"
+      cursor="pointer"
+      onClick={() =>
+        navigate(`/posting/${props.post.id}`, {
+          state: {
+            Post: props.post,
+          },
+        })
+      }
+    >
       <Box position="relative" my={3}>
         <Box
           maxW="sm"
@@ -32,13 +46,6 @@ const Posting = (props: { post: Post }) => {
             className="profile-img"
             src={thumbnailImage}
             alt={`Thumbnail for ${props.post.title}`}
-            onClick={() =>
-              navigate(`/posting/${props.post.id}`, {
-                state: {
-                  Post: props.post,
-                },
-              })
-            }
             opacity={1}
             transition="0.5s ease"
           />
